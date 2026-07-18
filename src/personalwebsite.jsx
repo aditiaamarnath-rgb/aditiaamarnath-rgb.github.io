@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 function InjectFonts() {
     useEffect(() => {
@@ -68,38 +69,6 @@ function PostIt({ children, color = C.yellow, rotate = 0, style = {} }) {
         }}>
             <Tape style={{ top: -10, left: "50%", transform: "translateX(-50%)" }} />
             {children}
-        </div>
-    );
-}
-
-/* ── Polaroid ── */
-function Polaroid({ rotate = 2, style = {} }) {
-    return (
-        <div style={{
-            background: C.paper,
-            padding: "12px 12px 42px",
-            borderRadius: 3,
-            boxShadow: "6px 8px 0 rgba(0,0,0,0.35)",
-            transform: `rotate(${rotate}deg)`,
-            width: 220,
-            position: "relative",
-            ...style,
-        }}>
-            {/* photo area */}
-            <div style={{
-                width: "100%", height: 220,
-                background: `linear-gradient(160deg, ${C.blush} 0%, ${C.accent} 60%, ${C.bgMid} 100%)`,
-                borderRadius: 2,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                overflow: "hidden",
-            }}>
-        <span style={{ fontFamily: "'Caveat', cursive", fontSize: 15, color: C.paper, textAlign: "center", lineHeight: 1.7, padding: 12 }}>
-          profile<br />picture
-        </span>
-            </div>
-            <p style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: C.ink, textAlign: "center", marginTop: 10, letterSpacing: "0.04em" }}>
-                Aditi ✦
-            </p>
         </div>
     );
 }
@@ -267,12 +236,6 @@ function HeroSection() {
                     </div>
                 </div>
 
-                {/* RIGHT — polaroid + contact card */}
-                <div style={{ flexShrink: 0, opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(28px)", transition: "all 1.1s ease 0.2s", display: "flex", flexDirection: "column", gap: 20, alignItems: "flex-end" }}>
-                    <Polaroid rotate={2} />
-
-
-                </div>
             </div>
         </section>
     );
@@ -285,7 +248,7 @@ function AboutSection() {
             {/* bg text */}
             <SectionHeading light>About Me</SectionHeading>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 28, maxWidth: 940, position: "relative", zIndex: 1 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1.25fr 1fr", gap: 56, maxWidth: 1120, position: "relative", zIndex: 1 }}>
 
                 {/* Education post-it */}
                 <PostIt color={C.fresh} rotate={-1.5}>
@@ -493,6 +456,7 @@ export default function App() {
     return (
         <>
             <InjectFonts />
+            <SpeedInsights />
             <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
