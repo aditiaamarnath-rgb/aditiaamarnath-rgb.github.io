@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import carouselSlide6 from "./assets/carousel-slide-6.jpg";
 
 function InjectFonts() {
     useEffect(() => {
@@ -34,6 +35,15 @@ const C = {
     yellowDark:"#e4ce5e",
     softpink:  "#caaeb5",
 };
+
+const CAROUSEL_PHOTOS = [
+    "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/uploads/c8b9b493-90d2-48dc-beb9-1c448e14e0d2/1784575799024-ed079afa/IMG_0636.JPEG",
+    "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/uploads/c8b9b493-90d2-48dc-beb9-1c448e14e0d2/1784575799689-37a25175/IMG_0637.JPEG",
+    "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/uploads/c8b9b493-90d2-48dc-beb9-1c448e14e0d2/1784575800363-bf9b69de/IMG_0638.JPEG",
+    "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/uploads/c8b9b493-90d2-48dc-beb9-1c448e14e0d2/1784575800888-335d66e2/IMG_0639.JPEG",
+    "https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/uploads/c8b9b493-90d2-48dc-beb9-1c448e14e0d2/1784575801396-060a4c5e/IMG_0640.JPEG",
+    carouselSlide6,
+];
 
 function scrollTo(id) {
     const el = document.getElementById(id);
@@ -150,6 +160,171 @@ function DoodleCircle({ label, emoji }) {
     );
 }
 
+function PhotoCarousel() {
+    const [current, setCurrent] = useState(0);
+    const total = CAROUSEL_PHOTOS.length;
+
+    const goToSlide = (index) => {
+        setCurrent((index + total) % total);
+    };
+
+    const handleKeyDown = (event) => {
+        if (event.key === "ArrowLeft") goToSlide(current - 1);
+        if (event.key === "ArrowRight") goToSlide(current + 1);
+    };
+
+    return (
+        <div style={{
+            width: "min(520px, calc(100vw - 104px))",
+            aspectRatio: "1 / 1",
+            position: "relative",
+            overflow: "hidden",
+            borderRadius: 16,
+            flexShrink: 0,
+            boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+            opacity: 1,
+        }}>
+            <div
+                tabIndex={0}
+                aria-label="Photo carousel"
+                onKeyDown={handleKeyDown}
+                style={{
+                    display: "flex",
+                    width: "100%",
+                    height: "100%",
+                    transform: `translateX(-${current * 100}%)`,
+                    transition: "transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)",
+                    outline: "none",
+                }}
+            >
+                {CAROUSEL_PHOTOS.map((url, index) => (
+                    <div key={url} style={{ flex: "0 0 100%", width: "100%", height: "100%", position: "relative" }}>
+                        <img
+                            src={url}
+                            alt={`Aditi portfolio image ${index + 1}`}
+                            draggable="false"
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                                objectFit: "cover",
+                                borderRadius: 16,
+                                display: "block",
+                                pointerEvents: "none",
+                            }}
+                        />
+                    </div>
+                ))}
+            </div>
+
+            <div style={{
+                position: "absolute",
+                bottom: 32,
+                left: 0,
+                right: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 24,
+            }}>
+                <button
+                    type="button"
+                    onClick={() => goToSlide(current - 1)}
+                    aria-label="Previous photo"
+                    style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: "50%",
+                        background: "#c98a83",
+                        color: "#fff",
+                        border: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        fontFamily: "'Nunito', sans-serif",
+                        fontSize: 24,
+                        fontWeight: 700,
+                        boxShadow: "0 6px 14px rgba(0,0,0,0.3)",
+                        transition: "filter 0.15s, transform 0.15s",
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.filter = "brightness(1.1)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.filter = "none"; e.currentTarget.style.transform = "none"; }}
+                    onMouseDown={e => { e.currentTarget.style.transform = "scale(0.95)"; }}
+                    onMouseUp={e => { e.currentTarget.style.transform = "none"; }}
+                >
+                    ‹
+                </button>
+
+                <div style={{ display: "flex", gap: 8 }}>
+                    {CAROUSEL_PHOTOS.map((url, index) => (
+                        <button
+                            key={`${url}-dot`}
+                            type="button"
+                            onClick={() => goToSlide(index)}
+                            aria-label={`Go to photo ${index + 1}`}
+                            aria-current={index === current}
+                            style={{
+                                width: index === current ? 10 : 8,
+                                height: index === current ? 10 : 8,
+                                borderRadius: "50%",
+                                border: "none",
+                                background: index === current ? "#c98a83" : "#a9ab98",
+                                opacity: index === current ? 1 : 0.5,
+                                transform: index === current ? "scale(1.25)" : "none",
+                                transition: "all 0.3s",
+                                cursor: "pointer",
+                                padding: 0,
+                            }}
+                        />
+                    ))}
+                </div>
+
+                <button
+                    type="button"
+                    onClick={() => goToSlide(current + 1)}
+                    aria-label="Next photo"
+                    style={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: "50%",
+                        background: "#c98a83",
+                        color: "#fff",
+                        border: "none",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        fontFamily: "'Nunito', sans-serif",
+                        fontSize: 24,
+                        fontWeight: 700,
+                        boxShadow: "0 6px 14px rgba(0,0,0,0.3)",
+                        transition: "filter 0.15s, transform 0.15s",
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.filter = "brightness(1.1)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.filter = "none"; e.currentTarget.style.transform = "none"; }}
+                    onMouseDown={e => { e.currentTarget.style.transform = "scale(0.95)"; }}
+                    onMouseUp={e => { e.currentTarget.style.transform = "none"; }}
+                >
+                    ›
+                </button>
+            </div>
+
+            <div style={{
+                position: "absolute",
+                top: 48,
+                right: 16,
+                fontFamily: "'Nunito', sans-serif",
+                fontSize: 14,
+                fontWeight: 700,
+                color: "#a9ab98",
+                letterSpacing: "0.1em",
+            }}>
+                {current + 1} / {total}
+            </div>
+        </div>
+    );
+}
+
 /* ══════════════════ NAV ══════════════════ */
 function NavBar() {
     const [scrolled, setScrolled] = useState(false);
@@ -236,6 +411,9 @@ function HeroSection() {
                     </div>
                 </div>
 
+                <div style={{ flexShrink: 0, opacity: vis ? 1 : 0, transform: vis ? "none" : "translateY(28px)", transition: "all 1.1s ease 0.2s", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <PhotoCarousel />
+                </div>
             </div>
         </section>
     );
