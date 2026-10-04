@@ -13,7 +13,9 @@ import cameraSticker from "./assets/camera-sticker.png";
 import paintSticker from "./assets/paint-sticker.png";
 import headphonesSticker from "./assets/headphones-sticker.png";
 import nailPolishSticker from "./assets/nail-polish-sticker-cutout.png";
-import bluprintProjectPreview from "./assets/bluprint-project-preview.png";
+import bluprintProjectPreview from "./assets/bluprint-postit-preview.png";
+import databridgePostitPreview from "./assets/databridge-postit-preview.png";
+import wavelengthPostitPreview from "./assets/wavelength-postit-preview.png";
 import projectFolderGreen from "./assets/project-folder-green.png";
 import projectFolderPink from "./assets/project-folder-pink.png";
 import projectFolderBeige from "./assets/project-folder-beige.png";
@@ -513,10 +515,11 @@ function AboutSection() {
                             <div className="about-paper-section">
                                 <p style={{ fontFamily: "'Caveat', cursive", fontSize: 21, margin: "0 0 8px" }}>Key Coursework:</p>
                                 <ul style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, lineHeight: 1.8, opacity: 0.72, paddingLeft: 18, margin: 0 }}>
-                                    <li>Algorithms &amp; OS</li>
+                                    <li>Algorithms & Software Development</li>
+                                    <li>Data Structures & Object-Oriented Programming</li>
                                     <li>Linear Algebra</li>
-                                    <li>Data Structures</li>
-                                    <li>Statistics in R</li>
+                                    <li>Calculus III</li>
+                                    <li>Statistical Methods in R</li>
                                 </ul>
                             </div>
                         </article>
@@ -540,12 +543,12 @@ function AboutSection() {
                             <div className="about-paper-section">
                                 <div style={{ display: "grid", gap: 14 }}>
                                     <div>
-                                        <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>2023 - Now</span>
-                                        <p style={{ fontFamily: "'Fraunces', serif", fontSize: 19, fontWeight: 700, margin: "3px 0 0" }}>ACM Student Chapter</p>
+                                        <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>August 2026 - Now</span>
+                                        <p style={{ fontFamily: "'Fraunces', serif", fontSize: 19, fontWeight: 700, margin: "3px 0 0" }}>Undergraduate Research Assistant</p>
                                     </div>
                                     <div>
-                                        <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>2022 - Now</span>
-                                        <p style={{ fontFamily: "'Fraunces', serif", fontSize: 19, fontWeight: 700, margin: "3px 0 0" }}>Tennis</p>
+                                        <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>September 2026 - Now</span>
+                                        <p style={{ fontFamily: "'Fraunces', serif", fontSize: 19, fontWeight: 700, margin: "3px 0 0" }}>Code-To-Connect</p>
                                     </div>
                                 </div>
                             </div>
@@ -668,10 +671,10 @@ function ExperienceSection() {
 
 /* ══════════════════ PROJECTS ══════════════════ */
 const PROJECTS = [
-    { tab: "Bluprint",   title: "Bluprint",   desc: "A room design website that takes user's style preferences and generates furniture recommendations. Includes a customizable diagram of room, visual representation of items recommended, and dashboard to view all decorated rooms.",   tags: ["React","Node.js","MongoDB"],               year: "2024", emoji: "🐚", image: bluprintProjectPreview, projectUrl: "https://bluprint-iroq.onrender.com/", color: C.fresh, ink: C.ink, descColor: C.ink },
-    { tab: "Databridge", title: "Databridge", desc: "Detailed a technical specification for HGS internship: Microsoft Fabric-native financial data platform, defining the OneLake medallion architecture, Direct Lake semantic layer, capacity tiering, and security requirements across a 17-item decision register.\n", tags: ["Java","Javascript","HTML","Canvas API"], year: "2026", emoji: "🗺️", color: C.yellow, ink: C.ink, descColor: C.ink },
-    { tab: "Djkstra",     title: "Shortest Path Route Finder",     desc: "Interactive graph traversal visualizer - Dijkstra, A*, BFS, DFS. Draw custom grids, place walls, watch algorithms explore in real time.",   tags: ["TypeScript","Node.js","WebSockets","OT"],  year: "2024", emoji: "📝", color: C.softpink, ink: C.ink, descColor: C.ink },
-    { tab: "Incoming",        title: "Coming soon ...",        desc: "Browser extension that explains ML model predictions in plain language, showing feature importance as an inline overlay on supported sites.", tags: ["Python","ML","Chrome Extension","Flask"],  year: "2023", emoji: "🔍", color: C.azeitona, ink: C.ink, descColor: C.ink },
+    { tab: "Bluprint", badge: "Personalized Interior Decorator", title: "Bluprint", desc: "A room design website that takes user's style preferences and generates furniture recommendations. Includes a customizable diagram of room, visual representation of items recommended, and dashboard to view all decorated rooms.", tags: ["React","Node.js","MongoDB"], year: "2024", emoji: "🐚", image: bluprintProjectPreview, noteCaption: "click here for link^", projectUrl: "https://bluprint-iroq.onrender.com/", color: C.fresh, ink: C.ink, descColor: C.ink },
+    { tab: "Databridge", badge: "Financial Ontology Platform", title: "Databridge", desc: "Detailed a technical specification for HGS internship: Microsoft Fabric-native financial data platform, defining the OneLake medallion architecture, Direct Lake semantic layer, capacity tiering, and security requirements across a 17-item decision register.\n", tags: ["Java","Javascript","HTML","Canvas API"], year: "2026", emoji: "🗺️", image: databridgePostitPreview, noteCaption: "final presentation day!!", color: C.yellow, ink: C.ink, descColor: C.ink },
+    { tab: "Tech and Humanity", badge: "Interdisciplinary Project", title: "Technology vs. Human Experiences", desc: "Interactive presentation detailing research study on whether technology/AI is replacing traditionally and evolutionarily human traits and experiences.", tags: ["TypeScript","Node.js","WebSockets","OT"], year: "2024", emoji: "📝", color: C.softpink, ink: C.ink, descColor: C.ink },
+    { tab: "Wavelength", badge: "Personal Symptom Log", title: "Wavelength", desc: "A symptom-tracking website that lets users log physical and mental symptoms by text or voice. Includes graphs of recurring symptoms over time, a calendar of past entries, AI-generated summaries, and a PDF brief to bring to doctor's appointments.", tags: ["Python","ML","Chrome Extension","Flask"], year: "2023", emoji: "🔍", image: wavelengthPostitPreview, noteCaption: "click below for link :)", noteCaptionPosition: "top", noteImageFit: "contain", color: C.azeitona, ink: C.ink, descColor: C.ink },
 ];
 const DEFAULT_PROJECT_INDEX = 0;
 
@@ -679,10 +682,10 @@ function ProjectsSection() {
     const [active, setActive] = useState(DEFAULT_PROJECT_INDEX);
     const p = PROJECTS[active];
     const folderLayers = [
-        { projectIndex: 3, name: "blue", src: projectFolderBlue, alt: "", className: "project-folder-layer-blue", zIndex: 2, paperAccent: "#93a7bf", paperTilt: "-1.2deg", paperStartX: "-5%", paperStartY: "-30%", noteRight: "-6%", noteTop: "30%", noteRotate: "-5deg", noteAspect: "0.82", noteColor: "#c9d8ce", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(124px, 16vw, 176px)", noteMobileWidth: "96px", copyLeft: "0px", copyRight: "clamp(118px, 16vw, 184px)", tagsLeft: "0px", tagsRight: "clamp(118px, 16vw, 184px)" },
+        { projectIndex: 3, name: "blue", src: projectFolderBlue, alt: "", className: "project-folder-layer-blue", zIndex: 2, paperAccent: "#93a7bf", paperTilt: "-1.2deg", paperStartX: "-5%", paperStartY: "-30%", noteRight: "-10%", noteTop: "27%", noteRotate: "-5deg", noteAspect: "1.5", noteColor: "#c9d8ce", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(224px, 31vw, 400px)", noteMobileWidth: "172px", copyLeft: "0px", copyRight: "clamp(200px, 30vw, 408px)", descLeft: "0px", descRight: "clamp(170px, 24vw, 320px)", tagsLeft: "0px", tagsRight: "clamp(200px, 30vw, 408px)" },
         { projectIndex: 2, name: "beige", src: projectFolderBeige, alt: "", className: "project-folder-layer-beige", zIndex: 3, paperAccent: "#d4c7a4", paperTilt: "1deg", paperStartX: "5%", paperStartY: "-20%", noteRight: "-4%", noteTop: "12%", noteRotate: "4deg", noteAspect: "0.82", noteColor: "#f2e4a5", noteLine: "transparent", noteWidth: "clamp(124px, 16vw, 176px)", noteMobileWidth: "96px", copyLeft: "0px", copyRight: "clamp(108px, 15vw, 164px)", tagsLeft: "0px", tagsRight: "0px" },
-        { projectIndex: 1, name: "pink", src: projectFolderPink, alt: "", className: "project-folder-layer-pink", zIndex: 4, paperAccent: "#c69bad", paperTilt: "-0.6deg", paperStartX: "2%", paperStartY: "-10%", noteRight: "86%", noteTop: "48%", noteRotate: "-7deg", noteAspect: "1", noteColor: "#eadc8f", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(152px, 19vw, 214px)", noteMobileWidth: "116px", copyLeft: "clamp(144px, 19vw, 224px)", copyRight: "0px", tagsLeft: "clamp(144px, 19vw, 224px)", tagsRight: "0px" },
-        { projectIndex: 0, name: "green", src: projectFolderGreen, alt: "", className: "project-folder-layer-green", zIndex: 5, paperAccent: "#8ca07d", paperTilt: "0.8deg", paperStartX: "-4%", paperStartY: "8%", noteRight: "-9%", noteTop: "36%", noteRotate: "-6deg", noteAspect: "0.82", noteColor: "#c9d8ce", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(124px, 16vw, 176px)", noteMobileWidth: "96px", copyLeft: "0px", copyRight: "clamp(118px, 16vw, 184px)", tagsLeft: "0px", tagsRight: "clamp(118px, 16vw, 184px)" },
+        { projectIndex: 1, name: "pink", src: projectFolderPink, alt: "", className: "project-folder-layer-pink", zIndex: 4, paperAccent: "#c69bad", paperTilt: "-0.6deg", paperStartX: "2%", paperStartY: "-10%", noteRight: "72%", noteTop: "43%", noteRotate: "-7deg", noteAspect: "1.16", noteColor: "#eadc8f", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(184px, 23vw, 270px)", noteMobileWidth: "142px", copyLeft: "clamp(84px, 12vw, 150px)", copyRight: "0px", tagsLeft: "clamp(132px, 18vw, 220px)", tagsRight: "0px" },
+        { projectIndex: 0, name: "green", src: projectFolderGreen, alt: "", className: "project-folder-layer-green", zIndex: 5, paperAccent: "#8ca07d", paperTilt: "0.8deg", paperStartX: "-4%", paperStartY: "8%", noteRight: "-11%", noteTop: "31%", noteRotate: "-6deg", noteAspect: "1.14", noteColor: "#c9d8ce", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(196px, 25vw, 292px)", noteMobileWidth: "154px", copyLeft: "0px", copyRight: "clamp(180px, 25vw, 302px)", tagsLeft: "0px", tagsRight: "clamp(180px, 25vw, 302px)" },
     ];
     const folderLabels = [
         { projectIndex: 3, className: "project-folder-label-blue" },
@@ -691,6 +694,9 @@ function ProjectsSection() {
         { projectIndex: 0, className: "project-folder-label-green" },
     ];
     const activeFolderLayer = folderLayers.find((layer) => layer.projectIndex === active) ?? folderLayers[0];
+    const projectNoteCaption = p.noteCaption ? (
+        <span className="project-grid-note-caption">{p.noteCaption}</span>
+    ) : null;
 
     return (
         <section id="projects" style={{ background: C.cream, padding: "70px clamp(18px, 4vw, 52px)", position: "relative", overflow: "hidden" }}>
@@ -750,14 +756,49 @@ function ProjectsSection() {
                             "--grid-note-mobile-width": activeFolderLayer.noteMobileWidth,
                             "--project-copy-left": activeFolderLayer.copyLeft,
                             "--project-copy-right": activeFolderLayer.copyRight,
+                            "--project-desc-left": activeFolderLayer.descLeft ?? activeFolderLayer.copyLeft,
+                            "--project-desc-right": activeFolderLayer.descRight ?? activeFolderLayer.copyRight,
                             "--project-tags-left": activeFolderLayer.tagsLeft,
                             "--project-tags-right": activeFolderLayer.tagsRight,
+                            "--grid-note-image-fit": p.noteImageFit ?? "cover",
                         }}
                     >
-                        <span className="project-grid-note" aria-hidden="true" />
+                        {p.image ? (
+                            p.projectUrl ? (
+                                <a
+                                    className="project-grid-note project-grid-note-photo project-grid-note-link"
+                                    href={p.projectUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    aria-label={`Open ${p.title} project`}
+                                >
+                                    {p.noteCaptionPosition === "top" && projectNoteCaption}
+                                    <img
+                                        className="project-grid-note-image"
+                                        src={p.image}
+                                        alt={`${p.title} preview`}
+                                        draggable="false"
+                                    />
+                                    {p.noteCaptionPosition !== "top" && projectNoteCaption}
+                                </a>
+                            ) : (
+                                <span className="project-grid-note project-grid-note-photo">
+                                    {p.noteCaptionPosition === "top" && projectNoteCaption}
+                                    <img
+                                        className="project-grid-note-image"
+                                        src={p.image}
+                                        alt={`${p.title} preview`}
+                                        draggable="false"
+                                    />
+                                    {p.noteCaptionPosition !== "top" && projectNoteCaption}
+                                </span>
+                            )
+                        ) : (
+                            <span className="project-grid-note" aria-hidden="true" />
+                        )}
                         <span className="project-paperclip" aria-hidden="true" />
                         <div className="project-paper-folder-name" aria-hidden="true">
-                            <span>{p.tab}</span>
+                            <span>{p.badge}</span>
                         </div>
                         <div className="project-heading-row">
                             <p className="project-title">{p.title}</p>
@@ -1041,7 +1082,7 @@ export default function App() {
           width: min(1420px, 108vw);
           max-width: none;
           aspect-ratio: 16 / 9;
-          margin: 10px 0 0;
+          margin: -52px 0 0;
           position: relative;
           left: 50%;
           transform: translateX(-50%);
@@ -1349,7 +1390,7 @@ export default function App() {
           outline-offset: -5px;
         }
         .project-folder-label-blue {
-          top: -2.5%;
+          top: -0.5%;
           left: 8%;
           width: 35%;
           height: 12%;
@@ -1501,12 +1542,13 @@ export default function App() {
         .project-paper-folder-name span {
           display: inline-flex;
           align-items: center;
+          max-width: 100%;
           min-height: 25px;
           padding: 5px 12px;
           font-family: 'Nunito', sans-serif;
-          font-size: 11px;
+          font-size: clamp(9px, 1.15vw, 11px);
           font-weight: 900;
-          letter-spacing: 0.12em;
+          letter-spacing: 0.1em;
           line-height: 1;
           text-transform: uppercase;
           color: #2B2420;
@@ -1521,6 +1563,8 @@ export default function App() {
           z-index: 3;
           width: var(--grid-note-width);
           aspect-ratio: var(--grid-note-aspect);
+          box-sizing: border-box;
+          padding: clamp(6px, 0.85vw, 10px);
           background:
             linear-gradient(90deg, var(--grid-note-line) 1px, transparent 1px) 0 0 / 14px 14px,
             linear-gradient(0deg, var(--grid-note-line) 1px, transparent 1px) 0 0 / 14px 14px,
@@ -1530,6 +1574,45 @@ export default function App() {
           box-shadow: 0 10px 14px rgba(43,36,32,0.16);
           transform: rotate(var(--grid-note-rotate));
           pointer-events: none;
+        }
+        .project-grid-note-photo {
+          display: flex;
+          flex-direction: column;
+          gap: clamp(5px, 0.7vw, 8px);
+        }
+        .project-grid-note-link {
+          cursor: pointer;
+          pointer-events: auto;
+          text-decoration: none;
+        }
+        .project-grid-note-link:hover,
+        .project-grid-note-link:focus-visible {
+          box-shadow: 0 12px 16px rgba(43,36,32,0.22);
+        }
+        .project-grid-note-link:focus-visible {
+          outline: 3px solid rgba(237,227,156,0.95);
+          outline-offset: 4px;
+        }
+        .project-grid-note-image {
+          display: block;
+          width: 100%;
+          flex: 1;
+          min-height: 0;
+          object-fit: var(--grid-note-image-fit, cover);
+          background: #fbf7ea;
+          border: 1px solid rgba(54,47,34,0.22);
+          box-shadow: 1px 2px 0 rgba(43,36,32,0.12);
+        }
+        .project-grid-note-caption {
+          display: block;
+          flex: 0 0 auto;
+          color: #2B2420;
+          font-family: 'Caveat', cursive;
+          font-size: clamp(15px, 1.55vw, 22px);
+          font-weight: 700;
+          line-height: 1;
+          text-align: center;
+          text-shadow: 0 1px 0 rgba(255,255,255,0.45);
         }
         @keyframes projectPaperUnfile {
           0% {
@@ -1590,7 +1673,7 @@ export default function App() {
           font-size: 15px;
           line-height: 1.62;
           color: #2B2420;
-          margin: 0 var(--project-copy-right) 0 var(--project-copy-left);
+          margin: 0 var(--project-desc-right) 0 var(--project-desc-left);
           max-width: 630px;
         }
         .project-tags {
@@ -2342,7 +2425,7 @@ export default function App() {
             font-size: 9px;
           }
           .project-folder-label-blue {
-            top: -2%;
+            top: 0;
             left: 8%;
             width: 36%;
             height: 10%;
@@ -2431,7 +2514,7 @@ export default function App() {
           .experience-computer {
             width: min(820px, 198vw);
             max-width: none;
-            margin-top: 0;
+            margin-top: -26px;
           }
           .experience-computer-screen {
             grid-template-columns: 126px minmax(0, 1fr);
