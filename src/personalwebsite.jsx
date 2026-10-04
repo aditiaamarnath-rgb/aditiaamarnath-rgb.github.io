@@ -21,6 +21,11 @@ import projectFolderGreen from "./assets/project-folder-green.png";
 import projectFolderPink from "./assets/project-folder-pink.png";
 import projectFolderBeige from "./assets/project-folder-beige.png";
 import projectFolderBlue from "./assets/project-folder-blue.png";
+import experienceFolderGreen from "./assets/flat-folder-green.svg";
+import experienceFolderIndigo from "./assets/flat-folder-indigo.svg";
+import experienceFolderBlue from "./assets/flat-folder-blue.svg";
+import experienceFolderPurple from "./assets/flat-folder-purple.svg";
+import experienceFolderYellow from "./assets/flat-folder-yellow.svg";
 import vinylStarStickers from "./assets/vinyl-star-stickers-cutout.png";
 import vinylTrebleSticker from "./assets/vinyl-treble-sticker-cutout.png";
 import vinylButterflySticker from "./assets/vinyl-butterfly-sticker-cutout.png";
@@ -149,11 +154,12 @@ function PhotoCarousel() {
                             draggable="false"
                             style={{
                                 width: "100%",
-                                height: "100%",
+                                height: index === 0 ? "calc(100% + 2px)" : "100%",
                                 objectFit: "cover",
                                 borderRadius: 16,
                                 display: "block",
                                 pointerEvents: "none",
+                                transform: index === 0 ? "translateY(-1px)" : "none",
                             }}
                         />
                     </div>
@@ -599,13 +605,14 @@ function AboutSection() {
 
 function ExperienceSection() {
     const items = [
-        { folder: "HGS", year: "Summer 2026", title: "Cloud Analytics Intern", sub: "Built a React dashboard and reduced load time by 40%.", tags: ["React", "Analytics", "Dashboard"], color: "#b2bd8a", tabColor: "#758061" },
-        { folder: "Research", year: "Fall 2023", title: "Research Assistant", sub: "Supported an ML pipeline for NLP classification tasks.", tags: ["Python", "ML", "NLP"], color: "#9ba9e5", tabColor: "#6384ee" },
-        { folder: "TA", year: "Spring 2024", title: "Teaching Assistant", sub: "Led labs and office hours for Data Structures students.", tags: ["Java", "Teaching", "Data Structures"], color: "#9ccbe2", tabColor: "#56abd5" },
-        { folder: "Open Source", year: "Ongoing", title: "Open Source Contributor", sub: "Contributed across React, Python, and C projects on GitHub.", tags: ["Git", "React", "Python"], color: "#c894df", tabColor: "#bd70d9" },
-        { folder: "ACM", year: "2023 - Now", title: "ACM Student Chapter", sub: "Participates in the campus computer science community through technical events and collaboration.", tags: ["Community", "CS", "Events"], color: "#f0eda9", tabColor: "#d8d082" },
+        { folder: "HGS", year: "Summer 2026", title: "Cloud Analytics Intern", sub: "At Hinduja Group Services, I helped write the technical spec for Databridge, a financial data platform built natively on Microsoft Fabric. That meant working through the OneLake medallion architecture, the Direct Lake semantic layer, capacity tiering, and security, all tracked in a 17-item decision register. I also built a Power BI semantic model by flattening a parent-child employee hierarchy into a dimension table with a 7-relationship star schema, then added an EDA agent on top as an AI proof-of-concept.", color: "#b2bd8a", tabColor: "#758061", icon: experienceFolderGreen },
+        { folder: "Undergrad Research", year: "Fall 2026", title: "Research Assistant", sub: "As an Undergraduate Research Assistant in Prof. Andi Wang's lab in the Industrial Engineering department, I'm studying Gaussian processes, optimization, and probabilistic network models and how they apply to real engineering problems. Day to day, that means reading and summarizing research papers, implementing methods in Python and R to run experiments, and presenting my progress to Prof. Wang every week. I'm also part of the Undergraduate Research Scholars program, a year-long mentored research experience with weekly seminars.", color: "#9ba9e5", tabColor: "#6384ee", icon: experienceFolderIndigo },
+        { folder: "VP", year: "Fall 2022 - 2025", title: "Teaching Assistant", sub: "At Youth and Government in Naperville, I served as school-wide Vice President and state-wide Assistant Director of Lobbyists over four years. I drove the passage of bills on recidivism and gambling advertisements, both approved unanimously at the state level. I was also recognized as Most Effective Lobbyist at the 2023 statewide conference.", color: "#9ccbe2", tabColor: "#56abd5", icon: experienceFolderBlue },
+        { folder: "Volunteer", year: "2024 - 2025", title: "Main Desk & Central Supply Volunteer", sub: "At Rush Copley Medical Center, I volunteered at the main desk and in central supply for about a year, logging 96 hours. At the desk, I helped 50+ patients and visitors per shift with directions and questions in a fast-paced hospital environment. I also handled the weekly stocking and delivery of medical supplies across multiple departments.", color: "#c894df", tabColor: "#bd70d9", icon: experienceFolderPurple },
+        { folder: "Instructor", year: "2024 - Now", title: "Music & Dance Suite", sub: "At The Music and Dance Suite, I taught private piano lessons for two years, building customized lesson plans for 20+ students. I adapted my techniques for neurodiverse and nonverbal learners so every student could make progress in a way that worked for them. I also organized and led performance recitals, which boosted student involvement and kept students coming back.", color: "#f0eda9", tabColor: "#d8d082", icon: experienceFolderYellow },
     ];
     const [active, setActive] = useState(null);
+    const [experienceSlide, setExperienceSlide] = useState(0);
     const current = active === null ? null : items[active];
 
     return (
@@ -624,14 +631,17 @@ function ExperienceSection() {
                                 key={item.folder}
                                 type="button"
                                 className={`experience-screen-folder ${active === index ? "is-active" : ""}`}
-                                onClick={() => setActive(index)}
+                                onClick={() => {
+                                    setActive(index);
+                                    setExperienceSlide(0);
+                                }}
                                 aria-pressed={active === index}
                                 style={{
                                     "--folder-color": item.color,
                                     "--folder-tab-color": item.tabColor,
                                 }}
                             >
-                                <span className="experience-screen-folder-icon" aria-hidden="true" />
+                                <img className="experience-screen-folder-icon" src={item.icon} alt="" draggable="false" />
                                 <span className="experience-screen-folder-label">{item.folder}</span>
                             </button>
                         ))}
@@ -647,20 +657,67 @@ function ExperienceSection() {
                                 type="button"
                                 className="experience-file-close"
                                 aria-label="Close experience"
-                                onClick={() => setActive(null)}
+                                onClick={() => {
+                                    setActive(null);
+                                    setExperienceSlide(0);
+                                }}
                             >
                                 ×
                             </button>
-                            <div className="experience-file-meta">
-                                <span>{current.folder}</span>
-                                <span>{current.year}</span>
-                            </div>
-                            <h3>{current.title}</h3>
-                            <p>{current.sub}</p>
-                            <div className="experience-file-tags" aria-label={`${current.title} skills`}>
-                                {current.tags.map((tag) => (
-                                    <em key={tag}>{tag}</em>
-                                ))}
+                            {experienceSlide === 0 ? (
+                                <button
+                                    type="button"
+                                    className="experience-file-next"
+                                    aria-label="Show experience photos"
+                                    onClick={() => setExperienceSlide(1)}
+                                >
+                                    ›
+                                </button>
+                            ) : (
+                                <button
+                                    type="button"
+                                    className="experience-file-back"
+                                    aria-label="Show experience details"
+                                    onClick={() => setExperienceSlide(0)}
+                                >
+                                    ‹
+                                </button>
+                            )}
+                            <div className="experience-file-content">
+                                {experienceSlide === 0 ? (
+                                    <>
+                                        <div className="experience-file-header">
+                                            <span className="experience-file-folder">{current.folder}</span>
+                                            <div className="experience-file-title-row">
+                                                <h3>{current.title}</h3>
+                                                <span className="experience-file-year">{current.year}</span>
+                                            </div>
+                                        </div>
+                                        <p>{current.sub}</p>
+                                    </>
+                                ) : (
+                                    <div className="experience-photo-slide" aria-label={`${current.title} photos`}>
+                                        <div className="experience-photo-grid">
+                                            {(current.photos?.length ? current.photos : [null, null]).map((photo, photoIndex) => (
+                                                photo ? (
+                                                    <img
+                                                        key={photo.src}
+                                                        className="experience-photo-frame"
+                                                        src={photo.src}
+                                                        alt={photo.alt}
+                                                        draggable="false"
+                                                    />
+                                                ) : (
+                                                    <span
+                                                        key={`empty-photo-${photoIndex}`}
+                                                        className="experience-photo-placeholder"
+                                                        aria-hidden="true"
+                                                    />
+                                                )
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </article>
                     )}
@@ -683,7 +740,7 @@ function ProjectsSection() {
     const [active, setActive] = useState(DEFAULT_PROJECT_INDEX);
     const p = PROJECTS[active];
     const folderLayers = [
-        { projectIndex: 3, name: "blue", src: projectFolderBlue, alt: "", className: "project-folder-layer-blue", zIndex: 2, paperAccent: "#93a7bf", paperTilt: "-1.2deg", paperStartX: "-5%", paperStartY: "-30%", noteRight: "-10%", noteTop: "27%", noteRotate: "-5deg", noteAspect: "1.5", noteColor: "#c9d8ce", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(224px, 31vw, 400px)", noteMobileWidth: "172px", copyLeft: "0px", copyRight: "clamp(200px, 30vw, 408px)", descLeft: "0px", descRight: "clamp(170px, 24vw, 320px)", tagsLeft: "0px", tagsRight: "0px", tagsJustify: "space-between" },
+        { projectIndex: 3, name: "blue", src: projectFolderBlue, alt: "", className: "project-folder-layer-blue", zIndex: 2, paperAccent: "#93a7bf", paperTilt: "-1.2deg", paperStartX: "-5%", paperStartY: "-30%", noteRight: "-10%", noteTop: "23%", noteRotate: "-5deg", noteAspect: "1.5", noteColor: "#c9d8ce", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(224px, 31vw, 400px)", noteMobileWidth: "172px", copyLeft: "0px", copyRight: "clamp(200px, 30vw, 408px)", descLeft: "0px", descRight: "clamp(170px, 24vw, 320px)", tagsLeft: "0px", tagsRight: "0px", tagsJustify: "space-between" },
         { projectIndex: 2, name: "beige", src: projectFolderBeige, alt: "", className: "project-folder-layer-beige", zIndex: 3, paperAccent: "#d4c7a4", paperTilt: "1deg", paperStartX: "5%", paperStartY: "-20%", noteRight: "-4%", noteTop: "12%", noteRotate: "4deg", noteAspect: "0.82", noteColor: "#f2e4a5", noteLine: "transparent", noteWidth: "clamp(124px, 16vw, 176px)", noteMobileWidth: "96px", copyLeft: "0px", copyRight: "clamp(108px, 15vw, 164px)", descLeft: "clamp(10px, 1.5vw, 18px)", tagsLeft: "0px", tagsRight: "0px" },
         { projectIndex: 1, name: "pink", src: projectFolderPink, alt: "", className: "project-folder-layer-pink", zIndex: 4, paperAccent: "#c69bad", paperTilt: "-0.6deg", paperStartX: "2%", paperStartY: "-10%", noteRight: "72%", noteTop: "43%", noteRotate: "-7deg", noteAspect: "1.16", noteColor: "#eadc8f", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(184px, 23vw, 270px)", noteMobileWidth: "142px", copyLeft: "clamp(84px, 12vw, 150px)", copyRight: "0px", tagsLeft: "clamp(132px, 18vw, 220px)", tagsRight: "0px" },
         { projectIndex: 0, name: "green", src: projectFolderGreen, alt: "", className: "project-folder-layer-green", zIndex: 5, paperAccent: "#8ca07d", paperTilt: "0.8deg", paperStartX: "-4%", paperStartY: "8%", noteRight: "-11%", noteTop: "31%", noteRotate: "-6deg", noteAspect: "1.14", noteColor: "#c9d8ce", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(196px, 25vw, 292px)", noteMobileWidth: "154px", copyLeft: "0px", copyRight: "clamp(180px, 25vw, 302px)", tagsLeft: "0px", tagsRight: "clamp(180px, 25vw, 302px)" },
@@ -1123,7 +1180,7 @@ export default function App() {
           border-radius: 6px;
           padding: 5px 4px 4px;
           color: #202832;
-          background: rgba(255,255,255,0.12);
+          background: transparent;
           cursor: pointer;
           display: flex;
           flex-direction: column;
@@ -1139,8 +1196,8 @@ export default function App() {
         .experience-screen-folder:hover,
         .experience-screen-folder:focus-visible,
         .experience-screen-folder.is-active {
-          background: rgba(255,255,255,0.36);
-          box-shadow: inset 0 0 0 2px rgba(54,47,34,0.12);
+          background: rgba(255,255,255,0.24);
+          box-shadow: none;
           filter: brightness(1.03);
           transform: translateY(-3px);
         }
@@ -1149,30 +1206,13 @@ export default function App() {
           outline-offset: 2px;
         }
         .experience-screen-folder-icon {
-          position: relative;
-          width: clamp(44px, 5.2vw, 66px);
-          height: clamp(32px, 3.8vw, 48px);
-          margin-top: 8px;
-          border: 2px solid #362F22;
-          border-radius: 5px;
-          background-color: var(--folder-color);
-          background-image:
-            repeating-linear-gradient(90deg, rgba(54,47,34,0.07) 0 1px, transparent 1px 8px),
-            linear-gradient(145deg, rgba(255,255,255,0.26), rgba(43,36,32,0.04));
-          box-shadow: 4px 5px 0 rgba(0,0,0,0.16);
-        }
-        .experience-screen-folder-icon::before {
-          content: "";
-          position: absolute;
-          left: -2px;
-          top: -13px;
-          width: 34px;
-          height: 14px;
-          border: 2px solid #362F22;
-          border-bottom: 0;
-          border-radius: 5px 5px 0 0;
-          background-color: var(--folder-tab-color);
-          background-image: linear-gradient(145deg, rgba(255,255,255,0.24), rgba(43,36,32,0.04));
+          display: block;
+          width: clamp(56px, 6.8vw, 82px);
+          height: auto;
+          margin-top: 4px;
+          filter: drop-shadow(3px 4px 0 rgba(0,0,0,0.14));
+          pointer-events: none;
+          user-select: none;
         }
         .experience-screen-folder-label {
           max-width: 100%;
@@ -1241,14 +1281,87 @@ export default function App() {
           outline: 2px solid rgba(185,125,123,0.82);
           outline-offset: 2px;
         }
-        .experience-file-meta {
+        .experience-file-next,
+        .experience-file-back {
+          position: absolute;
+          top: 50%;
+          z-index: 3;
+          width: 34px;
+          height: 42px;
+          border: 2px solid rgba(54,47,34,0.54);
+          border-radius: 999px;
+          display: grid;
+          place-items: center;
+          color: #362F22;
+          background: color-mix(in srgb, var(--window-accent) 34%, #fff8ea);
+          box-shadow: 2px 3px 0 rgba(0,0,0,0.14);
+          cursor: pointer;
+          font-family: 'Nunito', sans-serif;
+          font-size: 27px;
+          font-weight: 900;
+          line-height: 1;
+          transform: translateY(-50%);
+          transition: filter 160ms ease, transform 160ms ease;
+        }
+        .experience-file-next {
+          right: 10px;
+        }
+        .experience-file-back {
+          left: 10px;
+        }
+        .experience-file-next:hover,
+        .experience-file-next:focus-visible,
+        .experience-file-back:hover,
+        .experience-file-back:focus-visible {
+          filter: brightness(1.05);
+        }
+        .experience-file-next:hover,
+        .experience-file-next:focus-visible {
+          transform: translateY(-50%) translateX(1px);
+        }
+        .experience-file-back:hover,
+        .experience-file-back:focus-visible {
+          transform: translateY(-50%) translateX(-1px);
+        }
+        .experience-file-next:focus-visible,
+        .experience-file-back:focus-visible {
+          outline: 2px solid rgba(185,125,123,0.82);
+          outline-offset: 3px;
+        }
+        .experience-file-content {
+          flex: 1;
+          min-height: 0;
+          overflow-y: auto;
+          padding-right: 6px;
+          scrollbar-width: thin;
+          scrollbar-color: rgba(54,47,34,0.38) transparent;
+        }
+        .experience-file-content::-webkit-scrollbar {
+          width: 7px;
+        }
+        .experience-file-content::-webkit-scrollbar-thumb {
+          background: rgba(54,47,34,0.34);
+          border-radius: 999px;
+        }
+        .experience-file-content::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .experience-file-header {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 8px;
+          margin: 5px 36px 10px 0;
+        }
+        .experience-file-title-row {
+          width: 100%;
           display: flex;
           align-items: center;
-          flex-wrap: wrap;
-          gap: 8px;
-          margin: 12px 34px 12px 0;
+          justify-content: space-between;
+          gap: 14px;
         }
-        .experience-file-meta span {
+        .experience-file-folder,
+        .experience-file-year {
           display: inline-flex;
           padding: 5px 8px;
           color: #362F22;
@@ -1262,8 +1375,13 @@ export default function App() {
           line-height: 1;
           text-transform: uppercase;
         }
-        .experience-file-meta span:first-child {
+        .experience-file-folder {
           background: color-mix(in srgb, var(--window-accent) 44%, #fff8ea);
+        }
+        .experience-file-year {
+          flex: 0 0 auto;
+          background: rgba(255,255,255,0.56);
+          transform: rotate(1deg);
         }
         @keyframes experienceWindowOpen {
           0% {
@@ -1275,14 +1393,15 @@ export default function App() {
             transform: translateY(0) scale(1);
           }
         }
-        .experience-file-window h3 {
-          margin: 0 0 8px;
+        .experience-file-title-row h3 {
+          margin: 0;
           color: #362F22;
           font-family: 'Playfair Display', serif;
-          font-size: clamp(18px, 2.25vw, 29px);
+          font-size: clamp(19px, 2.3vw, 30px);
           font-weight: 900;
           line-height: 1.08;
           letter-spacing: 0;
+          min-width: 0;
         }
         .experience-file-window p {
           max-width: 560px;
@@ -1291,26 +1410,33 @@ export default function App() {
           font-size: clamp(12px, 1.2vw, 15px);
           line-height: 1.5;
           margin: 0;
+          padding-right: 32px;
         }
-        .experience-file-tags {
+        .experience-photo-slide {
+          flex: 1;
+          min-height: 0;
           display: flex;
-          flex-wrap: wrap;
-          margin-top: auto;
-          padding-top: clamp(18px, 2vw, 28px);
-          gap: 8px;
+          align-items: center;
+          padding: clamp(14px, 2vw, 22px) 38px clamp(6px, 1vw, 10px) 0;
         }
-        .experience-file-tags em {
-          color: #362F22;
-          background: rgba(255,255,255,0.5);
-          border: 2px solid rgba(54,47,34,0.46);
-          border-radius: 4px;
-          font-family: 'Nunito', sans-serif;
-          font-size: clamp(10px, 0.95vw, 12px);
-          font-weight: 900;
-          font-style: normal;
-          line-height: 1;
-          letter-spacing: 0;
-          padding: 6px 8px;
+        .experience-photo-grid {
+          width: 100%;
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: clamp(10px, 1.3vw, 16px);
+        }
+        .experience-photo-frame,
+        .experience-photo-placeholder {
+          display: block;
+          width: 100%;
+          aspect-ratio: 4 / 3;
+          border: 2px solid rgba(54,47,34,0.48);
+          border-radius: 5px;
+          background:
+            linear-gradient(135deg, rgba(255,255,255,0.62), rgba(43,36,32,0.04)),
+            color-mix(in srgb, var(--window-accent) 18%, #fff8ea);
+          box-shadow: 3px 4px 0 rgba(0,0,0,0.12);
+          object-fit: cover;
         }
         .projects-shell {
           max-width: 1220px;
@@ -2503,14 +2629,9 @@ export default function App() {
             padding: 3px 2px;
           }
           .experience-screen-folder-icon {
-            width: 42px;
-            height: 30px;
-            margin-top: 6px;
-          }
-          .experience-screen-folder-icon::before {
-            top: -10px;
-            width: 27px;
-            height: 11px;
+            width: 58px;
+            height: auto;
+            margin-top: 4px;
           }
           .experience-screen-folder-label {
             font-size: 9px;
@@ -2534,30 +2655,53 @@ export default function App() {
             border-width: 1.5px;
             font-size: 14px;
           }
-          .experience-file-meta {
-            gap: 5px;
-            margin: 8px 30px 8px 0;
+          .experience-file-next,
+          .experience-file-back {
+            width: 26px;
+            height: 32px;
+            border-width: 1.5px;
+            font-size: 21px;
           }
-          .experience-file-meta span {
+          .experience-file-next {
+            right: 7px;
+          }
+          .experience-file-back {
+            left: 7px;
+          }
+          .experience-file-content {
+            padding-right: 4px;
+          }
+          .experience-file-header {
+            gap: 5px;
+            margin: 4px 30px 7px 0;
+          }
+          .experience-file-title-row {
+            gap: 7px;
+          }
+          .experience-file-folder,
+          .experience-file-year {
             padding: 4px 5px;
             font-size: 9px;
             border-width: 1.5px;
           }
-          .experience-file-window h3 {
+          .experience-file-title-row h3 {
             font-size: 16px;
           }
           .experience-file-window p {
             font-size: 10px;
             line-height: 1.36;
+            padding-right: 24px;
           }
-          .experience-file-tags {
-            gap: 5px;
-            padding-top: 10px;
+          .experience-photo-slide {
+            padding: 9px 28px 3px 0;
           }
-          .experience-file-tags em {
-            font-size: 9px;
-            padding: 4px 5px;
+          .experience-photo-grid {
+            gap: 7px;
+          }
+          .experience-photo-frame,
+          .experience-photo-placeholder {
             border-width: 1.5px;
+            border-radius: 4px;
           }
         }
         @media (prefers-reduced-motion: reduce) {
