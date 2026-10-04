@@ -15,6 +15,7 @@ import headphonesSticker from "./assets/headphones-sticker.png";
 import nailPolishSticker from "./assets/nail-polish-sticker-cutout.png";
 import bluprintProjectPreview from "./assets/bluprint-postit-preview.png";
 import databridgePostitPreview from "./assets/databridge-postit-preview.png";
+import interdisciplinaryPostitPreview from "./assets/interdisciplinary-postit-preview.png";
 import wavelengthPostitPreview from "./assets/wavelength-postit-preview.png";
 import projectFolderGreen from "./assets/project-folder-green.png";
 import projectFolderPink from "./assets/project-folder-pink.png";
@@ -673,8 +674,8 @@ function ExperienceSection() {
 const PROJECTS = [
     { tab: "Bluprint", badge: "Personalized Interior Decorator", title: "Bluprint", desc: "A room design website that takes user's style preferences and generates furniture recommendations. Includes a customizable diagram of room, visual representation of items recommended, and dashboard to view all decorated rooms.", tags: ["React","Node.js","MongoDB"], year: "2024", emoji: "🐚", image: bluprintProjectPreview, noteCaption: "click here for link^", projectUrl: "https://bluprint-iroq.onrender.com/", color: C.fresh, ink: C.ink, descColor: C.ink },
     { tab: "Databridge", badge: "Financial Ontology Platform", title: "Databridge", desc: "Detailed a technical specification for HGS internship: Microsoft Fabric-native financial data platform, defining the OneLake medallion architecture, Direct Lake semantic layer, capacity tiering, and security requirements across a 17-item decision register.\n", tags: ["Java","Javascript","HTML","Canvas API"], year: "2026", emoji: "🗺️", image: databridgePostitPreview, noteCaption: "final presentation day!!", color: C.yellow, ink: C.ink, descColor: C.ink },
-    { tab: "Tech and Humanity", badge: "Interdisciplinary Project", title: "Technology vs. Human Experiences", desc: "Interactive presentation detailing research study on whether technology/AI is replacing traditionally and evolutionarily human traits and experiences.", tags: ["TypeScript","Node.js","WebSockets","OT"], year: "2024", emoji: "📝", color: C.softpink, ink: C.ink, descColor: C.ink },
-    { tab: "Wavelength", badge: "Personal Symptom Log", title: "Wavelength", desc: "A symptom-tracking website that lets users log physical and mental symptoms by text or voice. Includes graphs of recurring symptoms over time, a calendar of past entries, AI-generated summaries, and a PDF brief to bring to doctor's appointments.", tags: ["Python","ML","Chrome Extension","Flask"], year: "2023", emoji: "🔍", image: wavelengthPostitPreview, noteCaption: "click below for link :)", noteCaptionPosition: "top", noteImageFit: "contain", color: C.azeitona, ink: C.ink, descColor: C.ink },
+    { tab: "Tech and Humanity", badge: "Interdisciplinary Project", title: "Technology vs. Human Experiences", desc: "Interactive presentation detailing research study on whether technology/AI is replacing traditionally and evolutionarily human traits and experiences. Throughout this project, I use a psychological study CASA(Computers Are Social Actors), curiosity experiments, and popular media like WALL-E to examine how humans may become emotionally and behaviorally dependent on technology. \n", tags: ["TypeScript","Node.js","WebSockets","OT"], year: "2024", emoji: "📝", image: interdisciplinaryPostitPreview, noteCaption: "click to visit:", projectUrl: "https://prezi.com/p/1snxsaer21hu/?present=1", noteImageFit: "contain", color: C.softpink, ink: C.ink, descColor: C.ink },
+    { tab: "Wavelength", badge: "Personal Symptom Log", title: "Wavelength", desc: "A symptom-tracking website that lets users log physical and mental symptoms by text or voice. Includes graphs of recurring symptoms over time, a calendar of past entries, AI-generated summaries, and a PDF brief to bring to doctor's appointments.", tags: ["Python","ML","Chrome Extension","Flask"], year: "2023", emoji: "🔍", image: wavelengthPostitPreview, noteCaption: "click below for link :)", noteCaptionPosition: "top", projectUrl: "https://wavelength-two-flame.vercel.app/", noteImageFit: "contain", color: C.azeitona, ink: C.ink, descColor: C.ink },
 ];
 const DEFAULT_PROJECT_INDEX = 0;
 
@@ -682,8 +683,8 @@ function ProjectsSection() {
     const [active, setActive] = useState(DEFAULT_PROJECT_INDEX);
     const p = PROJECTS[active];
     const folderLayers = [
-        { projectIndex: 3, name: "blue", src: projectFolderBlue, alt: "", className: "project-folder-layer-blue", zIndex: 2, paperAccent: "#93a7bf", paperTilt: "-1.2deg", paperStartX: "-5%", paperStartY: "-30%", noteRight: "-10%", noteTop: "27%", noteRotate: "-5deg", noteAspect: "1.5", noteColor: "#c9d8ce", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(224px, 31vw, 400px)", noteMobileWidth: "172px", copyLeft: "0px", copyRight: "clamp(200px, 30vw, 408px)", descLeft: "0px", descRight: "clamp(170px, 24vw, 320px)", tagsLeft: "0px", tagsRight: "clamp(200px, 30vw, 408px)" },
-        { projectIndex: 2, name: "beige", src: projectFolderBeige, alt: "", className: "project-folder-layer-beige", zIndex: 3, paperAccent: "#d4c7a4", paperTilt: "1deg", paperStartX: "5%", paperStartY: "-20%", noteRight: "-4%", noteTop: "12%", noteRotate: "4deg", noteAspect: "0.82", noteColor: "#f2e4a5", noteLine: "transparent", noteWidth: "clamp(124px, 16vw, 176px)", noteMobileWidth: "96px", copyLeft: "0px", copyRight: "clamp(108px, 15vw, 164px)", tagsLeft: "0px", tagsRight: "0px" },
+        { projectIndex: 3, name: "blue", src: projectFolderBlue, alt: "", className: "project-folder-layer-blue", zIndex: 2, paperAccent: "#93a7bf", paperTilt: "-1.2deg", paperStartX: "-5%", paperStartY: "-30%", noteRight: "-10%", noteTop: "27%", noteRotate: "-5deg", noteAspect: "1.5", noteColor: "#c9d8ce", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(224px, 31vw, 400px)", noteMobileWidth: "172px", copyLeft: "0px", copyRight: "clamp(200px, 30vw, 408px)", descLeft: "0px", descRight: "clamp(170px, 24vw, 320px)", tagsLeft: "0px", tagsRight: "0px", tagsJustify: "space-between" },
+        { projectIndex: 2, name: "beige", src: projectFolderBeige, alt: "", className: "project-folder-layer-beige", zIndex: 3, paperAccent: "#d4c7a4", paperTilt: "1deg", paperStartX: "5%", paperStartY: "-20%", noteRight: "-4%", noteTop: "12%", noteRotate: "4deg", noteAspect: "0.82", noteColor: "#f2e4a5", noteLine: "transparent", noteWidth: "clamp(124px, 16vw, 176px)", noteMobileWidth: "96px", copyLeft: "0px", copyRight: "clamp(108px, 15vw, 164px)", descLeft: "clamp(10px, 1.5vw, 18px)", tagsLeft: "0px", tagsRight: "0px" },
         { projectIndex: 1, name: "pink", src: projectFolderPink, alt: "", className: "project-folder-layer-pink", zIndex: 4, paperAccent: "#c69bad", paperTilt: "-0.6deg", paperStartX: "2%", paperStartY: "-10%", noteRight: "72%", noteTop: "43%", noteRotate: "-7deg", noteAspect: "1.16", noteColor: "#eadc8f", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(184px, 23vw, 270px)", noteMobileWidth: "142px", copyLeft: "clamp(84px, 12vw, 150px)", copyRight: "0px", tagsLeft: "clamp(132px, 18vw, 220px)", tagsRight: "0px" },
         { projectIndex: 0, name: "green", src: projectFolderGreen, alt: "", className: "project-folder-layer-green", zIndex: 5, paperAccent: "#8ca07d", paperTilt: "0.8deg", paperStartX: "-4%", paperStartY: "8%", noteRight: "-11%", noteTop: "31%", noteRotate: "-6deg", noteAspect: "1.14", noteColor: "#c9d8ce", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(196px, 25vw, 292px)", noteMobileWidth: "154px", copyLeft: "0px", copyRight: "clamp(180px, 25vw, 302px)", tagsLeft: "0px", tagsRight: "clamp(180px, 25vw, 302px)" },
     ];
@@ -760,6 +761,7 @@ function ProjectsSection() {
                             "--project-desc-right": activeFolderLayer.descRight ?? activeFolderLayer.copyRight,
                             "--project-tags-left": activeFolderLayer.tagsLeft,
                             "--project-tags-right": activeFolderLayer.tagsRight,
+                            "--project-tags-justify": activeFolderLayer.tagsJustify ?? "flex-start",
                             "--grid-note-image-fit": p.noteImageFit ?? "cover",
                         }}
                     >
@@ -796,7 +798,6 @@ function ProjectsSection() {
                         ) : (
                             <span className="project-grid-note" aria-hidden="true" />
                         )}
-                        <span className="project-paperclip" aria-hidden="true" />
                         <div className="project-paper-folder-name" aria-hidden="true">
                             <span>{p.badge}</span>
                         </div>
@@ -1476,9 +1477,6 @@ export default function App() {
         .project-file-paper .project-grid-note {
           animation-delay: 280ms;
         }
-        .project-file-paper .project-paperclip {
-          animation-delay: 290ms;
-        }
         .project-file-paper .project-paper-folder-name {
           animation-delay: 310ms;
         }
@@ -1506,31 +1504,6 @@ export default function App() {
         }
         .project-file-paper .project-skill-sticker:nth-child(4) {
           animation-delay: 590ms;
-        }
-        .project-paperclip {
-          position: absolute;
-          top: clamp(-12px, -1.1vw, -8px);
-          right: clamp(44px, 6vw, 74px);
-          z-index: 5;
-          width: clamp(24px, 3vw, 34px);
-          height: clamp(42px, 5.4vw, 58px);
-          border: 3px solid #9d8b62;
-          border-bottom-color: transparent;
-          border-radius: 999px 999px 0 0;
-          transform: rotate(10deg);
-          box-shadow: 1px 2px 0 rgba(54,47,34,0.18);
-          pointer-events: none;
-        }
-        .project-paperclip::after {
-          content: "";
-          position: absolute;
-          left: 5px;
-          top: 7px;
-          width: 12px;
-          height: 33px;
-          border: 2px solid #9d8b62;
-          border-bottom-color: transparent;
-          border-radius: 999px 999px 0 0;
         }
         .project-paper-folder-name {
           display: flex;
@@ -1679,6 +1652,7 @@ export default function App() {
         .project-tags {
           display: flex;
           flex-wrap: wrap;
+          justify-content: var(--project-tags-justify);
           gap: 10px;
           max-width: calc(100% - var(--project-tags-left) - var(--project-tags-right));
           margin-top: auto;
