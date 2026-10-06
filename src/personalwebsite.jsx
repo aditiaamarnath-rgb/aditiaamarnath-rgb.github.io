@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import { Mascot } from "page-mascot";
 import aboutCorkboard from "./assets/about-corkboard.png";
 import experienceComputer from "./assets/experience-computer.png";
 import carouselSlide3 from "./assets/carousel-slide-1.jpg";
@@ -338,12 +339,23 @@ function HeroSection() {
                     <div style={{ display: "inline-block", background: C.accent, color: C.bg, fontFamily: "'Nunito', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", padding: "5px 14px", borderRadius: 2, marginBottom: 20 }}>
                         CS and Statistics Major · Class of 2029
                     </div>
-                    <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(56px,9vw,100px)", fontWeight: 900, color: C.lightText, lineHeight: 0.95, letterSpacing: "-0.03em", margin: "0 0 6px" }}>
-                        Hello,
-                    </h1>
-                    <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(56px,9vw,100px)", fontWeight: 900, color: C.rose, lineHeight: 0.95, letterSpacing: "-0.03em", margin: "0 0 32px" }}>
-                        I'm Aditi!
-                    </h1>
+                    <div className="hero-greeting">
+                        <Mascot
+                            className="hero-mascot"
+                            directions={`${import.meta.env.BASE_URL}mascots/aditi-cool-directions.webp`}
+                            reactions={`${import.meta.env.BASE_URL}mascots/aditi-cool-reactions.webp`}
+                            size={260}
+                            label="Aditi's mascot"
+                        />
+                        <div>
+                            <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(56px,9vw,100px)", fontWeight: 900, color: C.lightText, lineHeight: 0.95, letterSpacing: "-0.03em", margin: "0 0 6px" }}>
+                                Hello,
+                            </h1>
+                            <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(56px,9vw,100px)", fontWeight: 900, color: C.rose, lineHeight: 0.95, letterSpacing: "-0.03em", margin: 0 }}>
+                                I'm Aditi!
+                            </h1>
+                        </div>
+                    </div>
 
                     {/* about blurb as post-it */}
                     <div style={{ position: "relative", display: "inline-block", maxWidth: 420, transform: "rotate(-1deg)" }}>

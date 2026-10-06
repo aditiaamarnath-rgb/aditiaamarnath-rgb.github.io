@@ -16,3 +16,22 @@ body {
   margin: 0;
   background: #0b1509;
 }
+
+.hero-greeting {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+.hero-mascot {
+  order: 1;
+  width: clamp(160px, 16vw, 230px) !important;
+  height: clamp(160px, 16vw, 230px) !important;
+}
+
+@media (max-width: 1100px) {
+  .hero-greeting {
+    flex-wrap: wrap;
+  }
+}
