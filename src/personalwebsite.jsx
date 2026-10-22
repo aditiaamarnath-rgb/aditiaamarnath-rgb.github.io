@@ -4,6 +4,7 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Mascot } from "page-mascot";
 import FoldText from "./components/FoldText";
 import PaperCrumple from "./components/PaperCrumple";
+import SketchbookSection from "./components/SketchbookSection";
 import arrayRegularFont from "../fonts/Array-Regular.otf";
 import bikeSticker from "./assets/bike-sticker.png";
 import cameraSticker from "./assets/camera-sticker.png";
@@ -2799,6 +2800,7 @@ export default function App() {
                 <ExperienceSection />
                 <ProjectsSection />
                 <ContactSection />
+                <SketchbookSection />
 
             </div>
         </>
