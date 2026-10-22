@@ -1,0 +1,76 @@
+{
+  "sourceSha256": "02fb90a3c7e2372999409db76f39e7c38cc0cfee96a9a6e44d2f995bd10dcf3c",
+  "sourceSize": [
+    1640,
+    2360
+  ],
+  "method": "Direct crop and background alpha mask; original RGB and color profile retained; no resampling.",
+  "images": {
+    "camera": {
+      "size": [
+        863,
+        789
+      ],
+      "sourceOrigin": [
+        59,
+        73
+      ],
+      "originalPixelsVerified": true
+    },
+    "polish": {
+      "size": [
+        323,
+        539
+      ],
+      "sourceOrigin": [
+        1158,
+        24
+      ],
+      "originalPixelsVerified": true
+    },
+    "button": {
+      "size": [
+        311,
+        301
+      ],
+      "sourceOrigin": [
+        63,
+        906
+      ],
+      "originalPixelsVerified": true
+    },
+    "paint": {
+      "size": [
+        546,
+        835
+      ],
+      "sourceOrigin": [
+        37,
+        1271
+      ],
+      "originalPixelsVerified": true
+    },
+    "star": {
+      "size": [
+        336,
+        358
+      ],
+      "sourceOrigin": [
+        538,
+        1311
+      ],
+      "originalPixelsVerified": true
+    },
+    "headphones": {
+      "size": [
+        919,
+        958
+      ],
+      "sourceOrigin": [
+        678,
+        1369
+      ],
+      "originalPixelsVerified": true
+    }
+  }
+}

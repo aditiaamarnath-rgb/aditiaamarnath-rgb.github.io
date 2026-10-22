@@ -7,10 +7,12 @@ import PaperCrumple from "./components/PaperCrumple";
 import SketchbookSection from "./components/SketchbookSection";
 import arrayRegularFont from "../fonts/Array-Regular.otf";
 import bikeSticker from "./assets/bike-sticker.png";
-import cameraSticker from "./assets/camera-sticker.png";
-import paintSticker from "./assets/paint-sticker.png";
-import headphonesSticker from "./assets/headphones-sticker.png";
-import nailPolishSticker from "./assets/nail-polish-sticker-cutout.png";
+import cameraSticker from "./assets/handdrawn-stickers/camera.png";
+import paintSticker from "./assets/handdrawn-stickers/paint.png";
+import headphonesSticker from "./assets/handdrawn-stickers/headphones.png";
+import nailPolishSticker from "./assets/handdrawn-stickers/polish.png";
+import buttonSticker from "./assets/handdrawn-stickers/button.png";
+import paperStarSticker from "./assets/handdrawn-stickers/star.png";
 import bluprintProjectPreview from "./assets/bluprint-postit-preview.png";
 import databridgePostitPreview from "./assets/databridge-postit-preview.png";
 import interdisciplinaryPostitPreview from "./assets/interdisciplinary-postit-preview.png";
@@ -153,31 +155,31 @@ function HeroStickers() {
         {
             id: "camera",
             src: cameraSticker,
-            alt: "Camera sticker",
+            alt: "Hand-drawn red camera with a beaded wrist strap sticker",
             label: "I like taking pictures of nature and little things. I also create videos of everyday pretty things.",
             x: 22,
             y: 22,
-            width: "clamp(124px, 11vw, 170px)",
+            width: "clamp(155px, 15vw, 220px)",
             rotate: "-5deg",
         },
         {
             id: "headphones",
             src: headphonesSticker,
-            alt: "Headphones sticker",
+            alt: "Hand-drawn pink headphones sticker",
             label: "My favorite genre is synth pop and RnB. My top artists currently are Tame Impala, the Marias, and Seventeen.",
             x: 68,
             y: 18,
-            width: "clamp(110px, 9.5vw, 148px)",
+            width: "clamp(126px, 12vw, 178px)",
             rotate: "8deg",
         },
         {
             id: "paint",
             src: paintSticker,
-            alt: "Paint brushes sticker",
+            alt: "Hand-drawn blue paint jar filled with brushes and a pencil sticker",
             label: "I love anything artistic, but especially painting with watercolor or gouache. My toxic trait is thinking I can DIY anything instead of buying it.",
             x: 80,
             y: 52,
-            width: "clamp(104px, 9vw, 144px)",
+            width: "clamp(100px, 9vw, 132px)",
             rotate: "4deg",
         },
         {
@@ -193,12 +195,30 @@ function HeroStickers() {
         {
             id: "polish",
             src: nailPolishSticker,
-            alt: "Nail polish sticker",
+            alt: "Hand-drawn purple nail polish bottle sticker",
             label: "I have been getting into doing my nails. I do my friends' nails and also create press-ons.",
             x: 62,
             y: 83,
-            width: "clamp(142px, 12vw, 194px)",
+            width: "clamp(68px, 6vw, 88px)",
             rotate: "4deg",
+        },
+        {
+            id: "button",
+            src: buttonSticker,
+            alt: "Hand-drawn green flower button sticker",
+            x: 10,
+            y: 39,
+            width: "clamp(58px, 5.5vw, 80px)",
+            rotate: "-12deg",
+        },
+        {
+            id: "paper-star",
+            src: paperStarSticker,
+            alt: "Hand-drawn blue folded paper star sticker",
+            x: 91,
+            y: 4,
+            width: "clamp(64px, 6vw, 88px)",
+            rotate: "15deg",
         },
     ];
     const [stickerPositions, setStickerPositions] = useState({});
@@ -297,7 +317,19 @@ function HeroStickers() {
 
     return (
                 <div className="about-draggable-sticker-layer hero-sticker-layer" ref={boardRef} aria-label="Draggable hobby stickers">
-
+                    <svg width="0" height="0" aria-hidden="true" style={{ position: "absolute" }}>
+                        <defs>
+                            <filter id="hero-sticker-cut-edge" x="-12%" y="-12%" width="124%" height="124%" colorInterpolationFilters="sRGB">
+                                <feMorphology in="SourceAlpha" operator="dilate" radius="4" result="edge" />
+                                <feFlood floodColor="white" result="white" />
+                                <feComposite in="white" in2="edge" operator="in" result="border" />
+                                <feMerge>
+                                    <feMergeNode in="border" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+                        </defs>
+                    </svg>
 
                     {hobbyStickers.map((sticker) => {
                         const position = stickerPositions[sticker.id];
@@ -306,7 +338,7 @@ function HeroStickers() {
                             <button
                                 key={sticker.id}
                                 type="button"
-                                className={`about-draggable-sticker ${draggingSticker === sticker.id ? "is-dragging" : ""}`}
+                                className={`about-draggable-sticker ${sticker.id !== "bike" ? "handdrawn-sticker" : ""} ${draggingSticker === sticker.id ? "is-dragging" : ""}`}
                                 aria-label={`Drag ${sticker.alt}`}
                                 onPointerDown={(event) => beginStickerDrag(event, sticker)}
                                 onPointerMove={moveSticker}
@@ -322,7 +354,7 @@ function HeroStickers() {
                                 }}
                             >
                                 <img src={sticker.src} alt="" draggable="false" />
-                                <span className="about-hobby-blurb">{sticker.label}</span>
+                                {sticker.label && <span className="about-hobby-blurb">{sticker.label}</span>}
                             </button>
                         );
                     })}
@@ -968,6 +1000,18 @@ export default function App() {
           pointer-events: none;
           user-select: none;
           filter: var(--white-sticker-border) drop-shadow(3px 5px 0 rgba(43,36,32,0.24));
+        }
+        .about-draggable-sticker.handdrawn-sticker img {
+          /* Original drawing pixels; the thin edge and shadow are CSS only. */
+          height: auto;
+          aspect-ratio: auto;
+          object-fit: contain;
+          filter: url(#hero-sticker-cut-edge) drop-shadow(1px 3px 2px rgba(43,36,32,0.18));
+        }
+        .about-draggable-sticker.handdrawn-sticker:hover,
+        .about-draggable-sticker.handdrawn-sticker:focus-visible,
+        .about-draggable-sticker.handdrawn-sticker.is-dragging {
+          filter: none;
         }
         .about-draggable-sticker:hover,
         .about-draggable-sticker:focus-visible {
