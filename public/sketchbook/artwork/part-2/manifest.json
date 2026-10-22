@@ -1,0 +1,231 @@
+{
+  "sourcePdf": "sketchbook pt2.pdf",
+  "sourceSha256": "b9766b3f9d433a6ce5a89d5214df6d9272bbaff12f4055d76d70ed19c8d9d399",
+  "pdfPages": 20,
+  "skippedPages": [],
+  "importedSketches": 20,
+  "pageSizeInches": {
+    "width": 8,
+    "height": 5
+  },
+  "display": {
+    "rotationDegrees": -90,
+    "fit": "cover",
+    "zoom": 1.015
+  },
+  "method": "Original JPEG streams copied byte-for-byte; no image generation or edits.",
+  "images": [
+    {
+      "pdfPage": 1,
+      "file": "page-01.jpg",
+      "width": 1209,
+      "height": 1858,
+      "sha256": "fc057ee12db9b1437ac43abf2c254183faa6e6f0547b13b1e30d022161b16df5",
+      "pdfImageObject": 5
+    },
+    {
+      "pdfPage": 2,
+      "file": "page-02.jpg",
+      "width": 1172,
+      "height": 1823,
+      "sha256": "dcf00821462b1f8baf5030789b1e500f48a6419f7a3ca6e72d4324387ff12b82",
+      "pdfImageObject": 11
+    },
+    {
+      "pdfPage": 3,
+      "file": "page-03.jpg",
+      "width": 1303,
+      "height": 2044,
+      "sha256": "dc5efa9f6446d9c84aa88dd2e775cd0f4a5597a0af406dc787fefbb89e5ff460",
+      "pdfImageObject": 15
+    },
+    {
+      "pdfPage": 4,
+      "file": "page-04.jpg",
+      "width": 1246,
+      "height": 1906,
+      "sha256": "ae80932bdf00642c50d6a89a452667031751a8beed378c75a2b9a10053e6d1f2",
+      "pdfImageObject": 19
+    },
+    {
+      "pdfPage": 5,
+      "file": "page-05.jpg",
+      "width": 1312,
+      "height": 2089,
+      "sha256": "3a8e5146fe66b09c3868f1f8f499b1bda01e47bcd2594a9d20b76e6368e584de",
+      "pdfImageObject": 23
+    },
+    {
+      "pdfPage": 6,
+      "file": "page-06.jpg",
+      "width": 1224,
+      "height": 1898,
+      "sha256": "71880405f4953199f64e6aabeee2f07aaa0719d3692e285bf04cf8b4d41b5a10",
+      "pdfImageObject": 27
+    },
+    {
+      "pdfPage": 7,
+      "file": "page-07.jpg",
+      "width": 1313,
+      "height": 1940,
+      "sha256": "12f5fba53257ce030eb2e660911621175954ba6673dc7c37f3f14d28bfa6e319",
+      "pdfImageObject": 31
+    },
+    {
+      "pdfPage": 8,
+      "file": "page-08.jpg",
+      "width": 1263,
+      "height": 1957,
+      "sha256": "c9d28b2607d32abc3ac75f620705b707cb942b59508dd6f43252a148c0732241",
+      "pdfImageObject": 35
+    },
+    {
+      "pdfPage": 9,
+      "file": "page-09.jpg",
+      "width": 1352,
+      "height": 2138,
+      "sha256": "93cb033f0e71f9213dc069bd6c4788878f24c5117b74a808f437b0d2ab335c6a",
+      "pdfImageObject": 40
+    },
+    {
+      "pdfPage": 10,
+      "file": "page-10.jpg",
+      "width": 1215,
+      "height": 1848,
+      "sha256": "86790ba1b7239d847795535b61853f2f88eb5806a5d398fe3b6f7d7fb56c5811",
+      "pdfImageObject": 44
+    },
+    {
+      "pdfPage": 11,
+      "file": "page-11.jpg",
+      "width": 1241,
+      "height": 1926,
+      "sha256": "1453fc272a05ad653f5ebceceecee4af9e15dff1a35c80f6742c0e7d11535f64",
+      "pdfImageObject": 48
+    },
+    {
+      "pdfPage": 12,
+      "file": "page-12.jpg",
+      "width": 1178,
+      "height": 1811,
+      "sha256": "9eaca228610146eefe35c63c46cfffc54e3ee6f28e9fb044026b12cf07c60c97",
+      "pdfImageObject": 52
+    },
+    {
+      "pdfPage": 13,
+      "file": "page-13.jpg",
+      "width": 1245,
+      "height": 1960,
+      "sha256": "61fc1516423bfbd5889807b1d13a044b294ccb92a3d83e3249077c4fd04cf22a",
+      "pdfImageObject": 56
+    },
+    {
+      "pdfPage": 14,
+      "file": "page-14.jpg",
+      "width": 1214,
+      "height": 1872,
+      "sha256": "4609d4d9d68a0cf5a40be57cfa68a53c0ee380371d908a23b2b859dbd665ea91",
+      "pdfImageObject": 60
+    },
+    {
+      "pdfPage": 15,
+      "file": "page-15.jpg",
+      "width": 1346,
+      "height": 2141,
+      "sha256": "57e87f60e98ec926e1c493aec968e861c2946faf493ae31d978b9e0475f6b627",
+      "pdfImageObject": 64
+    },
+    {
+      "pdfPage": 16,
+      "file": "page-16.jpg",
+      "width": 1248,
+      "height": 1955,
+      "sha256": "906930657c83966ab6b7b4a6c64a515ad172749852518c8e40ca4cf45dee28e1",
+      "pdfImageObject": 68
+    },
+    {
+      "pdfPage": 17,
+      "file": "page-17.jpg",
+      "width": 1273,
+      "height": 2016,
+      "sha256": "ee4b7972965cd723adfe7d5eb6835c915c169f84e186d5ecc7092ce9c10bde9d",
+      "pdfImageObject": 73
+    },
+    {
+      "pdfPage": 18,
+      "file": "page-18.jpg",
+      "width": 1250,
+      "height": 1945,
+      "sha256": "c5c817a5eb661a8ac6c996de18887807ce995208dc0cca9447f9668c334fe0cb",
+      "pdfImageObject": 77
+    },
+    {
+      "pdfPage": 19,
+      "file": "page-19.jpg",
+      "width": 1202,
+      "height": 1918,
+      "sha256": "cd24cabbaf64ab5b4739aa7ac8ebc7917de3c20e03c344a5e8a657b6bc2feedd",
+      "pdfImageObject": 81
+    },
+    {
+      "pdfPage": 20,
+      "file": "page-20.jpg",
+      "width": 1226,
+      "height": 1891,
+      "sha256": "6c92222dd86656903356bbf28d396257210c56aa5994be46fb36a0517a7019d2",
+      "pdfImageObject": 85
+    }
+  ],
+  "spreads": [
+    {
+      "file": "spread-01.webp",
+      "leftPdfPage": 1,
+      "rightPdfPage": 2
+    },
+    {
+      "file": "spread-02.webp",
+      "leftPdfPage": 3,
+      "rightPdfPage": 4
+    },
+    {
+      "file": "spread-03.webp",
+      "leftPdfPage": 5,
+      "rightPdfPage": 6
+    },
+    {
+      "file": "spread-04.webp",
+      "leftPdfPage": 7,
+      "rightPdfPage": 8
+    },
+    {
+      "file": "spread-05.webp",
+      "leftPdfPage": 9,
+      "rightPdfPage": 10
+    },
+    {
+      "file": "spread-06.webp",
+      "leftPdfPage": 11,
+      "rightPdfPage": 12
+    },
+    {
+      "file": "spread-07.webp",
+      "leftPdfPage": 13,
+      "rightPdfPage": 14
+    },
+    {
+      "file": "spread-08.webp",
+      "leftPdfPage": 15,
+      "rightPdfPage": 16
+    },
+    {
+      "file": "spread-09.webp",
+      "leftPdfPage": 17,
+      "rightPdfPage": 18
+    },
+    {
+      "file": "spread-10.webp",
+      "leftPdfPage": 19,
+      "rightPdfPage": 20
+    }
+  ]
+}

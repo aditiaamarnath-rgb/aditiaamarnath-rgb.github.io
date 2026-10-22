@@ -19,7 +19,7 @@ export default function SketchbookSection() {
         notifyVisibility();
       }
       if (event.data?.type === 'sketchbook-resize' && Number.isFinite(event.data.height)) {
-        setFrameHeight(Math.max(240, Math.ceil(event.data.height)));
+        setFrameHeight(Math.max(160, Math.ceil(event.data.height)));
       }
     };
     window.addEventListener('message', resizeFrame);
@@ -47,10 +47,6 @@ export default function SketchbookSection() {
         title="Aditi’s interactive sketchbook — drag or tap to turn pages"
         loading="lazy"
       />
-      <p className="portfolio-sketchbook-credit">
-        Sketchbook interaction adapted from{' '}
-        <a href="https://github.com/MengTo/sketchbook" target="_blank" rel="noreferrer">Meng To</a>.
-      </p>
     </section>
   );
 }

@@ -1,8 +1,7 @@
 .portfolio-sketchbook {
   padding: 80px 0 30px;
-  background: radial-gradient(ellipse at 8% 30%, #c7d1c329, transparent 48%),
-    radial-gradient(ellipse at 96% 65%, #caaeb51c, transparent 50%), #eee9df;
-  color: #362f22;
+  background: #212121;
+  color: #fff2d3;
 }
 
 .portfolio-sketchbook-heading {
@@ -15,36 +14,26 @@
 .portfolio-sketchbook-heading h2 {
   font: 400 clamp(32px, 4.5vw, 54px)/1.15 'Playfair Display', Georgia, serif;
   letter-spacing: -.035em;
+  color: #fff6df;
 }
 
 .portfolio-sketchbook-heading h2 span {
   margin-right: .15em;
   font-family: 'Caveat', cursive;
-  color: #806352;
+  color: #ffe1a1;
 }
 
 .portfolio-sketchbook-frame {
   display: block;
   width: 100%;
-  max-width: 1320px;
-  height: clamp(300px, calc(58vw + 30px), 760px);
-  margin: 0 auto 18px;
+  max-width: 1600px;
+  height: clamp(180px, calc(46vw + 30px), 540px);
+  margin: 0 auto;
   border: 0;
-}
-
-.portfolio-sketchbook-credit {
-  text-align: center;
-  font: 11px/1.6 'Nunito', sans-serif;
-  color: #6b685d;
-}
-
-.portfolio-sketchbook-credit a {
-  color: inherit;
-  text-underline-offset: 3px;
 }
 
 @media (max-width: 640px) {
   .portfolio-sketchbook { padding: 52px 0 24px; }
   .portfolio-sketchbook-heading { padding: 0 14px; }
-  .portfolio-sketchbook-frame { height: calc(71vw + 85px); }
+  .portfolio-sketchbook-frame { height: calc(46vw + 16px); }
 }

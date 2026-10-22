@@ -40,14 +40,18 @@ button{font:inherit}
   touch-action:pan-y;
 }
 .sb-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);
   flex:none;display:inline-flex;align-items:center;justify-content:center;padding:6px 2px;
   border:0;background:transparent;color:var(--ink-faint);cursor:pointer;transition:color .2s;
   -webkit-tap-highlight-color:transparent;z-index:8;
 }
 .sb-arrow:hover{color:var(--ink)}
+.sb-arrow.left{left:0}
+.sb-arrow.right{right:0}
 
 /* The book leans gently above the desk surface. */
 .sb-3d{
+  --pg:18.75%;
   position:relative;flex:1 1;min-width:0;max-width:900px;
   perspective:1750px;perspective-origin:50% 46%;
 }
@@ -57,7 +61,7 @@ button{font:inherit}
   transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));
   will-change:transform;
 }
-.sb-book{position:relative;width:100%;aspect-ratio:1760/1240;transform-style:preserve-3d;z-index:1}
+.sb-book{position:relative;width:100%;aspect-ratio:1760/800;transform-style:preserve-3d;z-index:1}
 
 /* The book sits on a surface, so its shadow is a soft pool underneath —
    no box, no filter on the artwork, nothing with an edge of its own.
@@ -155,10 +159,10 @@ button{font:inherit}
   opacity:calc(var(--shade,0) * var(--lit,1) * var(--lit,1) * .20);
 }
 
-.sb-zone{position:absolute;top:21.8%;bottom:21.8%;border:0;background:transparent;cursor:grab;z-index:60;-webkit-tap-highlight-color:transparent}
+.sb-zone{position:absolute;top:var(--pg);bottom:var(--pg);border:0;background:transparent;cursor:grab;z-index:60;-webkit-tap-highlight-color:transparent}
 .sb-zone:active{cursor:grabbing}
-.sb-prev{left:5.1%;width:44.9%}
-.sb-next{right:5.1%;width:44.9%}
+.sb-prev{left:4.5454545455%;width:45.4545454545%}
+.sb-next{right:4.5454545455%;width:45.4545454545%}
 .sb-captions{display:grid;justify-items:center}
 .sb-captions>*{grid-area:1/1;margin:0}
 .sb-caption{font-size:13px;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--ink-soft);
@@ -166,14 +170,9 @@ button{font:inherit}
 .sb-caption.live{animation:none}
 @keyframes sb-cap-in{0%{opacity:0}}
 @keyframes sb-cap-out{to{opacity:0}}
-.sb-hint{
-  margin:0;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);
-  transition:opacity .4s ease;
-}
-.sb-hint.gone{opacity:0}
 .sb-wrap.intro .sb-caption{animation:none}
 .sb-wrap.intro .sb-caption.cap-out{display:none}
-.sb-wrap.intro .sb-tilt{animation:sb-breeze 2.8s ease-in-out both}
+.sb-wrap.intro .sb-tilt{animation:sb-breeze var(--riffle-duration,2.05s) ease-in-out both}
 @keyframes sb-breeze{
   0%,100%{transform:rotateX(0deg) rotateY(0deg) translateY(0)}
   35%{transform:rotateX(1.5deg) rotateY(-1deg) translateY(-4px)}
@@ -186,7 +185,6 @@ button{font:inherit}
   .sb-arrow.left{left:2px}
   .sb-arrow.right{right:2px}
   .sb-3d{max-width:none}
-  .sb-hint{font-size:9.5px;letter-spacing:.1em;padding:0 16px;text-align:center}
 }
 
 /* ---------------- painted rules + sections ---------------- */
@@ -202,25 +200,28 @@ button{font:inherit}
   color:var(--ink-faint);margin:0 0 18px;
 }
 /* A continuous desk surface, with a book resting on it. */
-:root { --paper:#eee9df; --display:Georgia,serif; --font:Georgia,serif; }
+:root { --paper:#212121; --ink:#fff2d3; --ink-soft:#d5cdc1; --display:Georgia,serif; --font:Georgia,serif; }
 body { background:transparent; }
 .sb-wrap { gap:0; }
-.sb-stage { max-width:1240px; margin:-140px auto -96px; }
-.sb-3d { max-width:1160px; }
-.sb-arrow { padding:16px; color:#8c8375; }
-.sb-arrow:hover { color:#302d27; }
+.sb-stage {
+  max-width:1540px;
+  /* Compensate for the bitmap's transparent padding as the book grows. */
+  --book-growth:clamp(88px,calc(100vw - 1152px),288px);
+  margin:calc(-65px - var(--book-growth) * .0852272727) auto calc(-50px - var(--book-growth) * .0852272727);
+}
+.sb-3d { max-width:1440px; }
+.sb-arrow { padding:16px; color:#d5cdc1; }
+.sb-arrow:hover { color:#fff4dc; }
 .sb-arrow svg { width:12px; height:36px; }
 .sb-cast.ambient { filter:blur(28px); opacity:.4; }
 .sb-cast.contact { filter:blur(12px); opacity:.32; }
 .sb-cast.hair { opacity:.2; }
 .sb-captions { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
-.sb-hint { margin:0; color:#7b7468; font-size:12px; letter-spacing:.06em; text-transform:none; }
 button:focus-visible { outline:2px solid #596d85; outline-offset:5px; }
 @media(max-width:640px) {
- .sb-stage { margin:-42px auto -20px; }
+ .sb-stage { margin:-8px auto -8px; }
  .sb-arrow { padding:5px; }
  .sb-arrow svg { width:9px; height:28px; }
- .sb-hint { font-size:11px; }
 }
 </style>
 </head>
@@ -256,7 +257,6 @@ button:focus-visible { outline:2px solid #596d85; outline-offset:5px; }
         </button>
       </div>
       <div class="sb-captions" id="sbCaptions" aria-live="polite"></div>
-      <p class="sb-hint" id="sbHint">Drag a page to turn · or use the arrow keys</p>
     </div>
 
 
@@ -266,11 +266,11 @@ button:focus-visible { outline:2px solid #596d85; outline-offset:5px; }
 
 <!-- Page-turn adapted from https://github.com/MengTo/sketchbook -->
 <script type="module">
-import { pages as PAGES, createSpread } from "./pages.js";
+import { pages as PAGES, createSpread, bookGeometry } from "./pages.js";
 /* =====================================================================
    Meng To — sketchbook hero.
-   Spreads are transparent PNGs of an open sketchbook generated with
-   Higgsfield.  The leaf that turns is a real curved surface: a chain of
+   Spreads use the user's original PDF artwork on crisp 8 x 5 inch pages.
+   The leaf that turns is a real curved surface: a chain of
    nested strips whose tangent sweeps through an arc, so the page bends
    the way paper bends instead of pivoting like a flat door.
    ===================================================================== */
@@ -282,13 +282,11 @@ const stage=document.getElementById('sbStage');
 const sb3d=document.getElementById('sb3d');
 const book=document.getElementById('sbBook');
 const capBox=document.getElementById('sbCaptions');
-const hint=document.getElementById('sbHint');
-if(matchMedia('(pointer: coarse)').matches) hint.textContent='Tap either page or swipe to turn';
 const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ------------------------------------------------ the turning leaf */
 const N=18;            /* strips — enough for a smooth curve          */
-const SPAN=0.449;      /* gutter → outer page edge, as a fraction     */
+const SPAN=bookGeometry.pageWidth/bookGeometry.width;
 const BETA=0.60;       /* peak curl of the arc, radians              */
 let idx=0, turn=null;  /* turn = {dir, from, to, t}                   */
 let strips=[];         /* the chain, kept for per-frame lighting       */
@@ -487,7 +485,6 @@ addEventListener('blur',()=>setView(0,0));
 /* ------------------------------------------------------- pointer work */
 let drag=null;
 function bookRect(){return book.getBoundingClientRect()}
-function hideHint(){hint.classList.add('gone')}
 
 stage.addEventListener('pointerdown',e=>{
   if(e.button!==0)return;
@@ -497,7 +494,6 @@ stage.addEventListener('pointerdown',e=>{
   if(introOn)endIntro();
   e.preventDefault();
   stage.setPointerCapture(e.pointerId);
-  hideHint();
   const r=bookRect();
   const dir=(e.clientX-r.left)/r.width>0.5?'next':'prev';
   startTurn(dir,0);
@@ -564,7 +560,7 @@ addEventListener('keydown',e=>{
   if(e.metaKey||e.ctrlKey||e.altKey)return;
   const t=e.target;
   if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable))return;
-  e.preventDefault();hideHint();
+  e.preventDefault();
   step(e.key==='ArrowRight'?'next':'prev');
 });
 
@@ -585,24 +581,36 @@ function riffleStep(){
     idx=turn.to;turn=null;
     riffleAt++;
     if(introOn&&riffleAt<riffle.length){paint();riffleStep();}
-    else{endIntro();paint();}
+    else{endIntro();idx=LAND;paint();}
   });
 }
 function startIntro(){
   if(introPlayed||!document.body.dataset.ready)return;
   introPlayed=true;
   if(REDUCED||Q.has('nointro')||drag)return;
-  // Start with a quick gust, then ease steadily into the existing slow pace.
-  const steps=Math.min(9,Math.max(6,M*3));
+  // Fewer turns, with the same first and last speeds, 0.75s shorter overall.
+  const originalSteps=Math.min(9,Math.max(6,M*3));
+  const originalDuration=Array.from({length:originalSteps},(_,r)=>0.09+0.25*Math.pow(r/(originalSteps-1),1.25)).reduce((sum,d)=>sum+d,0);
+  const steps=Math.max(3,originalSteps-3);
+  const duration=Math.max(steps*0.09+0.251,originalDuration-0.75);
+  // Fit the slowdown curve to the shorter duration while retaining 90ms at
+  // the start and 340ms at the finish.
+  let low=0.1,high=32;
+  for(let i=0;i<24;i++){
+    const exponent=(low+high)/2;
+    const total=Array.from({length:steps},(_,r)=>0.09+0.25*Math.pow(r/(steps-1),exponent)).reduce((sum,d)=>sum+d,0);
+    if(total>duration)low=exponent;else high=exponent;
+  }
   riffle=[];
   for(let r=0;r<steps;r++){
     const bell=Math.sin(Math.PI*(r/(steps-1)));
     const progress=r/(steps-1);
-    riffle.push({bell:bell,dur:0.09+0.25*Math.pow(progress,1.25)});
+    riffle.push({bell:bell,dur:0.09+0.25*Math.pow(progress,high)});
   }
+  wrap.style.setProperty('--riffle-duration',duration+'s');
   riffleAt=0;introOn=true;wrap.classList.add('intro');
   riffleStep();
-  introTimer=setTimeout(()=>{endIntro();idx=LAND;paint();},3200);
+  introTimer=setTimeout(()=>{endIntro();idx=LAND;paint();},2450);
 }
 
 addEventListener('message',event=>{
