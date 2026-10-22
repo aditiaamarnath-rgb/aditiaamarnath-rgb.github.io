@@ -1,0 +1,14 @@
+name = "aditi-portfolio-contact"
+main = "worker.js"
+compatibility_date = "2026-10-17"
+
+[vars]
+ALLOWED_ORIGINS = "https://aditiaamarnath-rgb.github.io,http://localhost:5173,http://127.0.0.1:5173"
+CONTACT_TO = "aditi.amarnath@gmail.com"
+# Set CONTACT_FROM to an address on your Resend-verified domain before deploying.
+CONTACT_FROM = "Portfolio <onboarding@resend.dev>"
+
+[[ratelimits]]
+name = "CONTACT_RATE_LIMITER"
+namespace_id = "1001"
+simple = { limit = 3, period = 60 }

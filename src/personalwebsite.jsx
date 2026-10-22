@@ -1,13 +1,10 @@
+import { OrbitCardStack } from "./components/ui/orbit-card-stack";
 import { useState, useEffect, useRef } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
-import aboutCorkboard from "./assets/about-corkboard.png";
-import experienceComputer from "./assets/experience-computer.png";
-import carouselSlide3 from "./assets/carousel-slide-1.jpg";
-import carouselSlide4 from "./assets/carousel-slide-2.jpg";
-import carouselSlide2 from "./assets/carousel-slide-3.jpg";
-import carouselSlide5 from "./assets/carousel-slide-4.jpg";
-import carouselSlide6 from "./assets/carousel-slide-5.jpg";
-import carouselSlide1 from "./assets/carousel-slide-6.jpg";
+import { Mascot } from "page-mascot";
+import FoldText from "./components/FoldText";
+import PaperCrumple from "./components/PaperCrumple";
+import arrayRegularFont from "../fonts/Array-Regular.otf";
 import bikeSticker from "./assets/bike-sticker.png";
 import cameraSticker from "./assets/camera-sticker.png";
 import paintSticker from "./assets/paint-sticker.png";
@@ -21,11 +18,6 @@ import projectFolderGreen from "./assets/project-folder-green.png";
 import projectFolderPink from "./assets/project-folder-pink.png";
 import projectFolderBeige from "./assets/project-folder-beige.png";
 import projectFolderBlue from "./assets/project-folder-blue.png";
-import experienceFolderGreen from "./assets/flat-folder-green.svg";
-import experienceFolderIndigo from "./assets/flat-folder-indigo.svg";
-import experienceFolderBlue from "./assets/flat-folder-blue.svg";
-import experienceFolderPurple from "./assets/flat-folder-purple.svg";
-import experienceFolderYellow from "./assets/flat-folder-yellow.svg";
 import vinylStarStickers from "./assets/vinyl-star-stickers-cutout.png";
 import vinylTrebleSticker from "./assets/vinyl-treble-sticker-cutout.png";
 import vinylButterflySticker from "./assets/vinyl-butterfly-sticker-cutout.png";
@@ -35,13 +27,16 @@ import vinylAppleSticker from "./assets/vinyl-apple-sticker-cutout.png";
 import vinylSproutSticker from "./assets/vinyl-sprout-sticker-cutout.png";
 import vinylJellyfishSticker from "./assets/vinyl-jellyfish-sticker-cutout.png";
 import vinylRabbitStampSticker from "./assets/vinyl-rabbit-stamp-sticker-cutout.png";
+import aboutEducationNote from "./assets/about-original-0.png";
+import aboutHobbiesNote from "./assets/about-original-1.png";
+import aboutActivitiesNote from "./assets/about-original-2.png";
 
 function InjectFonts() {
     useEffect(() => {
         const link = document.createElement("link");
         link.rel = "stylesheet";
         link.href =
-            "https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Inter:wght@400;600;700&family=Nunito:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap";
+            "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;700&family=Caveat:wght@400;600;700&family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Inter:wght@400;600;700&family=Nunito:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap";
         document.head.appendChild(link);
     }, []);
     return null;
@@ -54,10 +49,10 @@ const C = {
     moss:      "#e9efe7",
     wood:      "#362F22",
     petrol:    "#809ba5",
-    bg:        "#141b20",
-    bgDeep:    "#141b20",
-    bgMid:     "#303d47",
-    cream:     "#303d47",
+    bg:        "#1c1c1c",
+    bgDeep:    "#1c1c1c",
+    bgMid:     "#f4f0e7",
+    cream:     "#f4f0e7",
     paper:     "#e6eaed",
     blush:     "#c0cab8",
     rose:      "#b97d7b",
@@ -70,335 +65,98 @@ const C = {
     softpink:  "#caaeb5",
 };
 
-const ABOUT = {
-    scrapInk: "#2B2420",
-    twine: "#8A6D4B",
-};
-
-const CAROUSEL_PHOTOS = [
-    carouselSlide1,
-    carouselSlide2,
-    carouselSlide3,
-    carouselSlide4,
-    carouselSlide5,
-    carouselSlide6,
-];
-
-function scrollTo(id) {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-}
-
 /* ── Section heading with diamond bullet ── */
-function SectionHeading({ children, light = false }) {
+function SectionHeading({ children, fontSize = "clamp(46px,5vw,76px)", marginBottom = 36 }) {
     return (
-        <div style={{ marginBottom: 36 }}>
-            <h2 style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: "clamp(32px,5vw,52px)",
-                fontWeight: 900,
-                color: light ? C.lightText : C.ink,
-                lineHeight: 1,
-                letterSpacing: "-0.02em",
+        <div style={{ marginBottom }}>
+            <h2 className="page-heading" style={{
+                fontSize,
+                color: C.ink,
                 margin: 0,
             }}>
-                <span style={{ color: C.accent, marginRight: 12 }}>✦</span>{children}
+                {children}
             </h2>
-            <div style={{ height: 4, width: 80, background: C.accent, marginTop: 10, borderRadius: 2 }} />
-        </div>
-    );
-}
-
-function PhotoCarousel() {
-    const [current, setCurrent] = useState(0);
-    const total = CAROUSEL_PHOTOS.length;
-
-    const goToSlide = (index) => {
-        setCurrent((index + total) % total);
-    };
-
-    const handleKeyDown = (event) => {
-        if (event.key === "ArrowLeft") goToSlide(current - 1);
-        if (event.key === "ArrowRight") goToSlide(current + 1);
-    };
-
-    return (
-        <div style={{
-            width: "min(560px, calc(100vw - 104px))",
-            aspectRatio: "1 / 1",
-            position: "relative",
-            overflow: "hidden",
-            borderRadius: 16,
-            flexShrink: 0,
-            boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
-            opacity: 1,
-        }}>
-            <div
-                tabIndex={0}
-                aria-label="Photo carousel"
-                onKeyDown={handleKeyDown}
-                style={{
-                    display: "flex",
-                    width: "100%",
-                    height: "100%",
-                    transform: `translateX(-${current * 100}%)`,
-                    transition: "transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-                    outline: "none",
-                }}
-            >
-                {CAROUSEL_PHOTOS.map((url, index) => (
-                    <div key={url} style={{ flex: "0 0 100%", width: "100%", height: "100%", position: "relative" }}>
-                        <img
-                            src={url}
-                            alt={`Aditi portfolio image ${index + 1}`}
-                            draggable="false"
-                            style={{
-                                width: "100%",
-                                height: index === 0 ? "calc(100% + 2px)" : "100%",
-                                objectFit: "cover",
-                                borderRadius: 16,
-                                display: "block",
-                                pointerEvents: "none",
-                                transform: index === 0 ? "translateY(-1px)" : "none",
-                            }}
-                        />
-                    </div>
-                ))}
-            </div>
-
-            <div style={{
-                position: "absolute",
-                bottom: 32,
-                left: 0,
-                right: 0,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 24,
-            }}>
-                <button
-                    type="button"
-                    onClick={() => goToSlide(current - 1)}
-                    aria-label="Previous photo"
-                    style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: "50%",
-                        background: "#c98a83",
-                        color: "#fff",
-                        border: "none",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer",
-                        fontFamily: "'Nunito', sans-serif",
-                        fontSize: 24,
-                        fontWeight: 700,
-                        boxShadow: "0 6px 14px rgba(0,0,0,0.3)",
-                        transition: "filter 0.15s, transform 0.15s",
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.filter = "brightness(1.1)"; }}
-                    onMouseLeave={e => { e.currentTarget.style.filter = "none"; e.currentTarget.style.transform = "none"; }}
-                    onMouseDown={e => { e.currentTarget.style.transform = "scale(0.95)"; }}
-                    onMouseUp={e => { e.currentTarget.style.transform = "none"; }}
-                >
-                    ‹
-                </button>
-
-                <div style={{ display: "flex", gap: 8 }}>
-                    {CAROUSEL_PHOTOS.map((url, index) => (
-                        <button
-                            key={`${url}-dot`}
-                            type="button"
-                            onClick={() => goToSlide(index)}
-                            aria-label={`Go to photo ${index + 1}`}
-                            aria-current={index === current}
-                            style={{
-                                width: index === current ? 10 : 8,
-                                height: index === current ? 10 : 8,
-                                borderRadius: "50%",
-                                border: "none",
-                                background: index === current ? "#c98a83" : "#a9ab98",
-                                opacity: index === current ? 1 : 0.5,
-                                transform: index === current ? "scale(1.25)" : "none",
-                                transition: "all 0.3s",
-                                cursor: "pointer",
-                                padding: 0,
-                            }}
-                        />
-                    ))}
-                </div>
-
-                <button
-                    type="button"
-                    onClick={() => goToSlide(current + 1)}
-                    aria-label="Next photo"
-                    style={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: "50%",
-                        background: "#c98a83",
-                        color: "#fff",
-                        border: "none",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer",
-                        fontFamily: "'Nunito', sans-serif",
-                        fontSize: 24,
-                        fontWeight: 700,
-                        boxShadow: "0 6px 14px rgba(0,0,0,0.3)",
-                        transition: "filter 0.15s, transform 0.15s",
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.filter = "brightness(1.1)"; }}
-                    onMouseLeave={e => { e.currentTarget.style.filter = "none"; e.currentTarget.style.transform = "none"; }}
-                    onMouseDown={e => { e.currentTarget.style.transform = "scale(0.95)"; }}
-                    onMouseUp={e => { e.currentTarget.style.transform = "none"; }}
-                >
-                    ›
-                </button>
-            </div>
-
-            <div style={{
-                position: "absolute",
-                top: 48,
-                right: 16,
-                fontFamily: "'Nunito', sans-serif",
-                fontSize: 14,
-                fontWeight: 700,
-                color: "#a9ab98",
-                letterSpacing: "0.1em",
-            }}>
-                {current + 1} / {total}
-            </div>
         </div>
     );
 }
 
 /* ══════════════════ NAV ══════════════════ */
 function NavBar() {
-    const [scrolled, setScrolled] = useState(false);
-    useEffect(() => {
-        const h = () => setScrolled(window.scrollY > 30);
-        window.addEventListener("scroll", h);
-        return () => window.removeEventListener("scroll", h);
-    }, []);
     return (
-        <nav style={{
-            display: "flex", justifyContent: "space-between", alignItems: "center",
-            padding: "16px 52px",
-            background: scrolled ? C.bgDeep : "transparent",
-            borderBottom: scrolled ? `2px solid ${C.accent}` : "2px solid transparent",
-            position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-            transition: "all 0.3s",
-        }}>
-      <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 700, color: C.blush, letterSpacing: "0.01em" }}>
-        <span style={{ color: C.accent }}></span> Aditi Amarnath
-      </span>
-            <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
-                {[["About Me","aboutme"],["Experience","experience"],["Projects","projects"],["Contact Me!","contactme"]].map(([label, id]) => (
-                    <button key={id} onClick={() => scrollTo(id)} style={{
-                        fontFamily: "'Nunito', sans-serif", fontSize: 13, fontWeight: 700,
-                        color: C.blush, background: "transparent",
-                        border: "2px solid transparent", borderRadius: 4,
-                        padding: "6px 18px", cursor: "pointer",
-                        letterSpacing: "0.04em", textTransform: "uppercase",
-                        transition: "all 0.2s",
-                    }}
-                            onMouseEnter={e => { e.currentTarget.style.background = C.accent; e.currentTarget.style.color = C.bg; e.currentTarget.style.borderColor = C.accent; }}
-                            onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = C.blush; e.currentTarget.style.borderColor = "transparent"; }}
-                    >{label === "Contact Me!" ? <span style={{ background: C.accent, color: C.bg, padding: "6px 18px", borderRadius: 4, fontFamily: "'Nunito', sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: "0.04em" }}>{label}</span> : label}</button>
-                ))}
-            </div>
+        <nav className="letter-nav" aria-label="Main navigation">
+            {[["home", "home"], ["about", "aboutme"], ["experience", "experience"], ["projects", "projects"], ["contact", "contactme"]].map(([label, id]) => (
+                <a key={id} href={`#${id}`}>{label}</a>
+            ))}
         </nav>
     );
 }
 
 /* ══════════════════ HERO ══════════════════ */
 function HeroSection() {
-    const [vis, setVis] = useState(false);
-    useEffect(() => { setTimeout(() => setVis(true), 150); }, []);
     return (
-        <section style={{
-            minHeight: "100vh",
-            background: C.bg,
-            display: "flex",
-            flexDirection: "column",
-            position: "relative",
-            overflow: "hidden",
-        }}>
-            {/* big bg text */}
-            <div style={{ position: "absolute", bottom: -20, right: -10, fontFamily: "'Playfair Display', serif", fontSize: "clamp(100px,18vw,200px)", fontWeight: 900, color: "rgba(192,243,7,0.12)", lineHeight: 1, userSelect: "none", letterSpacing: "-0.05em", pointerEvents: "none" }}>
+        <section id="home" className="letter-hero" aria-labelledby="hero-title">
+            <NavBar />
+            <HeroStickers />
+            <div className="letter-intro">
+                <div className="letter-greeting">
+                <h1 id="hero-title" className="page-heading">
+                    <FoldText
+                        text="hello, I’m Aditi."
+                        foldStyle="paper"
+                        splitBy="char"
+                        hinge="top"
+                        trigger="mount"
+                        foldAngle={92}
+                        duration={0.65}
+                        stagger={0.045}
+                        staggerFrom="start"
+                        ease="power3.out"
+                        hoverRefold={true}
+                        refoldRadius={140}
+                        refoldAngle={45}
+                        perspective={700}
+                        creaseShading={0.55}
+                        fontSize="inherit"
+                        fontWeight="inherit"
+                        className="hero-fold-text"
+                    />
+                </h1>
 
+                </div>
+            <div className="letter-mascot-stamp">
+                <Mascot
+                    className="letter-mascot"
+                    directions={`${import.meta.env.BASE_URL}mascots/aditi-cool-directions.webp`}
+                    reactions={`${import.meta.env.BASE_URL}mascots/aditi-cool-reactions.webp`}
+                    size={230}
+                    label="Aditi’s mascot — click to say hello"
+                />
             </div>
+                <p>I'm currently an undergraduate student at the University of Wisconsin–Madison, majoring in Computer Science and Statistics. I'm passionate about exploring the intersection of technology and data, with particular interests in machine learning, artificial intelligence, and software development.</p>
+                <p>A collection of my projects, experiences, and a little bit of me. A lot more text blah blah blah blah blaaaaaaaaaaahhhhhh. blsssffffah blah blah blahfjk ldsjlsljks blaaaaaaaaaaahhhhhh.</p>
 
-            <div style={{ flex: 1, display: "flex", alignItems: "center", padding: "110px 52px 60px", gap: 60, position: "relative", zIndex: 2 }}>
-                {/* LEFT */}
-                <div style={{ flex: 1, opacity: vis ? 1 : 0, transform: vis ? "translateX(24px)" : "translate(24px, 28px)", transition: "all 0.9s ease" }}>
-                    <div style={{ display: "inline-block", background: C.accent, color: C.bg, fontFamily: "'Nunito', sans-serif", fontWeight: 700, fontSize: 12, letterSpacing: "0.1em", textTransform: "uppercase", padding: "5px 14px", borderRadius: 2, marginBottom: 20 }}>
-                        CS and Statistics Major · Class of 2029
-                    </div>
-                    <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(56px,9vw,100px)", fontWeight: 900, color: C.lightText, lineHeight: 0.95, letterSpacing: "-0.03em", margin: "0 0 6px" }}>
-                        Hello,
-                    </h1>
-                    <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: "clamp(56px,9vw,100px)", fontWeight: 900, color: C.rose, lineHeight: 0.95, letterSpacing: "-0.03em", margin: "0 0 32px" }}>
-                        I'm Aditi!
-                    </h1>
-
-                    {/* about blurb as post-it */}
-                    <div style={{ position: "relative", display: "inline-block", maxWidth: 420, transform: "rotate(-1deg)" }}>
-                        <div style={{ background: C.paper, border: `3px solid ${C.ink}`, borderRadius: 3, padding: "22px 26px", boxShadow: "5px 5px 0 rgba(0,0,0,0.35)" }}>
-                            <p style={{ fontFamily: "'Nunito', sans-serif", fontSize: 15, color: C.ink, lineHeight: 1.75, margin: 0 }}>
-                                Hi! I'm passionate about software development, data analytics, and building technology-driven solutions that create real-world impact. This website highlights my projects, technical skills, and experiences as I continue growing as a developer and aspiring data professional.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div style={{ marginTop: 32, display: "flex", gap: 12, flexWrap: "wrap" }}>
-                        <button onClick={() => scrollTo("projects")} style={{ fontFamily: "'Nunito', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: "0.06em", textTransform: "uppercase", background: C.rose, color: C.ink, border: `3px solid ${C.ink}`, borderRadius: 4, padding: "12px 28px", cursor: "pointer", boxShadow: "4px 4px 0 rgba(0,0,0,0.3)", transition: "transform 0.15s, box-shadow 0.15s" }}
-                                onMouseEnter={e => { e.currentTarget.style.transform = "translate(-2px,-2px)"; e.currentTarget.style.boxShadow = "6px 6px 0 rgba(0,0,0,0.3)"; }}
-                                onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "4px 4px 0 rgba(0,0,0,0.3)"; }}>
-                            View Projects →
-                        </button>
-                        <button onClick={() => scrollTo("contactme")} style={{ fontFamily: "'Nunito', sans-serif", fontWeight: 700, fontSize: 13, letterSpacing: "0.06em", textTransform: "uppercase", background: "transparent", color: C.blush, border: `3px solid ${C.blush}`, borderRadius: 4, padding: "12px 28px", cursor: "pointer", boxShadow: "4px 4px 0 rgba(0,0,0,0.2)", transition: "transform 0.15s, box-shadow 0.15s" }}
-                                onMouseEnter={e => { e.currentTarget.style.transform = "translate(-2px,-2px)"; e.currentTarget.style.boxShadow = "6px 6px 0 rgba(0,0,0,0.2)"; }}
-                                onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "4px 4px 0 rgba(0,0,0,0.2)"; }}>
-                            Get in Touch
-                        </button>
-                    </div>
-                </div>
-
-                <div style={{ flexShrink: 0, opacity: vis ? 1 : 0, transform: vis ? "translateX(-28px)" : "translate(-28px, 28px)", transition: "all 1.1s ease 0.2s", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <PhotoCarousel />
-                </div>
+                <a className="letter-contact" href="#contactme">let’s connect</a>
             </div>
         </section>
     );
 }
 
-/* ══════════════════ ABOUT ME ══════════════════ */
-function AboutStack({ children, tilt, yOffset = 0, zIndex = 1 }) {
-    return (
-        <div className="about-stack-shell" style={{ transform: `translateY(${yOffset}px)`, zIndex }}>
-            <div className="about-stack-angle" style={{ "--about-rotate": `${tilt}deg` }}>
-                {children}
-            </div>
-        </div>
-    );
-}
-
-function AboutSection() {
+function HeroStickers() {
     const boardRef = useRef(null);
     const dragState = useRef(null);
+    const dragFrame = useRef(0);
+    const pendingPointer = useRef(null);
+
+    useEffect(() => () => cancelAnimationFrame(dragFrame.current), []);
     const hobbyStickers = [
         {
             id: "camera",
             src: cameraSticker,
             alt: "Camera sticker",
             label: "I like taking pictures of nature and little things. I also create videos of everyday pretty things.",
-            x: 43,
-            y: 43,
-            width: "clamp(92px, 8vw, 124px)",
+            x: 22,
+            y: 22,
+            width: "clamp(124px, 11vw, 170px)",
             rotate: "-5deg",
         },
         {
@@ -406,9 +164,9 @@ function AboutSection() {
             src: headphonesSticker,
             alt: "Headphones sticker",
             label: "My favorite genre is synth pop and RnB. My top artists currently are Tame Impala, the Marias, and Seventeen.",
-            x: 54,
-            y: 37,
-            width: "clamp(82px, 7vw, 108px)",
+            x: 68,
+            y: 18,
+            width: "clamp(110px, 9.5vw, 148px)",
             rotate: "8deg",
         },
         {
@@ -416,9 +174,9 @@ function AboutSection() {
             src: paintSticker,
             alt: "Paint brushes sticker",
             label: "I love anything artistic, but especially painting with watercolor or gouache. My toxic trait is thinking I can DIY anything instead of buying it.",
-            x: 43,
-            y: 61,
-            width: "clamp(76px, 6.6vw, 104px)",
+            x: 80,
+            y: 52,
+            width: "clamp(104px, 9vw, 144px)",
             rotate: "4deg",
         },
         {
@@ -426,9 +184,9 @@ function AboutSection() {
             src: bikeSticker,
             alt: "Bike with flowers sticker",
             label: "When I'm stressed, I like to bike on long trails, especially if they're scenic and not hilly.",
-            x: 56,
-            y: 55,
-            width: "clamp(112px, 10vw, 152px)",
+            x: 28,
+            y: 67,
+            width: "clamp(150px, 13.5vw, 208px)",
             rotate: "13deg",
         },
         {
@@ -436,15 +194,13 @@ function AboutSection() {
             src: nailPolishSticker,
             alt: "Nail polish sticker",
             label: "I have been getting into doing my nails. I do my friends' nails and also create press-ons.",
-            x: 50,
-            y: 76,
-            width: "clamp(106px, 9vw, 142px)",
+            x: 62,
+            y: 83,
+            width: "clamp(142px, 12vw, 194px)",
             rotate: "4deg",
         },
     ];
-    const [stickerPositions, setStickerPositions] = useState(() =>
-        Object.fromEntries(hobbyStickers.map(({ id, x, y }) => [id, { x, y }])),
-    );
+    const [stickerPositions, setStickerPositions] = useState({});
     const [draggingSticker, setDraggingSticker] = useState(null);
 
     const beginStickerDrag = (event, sticker) => {
@@ -457,10 +213,16 @@ function AboutSection() {
         event.currentTarget.setPointerCapture(event.pointerId);
 
         const rect = board.getBoundingClientRect();
-        const currentPosition = stickerPositions[sticker.id];
+        const stickerRect = event.currentTarget.getBoundingClientRect();
+        const currentPosition = {
+            x: ((stickerRect.left + stickerRect.width / 2 - rect.left) / rect.width) * 100,
+            y: ((stickerRect.top + stickerRect.height / 2 - rect.top) / rect.height) * 100,
+        };
         dragState.current = {
             id: sticker.id,
             rect,
+            halfWidth: stickerRect.width / 2 + 10,
+            halfHeight: stickerRect.height / 2 + 10,
             startPointerX: event.clientX,
             startPointerY: event.clientY,
             startX: currentPosition.x,
@@ -469,24 +231,61 @@ function AboutSection() {
         setDraggingSticker(sticker.id);
     };
 
-    const moveSticker = (event) => {
+    const updateStickerPosition = (event) => {
         const drag = dragState.current;
         if (!drag) return;
 
-        const nextX = drag.startX + ((event.clientX - drag.startPointerX) / drag.rect.width) * 100;
-        const nextY = drag.startY + ((event.clientY - drag.startPointerY) / drag.rect.height) * 100;
+        const rect = boardRef.current.getBoundingClientRect();
+        const nextX = drag.startX / 100 * rect.width + event.clientX - drag.startPointerX;
+        const nextY = drag.startY / 100 * rect.height + event.clientY - drag.startPointerY;
         const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-
+        const minX = drag.halfWidth;
+        const maxX = rect.width - drag.halfWidth;
+        const minY = drag.halfHeight;
+        const maxY = rect.height - drag.halfHeight;
+        const blocked = [...boardRef.current.closest('section').querySelectorAll('.letter-greeting h1, .letter-intro p, .letter-contact, .letter-nav')].map((element) => {
+            const text = element.getBoundingClientRect();
+            return {
+                left: text.left - rect.left - drag.halfWidth,
+                right: text.right - rect.left + drag.halfWidth,
+                top: text.top - rect.top - drag.halfHeight,
+                bottom: text.bottom - rect.top + drag.halfHeight,
+            };
+        });
+        const x = clamp(nextX, minX, maxX);
+        const y = clamp(nextY, minY, maxY);
+        const allowed = (point) => !blocked.some((area) => point.x > area.left && point.x < area.right && point.y > area.top && point.y < area.bottom);
+        // Test the nearest edges of every protected text area, including corners.
+        const xs = [x, minX, maxX, ...blocked.flatMap((area) => [area.left, area.right])];
+        const ys = [y, minY, maxY, ...blocked.flatMap((area) => [area.top, area.bottom])];
+        // Most moves need no collision search at all.
+        const candidates = allowed({ x, y }) ? [{ x, y }] : xs.flatMap((cx) => ys.map((cy) => ({ x: clamp(cx, minX, maxX), y: clamp(cy, minY, maxY) }))).filter(allowed);
+        const position = candidates.reduce((best, point) => !best || Math.hypot(point.x - x, point.y - y) < Math.hypot(best.x - x, best.y - y) ? point : best, null);
+        if (!position) return;
         setStickerPositions((positions) => ({
             ...positions,
-            [drag.id]: {
-                x: clamp(nextX, 6, 94),
-                y: clamp(nextY, 10, 90),
-            },
+            [drag.id]: { x: position.x / rect.width * 100, y: position.y / rect.height * 100 },
         }));
     };
 
+    const moveSticker = (event) => {
+        if (!dragState.current) return;
+        pendingPointer.current = { clientX: event.clientX, clientY: event.clientY };
+        if (dragFrame.current) return;
+        dragFrame.current = requestAnimationFrame(() => {
+            dragFrame.current = 0;
+            updateStickerPosition(pendingPointer.current);
+            pendingPointer.current = null;
+        });
+    };
+
     const endStickerDrag = (event) => {
+        cancelAnimationFrame(dragFrame.current);
+        dragFrame.current = 0;
+        if (pendingPointer.current) {
+            updateStickerPosition(pendingPointer.current);
+            pendingPointer.current = null;
+        }
         if (event.currentTarget.hasPointerCapture(event.pointerId)) {
             event.currentTarget.releasePointerCapture(event.pointerId);
         }
@@ -496,14 +295,82 @@ function AboutSection() {
     };
 
     return (
+                <div className="about-draggable-sticker-layer hero-sticker-layer" ref={boardRef} aria-label="Draggable hobby stickers">
+
+
+                    {hobbyStickers.map((sticker) => {
+                        const position = stickerPositions[sticker.id];
+
+                        return (
+                            <button
+                                key={sticker.id}
+                                type="button"
+                                className={`about-draggable-sticker ${draggingSticker === sticker.id ? "is-dragging" : ""}`}
+                                aria-label={`Drag ${sticker.alt}`}
+                                onPointerDown={(event) => beginStickerDrag(event, sticker)}
+                                onPointerMove={moveSticker}
+                                onPointerUp={endStickerDrag}
+                                onPointerCancel={endStickerDrag}
+                                style={{
+                                    "--sticker-width": sticker.width,
+                                    "--sticker-rotate": sticker.rotate,
+                                    "--initial-sticker-x": sticker.x,
+                                    "--initial-sticker-y": sticker.y,
+                                    left: position ? `${position.x}%` : undefined,
+                                    top: position ? `${position.y}%` : undefined,
+                                }}
+                            >
+                                <img src={sticker.src} alt="" draggable="false" />
+                                <span className="about-hobby-blurb">{sticker.label}</span>
+                            </button>
+                        );
+                    })}
+                </div>
+    );
+}
+
+/* ══════════════════ ABOUT ME ══════════════════ */
+function AboutStack({ children, tilt, yOffset = 0, zIndex = 1 }) {
+    const note = tilt === -2
+        ? { src: aboutEducationNote, title: "Education" }
+        : tilt === 3
+            ? { src: aboutHobbiesNote, title: "Hobbies" }
+            : { src: aboutActivitiesNote, title: "Activities" };
+    return (
+        <div className="about-stack-shell" style={{ transform: `translateY(${yOffset}px)`, zIndex }}>
+            <PaperCrumple
+                src={note.src}
+                alt={`${note.title} post-it note`}
+                width={note.title === "Education" ? 420 : 400}
+                height={520}
+                sceneHeight={640}
+                imageFit={note.title === "Education" ? "fill" : "contain"}
+                releaseBehavior="restore"
+                crumpleAmount={0.95}
+                crumpleDuration={0.85}
+                releaseDuration={0.7}
+                foldCount={6}
+                foldSharpness={0.45}
+                wrinkleDepth={0.85}
+                detail={80}
+                creaseStrength={0.18}
+                paperColor="#f4f0e8"
+                paperTexture={0.08}
+                draggable
+                returnToOrigin
+            />
+            <div className="about-note-text">{children}</div>
+        </div>
+    );
+}
+
+const ABOUT = { scrapInk: "#2B2420", twine: "#8A6D4B" };
+
+function AboutSection() {
+    return (
         <section id="aboutme" className="about-corkboard-section" aria-label="About Me">
-            <div className="about-corkboard-frame" ref={boardRef}>
-                <img
-                    src={aboutCorkboard}
-                    alt=""
-                    aria-hidden="true"
-                    className="about-corkboard-image"
-                />
+            <SectionHeading marginBottom={16}>about me</SectionHeading>
+            <div className="about-corkboard-frame">
                 <div className="about-corkboard-postits about-stack-grid">
                     <AboutStack tilt={-2} yOffset={16} zIndex={30}>
                         <article className="about-paper-surface about-ref-torn-teal about-paper-ref-teal about-board-postit">
@@ -537,6 +404,7 @@ function AboutSection() {
                             <div className="about-paper-section about-paper-heading">
                                 <span style={{ fontFamily: "'Caveat', cursive", fontSize: 19, fontWeight: 700, color: ABOUT.scrapInk, opacity: 0.62, textTransform: "uppercase", marginBottom: 8, display: "block" }}>Vibe</span>
                                 <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 32, fontWeight: 900, color: ABOUT.scrapInk, margin: 0 }}>Hobbies</h3>
+                                <p className="hobbies-paper-copy">Photography, synth pop &amp; RnB, watercolor painting, scenic bike rides, and making press-on nails.</p>
                             </div>
                         </article>
                     </AboutStack>
@@ -571,156 +439,50 @@ function AboutSection() {
                         </article>
                     </AboutStack>
                 </div>
-                <div className="about-draggable-sticker-layer" aria-label="Draggable hobby stickers">
-                    {hobbyStickers.map((sticker) => {
-                        const position = stickerPositions[sticker.id];
 
-                        return (
-                            <button
-                                key={sticker.id}
-                                type="button"
-                                className={`about-draggable-sticker ${draggingSticker === sticker.id ? "is-dragging" : ""}`}
-                                aria-label={`Drag ${sticker.alt}`}
-                                onPointerDown={(event) => beginStickerDrag(event, sticker)}
-                                onPointerMove={moveSticker}
-                                onPointerUp={endStickerDrag}
-                                onPointerCancel={endStickerDrag}
-                                style={{
-                                    "--sticker-width": sticker.width,
-                                    "--sticker-rotate": sticker.rotate,
-                                    left: `${position.x}%`,
-                                    top: `${position.y}%`,
-                                }}
-                            >
-                                <img src={sticker.src} alt="" draggable="false" />
-                                <span className="about-hobby-blurb">{sticker.label}</span>
-                            </button>
-                        );
-                    })}
-                </div>
             </div>
         </section>
     );
 }
 
-function ExperienceSection() {
-    const items = [
-        { folder: "HGS", year: "Summer 2026", title: "Cloud Analytics Intern", sub: "At Hinduja Group Services, I helped write the technical spec for Databridge, a financial data platform built natively on Microsoft Fabric. That meant working through the OneLake medallion architecture, the Direct Lake semantic layer, capacity tiering, and security, all tracked in a 17-item decision register. I also built a Power BI semantic model by flattening a parent-child employee hierarchy into a dimension table with a 7-relationship star schema, then added an EDA agent on top as an AI proof-of-concept.", color: "#b2bd8a", tabColor: "#758061", icon: experienceFolderGreen },
-        { folder: "Undergrad Research", year: "Fall 2026", title: "Research Assistant", sub: "As an Undergraduate Research Assistant in Prof. Andi Wang's lab in the Industrial Engineering department, I'm studying Gaussian processes, optimization, and probabilistic network models and how they apply to real engineering problems. Day to day, that means reading and summarizing research papers, implementing methods in Python and R to run experiments, and presenting my progress to Prof. Wang every week. I'm also part of the Undergraduate Research Scholars program, a year-long mentored research experience with weekly seminars.", color: "#9ba9e5", tabColor: "#6384ee", icon: experienceFolderIndigo },
-        { folder: "VP", year: "Fall 2022 - 2025", title: "Teaching Assistant", sub: "At Youth and Government in Naperville, I served as school-wide Vice President and state-wide Assistant Director of Lobbyists over four years. I drove the passage of bills on recidivism and gambling advertisements, both approved unanimously at the state level. I was also recognized as Most Effective Lobbyist at the 2023 statewide conference.", color: "#9ccbe2", tabColor: "#56abd5", icon: experienceFolderBlue },
-        { folder: "Volunteer", year: "2024 - 2025", title: "Main Desk & Central Supply Volunteer", sub: "At Rush Copley Medical Center, I volunteered at the main desk and in central supply for about a year, logging 96 hours. At the desk, I helped 50+ patients and visitors per shift with directions and questions in a fast-paced hospital environment. I also handled the weekly stocking and delivery of medical supplies across multiple departments.", color: "#c894df", tabColor: "#bd70d9", icon: experienceFolderPurple },
-        { folder: "Instructor", year: "2024 - Now", title: "Music & Dance Suite", sub: "At The Music and Dance Suite, I taught private piano lessons for two years, building customized lesson plans for 20+ students. I adapted my techniques for neurodiverse and nonverbal learners so every student could make progress in a way that worked for them. I also organized and led performance recitals, which boosted student involvement and kept students coming back.", color: "#f0eda9", tabColor: "#d8d082", icon: experienceFolderYellow },
-    ];
-    const [active, setActive] = useState(null);
-    const [experienceSlide, setExperienceSlide] = useState(0);
-    const current = active === null ? null : items[active];
+/* ══════════════════ MOVING FILM STRIP ══════════════════ */
+// Add your photos here later: import each image above, then replace `src: null`.
+const FILM_PHOTOS = [
+    { src: null, alt: "Aditi photo 1", mark: "✿" },
+    { src: null, alt: "Aditi photo 2", mark: "♡" },
+    { src: null, alt: "Aditi photo 3", mark: "✦" },
+    { src: null, alt: "Aditi photo 4", mark: "☻" },
+    { src: null, alt: "Aditi photo 5", mark: "❀" },
+    { src: null, alt: "Aditi photo 6", mark: "☆" },
+];
 
+function FilmFrames({ hidden = false }) {
     return (
-        <section id="experience" style={{ background: "#121b21", padding: "90px clamp(14px, 5vw, 52px)", position: "relative", overflow: "hidden" }}>
-
-            <SectionHeading light>Experience</SectionHeading>
-
-            <div
-                className="experience-computer"
-                style={{ backgroundImage: `url(${experienceComputer})` }}
-            >
-                <div className="experience-computer-screen">
-                    <div className="experience-screen-folders" role="list" aria-label="Experience folders">
-                        {items.map((item, index) => (
-                            <button
-                                key={item.folder}
-                                type="button"
-                                className={`experience-screen-folder ${active === index ? "is-active" : ""}`}
-                                onClick={() => {
-                                    setActive(index);
-                                    setExperienceSlide(0);
-                                }}
-                                aria-pressed={active === index}
-                                style={{
-                                    "--folder-color": item.color,
-                                    "--folder-tab-color": item.tabColor,
-                                }}
-                            >
-                                <img className="experience-screen-folder-icon" src={item.icon} alt="" draggable="false" />
-                                <span className="experience-screen-folder-label">{item.folder}</span>
-                            </button>
-                        ))}
-                    </div>
-
-                    {current && (
-                        <article
-                            className="experience-file-window"
-                            key={current.folder}
-                            style={{ "--window-accent": current.tabColor }}
-                        >
-                            <button
-                                type="button"
-                                className="experience-file-close"
-                                aria-label="Close experience"
-                                onClick={() => {
-                                    setActive(null);
-                                    setExperienceSlide(0);
-                                }}
-                            >
-                                ×
-                            </button>
-                            {experienceSlide === 0 ? (
-                                <button
-                                    type="button"
-                                    className="experience-file-next"
-                                    aria-label="Show experience photos"
-                                    onClick={() => setExperienceSlide(1)}
-                                >
-                                    ›
-                                </button>
-                            ) : (
-                                <button
-                                    type="button"
-                                    className="experience-file-back"
-                                    aria-label="Show experience details"
-                                    onClick={() => setExperienceSlide(0)}
-                                >
-                                    ‹
-                                </button>
-                            )}
-                            <div className="experience-file-content">
-                                {experienceSlide === 0 ? (
-                                    <>
-                                        <div className="experience-file-header">
-                                            <span className="experience-file-folder">{current.folder}</span>
-                                            <div className="experience-file-title-row">
-                                                <h3>{current.title}</h3>
-                                                <span className="experience-file-year">{current.year}</span>
-                                            </div>
-                                        </div>
-                                        <p>{current.sub}</p>
-                                    </>
-                                ) : (
-                                    <div className="experience-photo-slide" aria-label={`${current.title} photos`}>
-                                        <div className="experience-photo-grid">
-                                            {(current.photos?.length ? current.photos : [null, null]).map((photo, photoIndex) => (
-                                                photo ? (
-                                                    <img
-                                                        key={photo.src}
-                                                        className="experience-photo-frame"
-                                                        src={photo.src}
-                                                        alt={photo.alt}
-                                                        draggable="false"
-                                                    />
-                                                ) : (
-                                                    <span
-                                                        key={`empty-photo-${photoIndex}`}
-                                                        className="experience-photo-placeholder"
-                                                        aria-hidden="true"
-                                                    />
-                                                )
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        </article>
+        <div className="film-strip-set" aria-hidden={hidden || undefined}>
+            {FILM_PHOTOS.map((photo, index) => (
+                <figure className="film-frame" key={`${hidden ? "copy" : "original"}-${index}`}>
+                    <span className="film-frame-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                    {photo.src ? (
+                        <img src={photo.src} alt={hidden ? "" : photo.alt} />
+                    ) : (
+                        <div className="film-photo-placeholder" role={hidden ? undefined : "img"} aria-label={hidden ? undefined : `${photo.alt} placeholder`}>
+                            <span aria-hidden="true">{photo.mark}</span>
+                            <small>your photo here</small>
+                        </div>
                     )}
+                </figure>
+            ))}
+        </div>
+    );
+}
+
+function FilmStripSection() {
+    return (
+        <section className="film-memories" aria-label="A moving film strip of photos from Aditi's life">
+            <div className="film-strip-window">
+                <div className="film-strip-track">
+                    <FilmFrames />
+                    <FilmFrames hidden />
                 </div>
             </div>
         </section>
@@ -729,21 +491,22 @@ function ExperienceSection() {
 
 /* ══════════════════ PROJECTS ══════════════════ */
 const PROJECTS = [
-    { tab: "Bluprint", badge: "Personalized Interior Decorator", title: "Bluprint", desc: "A room design website that takes user's style preferences and generates furniture recommendations. Includes a customizable diagram of room, visual representation of items recommended, and dashboard to view all decorated rooms.", tags: ["React","Node.js","MongoDB"], year: "2024", emoji: "🐚", image: bluprintProjectPreview, noteCaption: "click here for link^", projectUrl: "https://bluprint-iroq.onrender.com/", color: C.fresh, ink: C.ink, descColor: C.ink },
-    { tab: "Databridge", badge: "Financial Ontology Platform", title: "Databridge", desc: "Detailed a technical specification for HGS internship: Microsoft Fabric-native financial data platform, defining the OneLake medallion architecture, Direct Lake semantic layer, capacity tiering, and security requirements across a 17-item decision register.\n", tags: ["Java","Javascript","HTML","Canvas API"], year: "2026", emoji: "🗺️", image: databridgePostitPreview, noteCaption: "final presentation day!!", color: C.yellow, ink: C.ink, descColor: C.ink },
-    { tab: "Tech and Humanity", badge: "Interdisciplinary Project", title: "Technology vs. Human Experiences", desc: "Interactive presentation detailing research study on whether technology/AI is replacing traditionally and evolutionarily human traits and experiences. Throughout this project, I use a psychological study CASA(Computers Are Social Actors), curiosity experiments, and popular media like WALL-E to examine how humans may become emotionally and behaviorally dependent on technology. \n", tags: ["TypeScript","Node.js","WebSockets","OT"], year: "2024", emoji: "📝", image: interdisciplinaryPostitPreview, noteCaption: "click to visit:", projectUrl: "https://prezi.com/p/1snxsaer21hu/?present=1", noteImageFit: "contain", color: C.softpink, ink: C.ink, descColor: C.ink },
-    { tab: "Wavelength", badge: "Personal Symptom Log", title: "Wavelength", desc: "A symptom-tracking website that lets users log physical and mental symptoms by text or voice. Includes graphs of recurring symptoms over time, a calendar of past entries, AI-generated summaries, and a PDF brief to bring to doctor's appointments.", tags: ["Python","ML","Chrome Extension","Flask"], year: "2023", emoji: "🔍", image: wavelengthPostitPreview, noteCaption: "click below for link :)", noteCaptionPosition: "top", projectUrl: "https://wavelength-two-flame.vercel.app/", noteImageFit: "contain", color: C.azeitona, ink: C.ink, descColor: C.ink },
+    { tab: "Bluprint", badge: "Personalized Interior Decorator", title: "Bluprint", desc: "A room design website that takes user's style preferences and generates furniture recommendations. Includes a customizable diagram of room, visual representation of items recommended, and dashboard to view all decorated rooms.", tags: ["React","Node.js", "Three.js","MongoDB"], year: "2024", emoji: "🐚", image: bluprintProjectPreview, noteCaption: "click here for link^", projectUrl: "https://bluprint-iroq.onrender.com/", color: C.fresh, ink: C.ink, descColor: C.ink },
+    { tab: "Databridge", badge: "Financial Ontology Platform", title: "Databridge", desc: "Detailed a technical specification for HGS internship: Microsoft Fabric-native financial data platform, defining the OneLake medallion architecture, Direct Lake semantic layer, capacity tiering, and security requirements across a 17-item decision register.\n", tags: ["SQL","Microsoft Fabric","Power BI","OneLake"], year: "2026", emoji: "🗺️", image: databridgePostitPreview, noteCaption: "final presentation day!!", color: C.yellow, ink: C.ink, descColor: C.ink },
+    { tab: "Tech and Humanity", badge: "Interdisciplinary Project", title: "Technology vs. Human Experiences", desc: "Interactive presentation detailing research study on whether technology/AI is replacing traditionally and evolutionarily human traits and experiences. Throughout this project, I use a psychological study CASA(Computers Are Social Actors), curiosity experiments, and popular media like WALL-E to examine how humans may become emotionally and behaviorally dependent on technology. \n", year: "2024", emoji: "📝", image: interdisciplinaryPostitPreview, noteCaption: "click to visit:", projectUrl: "https://prezi.com/p/1snxsaer21hu/?present=1", noteImageFit: "contain", color: C.softpink, ink: C.ink, descColor: C.ink },
+    { tab: "Wavelength", badge: "Personal Symptom Log", title: "Wavelength", desc: "A symptom-tracking website that lets users log physical and mental symptoms by text or voice. Includes graphs of recurring symptoms over time, a calendar of past entries, AI-generated summaries, and a PDF brief to bring to doctor's appointments.", tags: ["Vite","Firebase","Supabase","GroqCloud"], year: "2023", emoji: "🔍", image: wavelengthPostitPreview, noteCaption: "click below for link :)", noteCaptionPosition: "top", projectUrl: "https://wavelength-two-flame.vercel.app/", noteImageFit: "contain", color: C.azeitona, ink: C.ink, descColor: C.ink },
 ];
 const DEFAULT_PROJECT_INDEX = 0;
 
 function ProjectsSection() {
     const [active, setActive] = useState(DEFAULT_PROJECT_INDEX);
     const p = PROJECTS[active];
+    const projectTags = p.tags ?? [];
     const folderLayers = [
-        { projectIndex: 3, name: "blue", src: projectFolderBlue, alt: "", className: "project-folder-layer-blue", zIndex: 2, paperAccent: "#93a7bf", paperTilt: "-1.2deg", paperStartX: "-5%", paperStartY: "-30%", noteRight: "-10%", noteTop: "23%", noteRotate: "-5deg", noteAspect: "1.5", noteColor: "#c9d8ce", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(224px, 31vw, 400px)", noteMobileWidth: "172px", copyLeft: "0px", copyRight: "clamp(200px, 30vw, 408px)", descLeft: "0px", descRight: "clamp(170px, 24vw, 320px)", tagsLeft: "0px", tagsRight: "0px", tagsJustify: "space-between" },
-        { projectIndex: 2, name: "beige", src: projectFolderBeige, alt: "", className: "project-folder-layer-beige", zIndex: 3, paperAccent: "#d4c7a4", paperTilt: "1deg", paperStartX: "5%", paperStartY: "-20%", noteRight: "-4%", noteTop: "12%", noteRotate: "4deg", noteAspect: "0.82", noteColor: "#f2e4a5", noteLine: "transparent", noteWidth: "clamp(124px, 16vw, 176px)", noteMobileWidth: "96px", copyLeft: "0px", copyRight: "clamp(108px, 15vw, 164px)", descLeft: "clamp(10px, 1.5vw, 18px)", tagsLeft: "0px", tagsRight: "0px" },
-        { projectIndex: 1, name: "pink", src: projectFolderPink, alt: "", className: "project-folder-layer-pink", zIndex: 4, paperAccent: "#c69bad", paperTilt: "-0.6deg", paperStartX: "2%", paperStartY: "-10%", noteRight: "72%", noteTop: "43%", noteRotate: "-7deg", noteAspect: "1.16", noteColor: "#eadc8f", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(184px, 23vw, 270px)", noteMobileWidth: "142px", copyLeft: "clamp(84px, 12vw, 150px)", copyRight: "0px", tagsLeft: "clamp(132px, 18vw, 220px)", tagsRight: "0px" },
-        { projectIndex: 0, name: "green", src: projectFolderGreen, alt: "", className: "project-folder-layer-green", zIndex: 5, paperAccent: "#8ca07d", paperTilt: "0.8deg", paperStartX: "-4%", paperStartY: "8%", noteRight: "-11%", noteTop: "31%", noteRotate: "-6deg", noteAspect: "1.14", noteColor: "#c9d8ce", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(196px, 25vw, 292px)", noteMobileWidth: "154px", copyLeft: "0px", copyRight: "clamp(180px, 25vw, 302px)", tagsLeft: "0px", tagsRight: "clamp(180px, 25vw, 302px)" },
+        { projectIndex: 3, name: "blue", src: projectFolderBlue, alt: "", className: "project-folder-layer-blue", zIndex: 2, paperAccent: "#9ea76b", paperTilt: "-1.2deg", paperStartX: "-5%", paperStartY: "-30%", noteRight: "-10%", noteTop: "23%", noteRotate: "-5deg", noteAspect: "1.5", noteColor: "#dfe4b9", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(232px, 29vw, 428px)", noteMobileWidth: "172px", copyLeft: "0px", copyRight: "clamp(214px, 30vw, 434px)", descLeft: "0px", descRight: "clamp(180px, 24vw, 342px)", tagsLeft: "0px", tagsRight: "0px", tagsJustify: "space-between" },
+        { projectIndex: 2, name: "beige", src: projectFolderBeige, alt: "", className: "project-folder-layer-beige", zIndex: 3, paperAccent: "#cfc38d", paperTilt: "1deg", paperStartX: "5%", paperStartY: "-20%", noteRight: "-4%", noteTop: "12%", noteRotate: "4deg", noteAspect: "0.82", noteColor: "#f9d1d9", noteLine: "transparent", noteWidth: "clamp(130px, 14.5vw, 190px)", noteMobileWidth: "96px", copyLeft: "0px", copyRight: "clamp(114px, 13.5vw, 176px)", descLeft: "clamp(10px, 1.4vw, 19px)", tagsLeft: "0px", tagsRight: "0px" },
+        { projectIndex: 1, name: "pink", src: projectFolderPink, alt: "", className: "project-folder-layer-pink", zIndex: 4, paperAccent: "#f9d1d9", paperTilt: "-0.6deg", paperStartX: "2%", paperStartY: "-10%", noteRight: "72%", noteTop: "43%", noteRotate: "-7deg", noteAspect: "1.16", noteColor: "#efe8ca", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(192px, 22vw, 290px)", noteMobileWidth: "142px", copyLeft: "clamp(90px, 11.5vw, 162px)", copyRight: "0px", tagsLeft: "clamp(142px, 17vw, 238px)", tagsRight: "0px" },
+        { projectIndex: 0, name: "green", src: projectFolderGreen, alt: "", className: "project-folder-layer-green", zIndex: 5, paperAccent: "#9ea76b", paperTilt: "0.8deg", paperStartX: "-4%", paperStartY: "8%", noteRight: "-11%", noteTop: "31%", noteRotate: "-6deg", noteAspect: "1.14", noteColor: "#dfe4b9", noteLine: "rgba(255,255,255,0.3)", noteWidth: "clamp(206px, 24vw, 314px)", noteMobileWidth: "154px", copyLeft: "0px", copyRight: "clamp(194px, 24vw, 324px)", tagsLeft: "0px", tagsRight: "clamp(194px, 24vw, 324px)" },
     ];
     const folderLabels = [
         { projectIndex: 3, className: "project-folder-label-blue" },
@@ -757,9 +520,9 @@ function ProjectsSection() {
     ) : null;
 
     return (
-        <section id="projects" style={{ background: C.cream, padding: "70px clamp(18px, 4vw, 52px)", position: "relative", overflow: "hidden" }}>
+        <section id="projects" style={{ background: C.cream, padding: "72px clamp(18px, 4vw, 52px) 96px", position: "relative", overflow: "hidden" }}>
 
-            <SectionHeading light>Projects</SectionHeading>
+            <SectionHeading>projects</SectionHeading>
 
             <div className="projects-shell">
                 <div className="project-folder-stack" role="tablist" aria-label="Projects">
@@ -863,11 +626,13 @@ function ProjectsSection() {
                             <span className="project-year">{p.year}</span>
                         </div>
                         <p className="project-desc">{p.desc}</p>
-                        <div className="project-tags" aria-label={`${p.title} software skills`}>
-                            {p.tags.map(t => (
-                                <span className="project-skill-sticker" key={t}>{t}</span>
-                            ))}
-                        </div>
+                        {projectTags.length > 0 && (
+                            <div className="project-tags" aria-label={`${p.title} software skills`}>
+                                {projectTags.map(t => (
+                                    <span className="project-skill-sticker" key={t}>{t}</span>
+                                ))}
+                            </div>
+                        )}
                     </article>
                 </div>
             </div>
@@ -875,8 +640,74 @@ function ProjectsSection() {
     );
 }
 
+const EXPERIENCES = [
+        { folder: "HGS", year: "Summer 2026", title: "Cloud Analytics Intern", sub: "At Hinduja Group Services, I helped write the technical spec for Databridge, a financial data platform built natively on Microsoft Fabric. That meant working through the OneLake medallion architecture, the Direct Lake semantic layer, capacity tiering, and security, all tracked in a 17-item decision register. I also built a Power BI semantic model by flattening a parent-child employee hierarchy into a dimension table with a 7-relationship star schema, then added an EDA agent on top as an AI proof-of-concept." },
+        { folder: "Undergrad Research", year: "Fall 2026", title: "Research Assistant", sub: "As an Undergraduate Research Assistant in Prof. Andi Wang's lab in the Industrial Engineering department, I'm studying Gaussian processes, optimization, and probabilistic network models and how they apply to real engineering problems. Day to day, that means reading and summarizing research papers, implementing methods in Python and R to run experiments, and presenting my progress to Prof. Wang every week. I'm also part of the Undergraduate Research Scholars program, a year-long mentored research experience with weekly seminars." },
+        { folder: "Instructor", year: "2024 - Now", title: "Music & Dance Suite", sub: "At The Music and Dance Suite, I taught private piano lessons for two years, building customized lesson plans for 20+ students. I adapted my techniques for neurodiverse and nonverbal learners so every student could make progress in a way that worked for them. I also organized and led performance recitals, which boosted student involvement and kept students coming back." },
+        { folder: "Volunteer", year: "2024 - 2025", title: "Main Desk & Central Supply Volunteer", sub: "At Rush Copley Medical Center, I volunteered at the main desk and in central supply for about a year, logging 96 hours. At the desk, I helped 50+ patients and visitors per shift with directions and questions in a fast-paced hospital environment. I also handled the weekly stocking and delivery of medical supplies across multiple departments." },
+        { folder: "VP", year: "Fall 2022 - 2025", title: "Teaching Assistant", sub: "At Youth and Government in Naperville, I served as school-wide Vice President and state-wide Assistant Director of Lobbyists over four years. I drove the passage of bills on recidivism and gambling advertisements, both approved unanimously at the state level. I was also recognized as Most Effective Lobbyist at the 2023 statewide conference." },
+    ];
+
+const EXPERIENCE_CARDS = EXPERIENCES.map((experience) => ({
+    name: experience.title,
+    role: experience.folder,
+    description: experience.sub,
+    stat: experience.year,
+}));
+
+function ExperienceSection() {
+    return (
+        <section id="experience" className="paper-experiences">
+            <SectionHeading marginBottom={10}>experiences</SectionHeading>
+            <p className="paper-section-note">A few places I’ve learned, contributed, and grown.</p>
+            <div className="experience-orbit-stage">
+                <OrbitCardStack
+                    items={EXPERIENCE_CARDS}
+                    defaultActiveIndex={0}
+                    spread={140}
+                    lift={34}
+                    showPortrait={false}
+                    label="Experience card stack"
+                    className="experience-orbit"
+                    cardClassName="experience-orbit-card"
+                />
+            </div>
+        </section>
+    );
+}
+
 /* ══════════════════ CONTACT ══════════════════ */
 function ContactSection() {
+    const sectionRef = useRef(null);
+
+    useEffect(() => {
+        const section = sectionRef.current;
+        if (!section || !("IntersectionObserver" in window)) return;
+        let nearViewport = false;
+        const updateAnimation = () => {
+            section.style.setProperty("--contact-animation-state",
+                nearViewport && !document.hidden ? "running" : "paused");
+        };
+        const observer = new IntersectionObserver(([entry]) => {
+            nearViewport = entry.isIntersecting;
+            updateAnimation();
+        }, { rootMargin: "200px" });
+        observer.observe(section);
+        document.addEventListener("visibilitychange", updateAnimation);
+        updateAnimation();
+        return () => {
+            observer.disconnect();
+            document.removeEventListener("visibilitychange", updateAnimation);
+            section.style.removeProperty("--contact-animation-state");
+        };
+    }, []);
+    const [message, setMessage] = useState("");
+    const [replyEmail, setReplyEmail] = useState("");
+    const [website, setWebsite] = useState("");
+    const [sendState, setSendState] = useState("idle");
+    const [sendStatus, setSendStatus] = useState("");
+    const sendingRef = useRef(false);
+    const messageInputRef = useRef(null);
     const terminalContacts = [
         {
             command: "contact.email",
@@ -885,8 +716,8 @@ function ContactSection() {
         },
         {
             command: "contact.linkedin",
-            value: "linkedin.com/in/aditi",
-            href: "https://www.linkedin.com/in/aditi",
+            value: "linkedin.com/in/aditi-amarnath/",
+            href: "https://www.linkedin.com/in/aditi-amarnath/",
         },
         {
             command: "contact.github",
@@ -894,21 +725,62 @@ function ContactSection() {
             href: "https://github.com/aditiaamarnath-rgb",
         },
     ];
+    const trimmedMessage = message.trim();
+
+    const sendMessage = async (event) => {
+        event.preventDefault();
+        if (!trimmedMessage || sendingRef.current) return;
+        const endpoint = import.meta.env.VITE_CONTACT_ENDPOINT;
+        if (!endpoint) {
+            setSendState("error");
+            setSendStatus("Message sending isn’t available yet. Please use the email link above.");
+            return;
+        }
+        sendingRef.current = true;
+        setSendState("sending");
+        setSendStatus("Sending your message…");
+        try {
+            const response = await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: trimmedMessage, email: replyEmail.trim(), website }),
+                signal: AbortSignal.timeout(15000),
+            });
+            const result = await response.json();
+            if (!response.ok || result.ok !== true) throw new Error(result.error || "Could not send your message. Please try again.");
+            setSendState("sent");
+            setSendStatus("Message sent. Thanks for reaching out!");
+            setMessage("");
+            setReplyEmail("");
+        } catch (error) {
+            setSendState("error");
+            setSendStatus(error.name === "TimeoutError" || error instanceof TypeError
+                ? "Could not confirm delivery. Please try again later or use the email link above."
+                : error.message);
+        } finally {
+            sendingRef.current = false;
+        }
+    };
+
+    const focusMessagePrompt = (event) => {
+        if (event.target.closest("a, input, button, label")) return;
+        messageInputRef.current?.focus();
+    };
 
     return (
-        <section id="contactme" style={{ background: C.bgMid, padding: "90px 52px 110px", position: "relative", overflow: "hidden", isolation: "isolate" }}>
+        <section id="contactme" ref={sectionRef} style={{ background: C.bgMid, padding: "90px 52px 110px", position: "relative", overflow: "hidden", isolation: "isolate" }}>
 
             <div className="contact-vinyl-stage" aria-hidden="true">
                 <div className="contact-vinyl">
-                    <img src={vinylStarStickers} alt="" className="contact-vinyl-sticker contact-vinyl-sticker-stars" />
-                    <img src={vinylTrebleSticker} alt="" className="contact-vinyl-sticker contact-vinyl-sticker-treble" />
-                    <img src={vinylButterflySticker} alt="" className="contact-vinyl-sticker contact-vinyl-sticker-butterfly" />
-                    <img src={vinylStrawberrySticker} alt="" className="contact-vinyl-sticker contact-vinyl-sticker-strawberry" />
-                    <img src={vinylSpiderSticker} alt="" className="contact-vinyl-sticker contact-vinyl-sticker-spider" />
-                    <img src={vinylAppleSticker} alt="" className="contact-vinyl-sticker contact-vinyl-sticker-apple" />
-                    <img src={vinylSproutSticker} alt="" className="contact-vinyl-sticker contact-vinyl-sticker-sprout" />
-                    <img src={vinylJellyfishSticker} alt="" className="contact-vinyl-sticker contact-vinyl-sticker-jellyfish" />
-                    <img src={vinylRabbitStampSticker} alt="" className="contact-vinyl-sticker contact-vinyl-sticker-rabbit-stamp" />
+                    <img src={vinylStarStickers} alt="" loading="lazy" decoding="async" className="contact-vinyl-sticker contact-vinyl-sticker-stars" />
+                    <img src={vinylTrebleSticker} alt="" loading="lazy" decoding="async" className="contact-vinyl-sticker contact-vinyl-sticker-treble" />
+                    <img src={vinylButterflySticker} alt="" loading="lazy" decoding="async" className="contact-vinyl-sticker contact-vinyl-sticker-butterfly" />
+                    <img src={vinylStrawberrySticker} alt="" loading="lazy" decoding="async" className="contact-vinyl-sticker contact-vinyl-sticker-strawberry" />
+                    <img src={vinylSpiderSticker} alt="" loading="lazy" decoding="async" className="contact-vinyl-sticker contact-vinyl-sticker-spider" />
+                    <img src={vinylAppleSticker} alt="" loading="lazy" decoding="async" className="contact-vinyl-sticker contact-vinyl-sticker-apple" />
+                    <img src={vinylSproutSticker} alt="" loading="lazy" decoding="async" className="contact-vinyl-sticker contact-vinyl-sticker-sprout" />
+                    <img src={vinylJellyfishSticker} alt="" loading="lazy" decoding="async" className="contact-vinyl-sticker contact-vinyl-sticker-jellyfish" />
+                    <img src={vinylRabbitStampSticker} alt="" loading="lazy" decoding="async" className="contact-vinyl-sticker contact-vinyl-sticker-rabbit-stamp" />
                     <div className="contact-vinyl-label">
                         <span>Limited Edition</span>
                     </div>
@@ -916,7 +788,7 @@ function ContactSection() {
             </div>
 
             <div style={{ position: "relative", zIndex: 2 }}>
-                <SectionHeading light>Contact Information</SectionHeading>
+                <SectionHeading>contact information</SectionHeading>
             </div>
 
             <div className="contact-terminal-shell">
@@ -927,7 +799,7 @@ function ContactSection() {
                         <span className="contact-terminal-dot" />
                         <span className="contact-terminal-path">aditi@portfolio:~</span>
                     </div>
-                    <div className="contact-terminal-body">
+                    <div className="contact-terminal-body" onClick={focusMessagePrompt}>
                         {terminalContacts.map((item) => (
                             <div className="contact-terminal-block" key={item.command}>
                                 <p className="contact-terminal-command">&gt; {item.command}</p>
@@ -945,12 +817,28 @@ function ContactSection() {
                             <p className="contact-terminal-command contact-terminal-prompt">&gt; do you want to download resume? (y) or (n)      y</p>
                             <a
                                 className="contact-terminal-output contact-terminal-resume-link"
-                                href="/resume.pdf"
+                                href={`${import.meta.env.BASE_URL}resume.pdf`}
                                 download
                             >
                                 download resume
                             </a>
                         </div>
+                        <form className="contact-terminal-form" onSubmit={sendMessage}>
+                            <div className="contact-terminal-message-line">
+                                <label className="contact-terminal-prompt-symbol" htmlFor="contact-reply-email">&gt; reply email:</label>
+                                <input id="contact-reply-email" className="contact-terminal-input" type="email" value={replyEmail} onChange={(event) => setReplyEmail(event.target.value)} placeholder="optional" autoComplete="email" maxLength={254} disabled={sendState === "sending"} />
+                            </div>
+                            <div className="contact-terminal-honeypot" aria-hidden="true">
+                                <label htmlFor="contact-website">Website</label>
+                                <input id="contact-website" name="website" tabIndex={-1} autoComplete="off" value={website} onChange={(event) => setWebsite(event.target.value)} />
+                            </div>
+                            <div className="contact-terminal-message-line">
+                                <label className="contact-terminal-prompt-symbol" htmlFor="contact-message">&gt;</label>
+                                <input ref={messageInputRef} id="contact-message" className="contact-terminal-input" type="text" value={message} onChange={(event) => setMessage(event.target.value)} placeholder="type a message and press enter" autoComplete="off" aria-label="Message to Aditi" aria-describedby="contact-send-status" maxLength={4000} required disabled={sendState === "sending"} />
+                                <button className="contact-terminal-send" type="submit" disabled={!trimmedMessage || sendState === "sending"}>{sendState === "sending" ? "sending…" : "send ↵"}</button>
+                            </div>
+                            <p id="contact-send-status" className="contact-terminal-send-status" role="status" aria-live="polite" aria-atomic="true">{sendStatus}</p>
+                        </form>
                         <span className="contact-terminal-cursor" aria-hidden="true" />
                     </div>
                 </div>
@@ -966,23 +854,30 @@ export default function App() {
             <InjectFonts />
             <SpeedInsights />
             <style>{`
+        @font-face {
+          font-family: 'Array';
+          src: url("${arrayRegularFont}") format("opentype");
+          font-weight: 400;
+          font-style: normal;
+          font-display: swap;
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
-        body { background: #0b1509; }
+        body { background: #efe8ca; }
         button { outline: none; }
         .about-corkboard-section {
-          background: #303d47;
+          background: #333333;
           padding: 72px clamp(16px, 4vw, 52px) 86px;
           position: relative;
           overflow: hidden;
         }
         .about-corkboard-frame {
-          max-width: 1260px;
+          max-width: 1220px;
           min-height: clamp(690px, 59vw, 770px);
           margin: 0 auto;
-          border: 3px solid #362F22;
+          border: 3px solid #4b442d;
           border-radius: 8px;
-          background: #362F22;
+          background: #4b442d;
           box-shadow: 10px 12px 0 rgba(0,0,0,0.24);
           overflow: hidden;
           position: relative;
@@ -1014,7 +909,7 @@ export default function App() {
         }
         .about-board-postit {
           min-height: 360px;
-          color: #2B2420;
+          color: #403b28;
           filter: drop-shadow(7px 8px 0 rgba(43,36,32,0.2));
         }
         .about-paper-ref-pink.about-board-postit {
@@ -1031,7 +926,7 @@ export default function App() {
           border-radius: 50%;
           background:
             radial-gradient(circle at 35% 30%, rgba(255,255,255,0.85), transparent 24%),
-            #b97d7b;
+            #f9d1d9;
           box-shadow: 2px 3px 0 rgba(43,36,32,0.18);
         }
         .about-draggable-sticker-layer {
@@ -1079,7 +974,7 @@ export default function App() {
           filter: brightness(1.04);
         }
         .about-draggable-sticker:focus-visible {
-          outline: 3px solid rgba(237,227,156,0.85);
+          outline: 3px solid rgba(158,167,107,0.85);
           outline-offset: 6px;
           border-radius: 10px;
         }
@@ -1136,14 +1031,73 @@ export default function App() {
             transform: rotate(0deg);
           }
         }
+        .experience-heading-layout {
+          max-width: 1480px;
+          margin: 0 auto;
+          position: relative;
+        }
+        .experience-heading-copy {
+          position: relative;
+          z-index: 2;
+          padding-top: 6px;
+          width: max-content;
+          max-width: min(520px, 42vw);
+        }
+        .experience-title-shell {
+          margin-bottom: 36px;
+        }
+        .experience-title-wave {
+          width: max-content;
+          max-width: 100%;
+          color: var(--experience-title-base);
+          cursor: pointer;
+          display: flex;
+          flex-wrap: wrap;
+          align-items: baseline;
+          outline: none;
+          user-select: none;
+        }
+        .experience-title-letter {
+          display: inline-block;
+          color: var(--experience-title-base);
+          opacity: 0.64;
+          text-shadow: none;
+          transform: translateY(0) scale(1);
+          transition:
+            color 58ms ease,
+            opacity 58ms ease,
+            text-shadow 58ms ease,
+            transform 58ms ease;
+          will-change: color, opacity, text-shadow, transform;
+        }
+        .experience-title-letter.is-lit {
+          color: var(--experience-title-lit);
+          opacity: 1;
+          text-shadow:
+            0 0 8px var(--experience-title-glow),
+            0 0 18px rgba(249, 209, 217, 0.64),
+            0 0 30px rgba(255, 255, 255, 0.32);
+          transform: translateY(-1px) scale(1.035);
+        }
+        .experience-title-wave:hover .experience-title-letter,
+        .experience-title-wave:focus-visible .experience-title-letter {
+          opacity: 0.74;
+        }
+        .experience-title-wave:hover .experience-title-letter.is-lit,
+        .experience-title-wave:focus-visible .experience-title-letter.is-lit {
+          opacity: 1;
+        }
+        .experience-title-wave:focus-visible {
+          outline: 3px solid rgba(249, 209, 217, 0.72);
+          outline-offset: 8px;
+          border-radius: 6px;
+        }
         .experience-computer {
-          width: min(1420px, 108vw);
+          width: min(1280px, 104vw);
           max-width: none;
           aspect-ratio: 16 / 9;
-          margin: -52px 0 0;
+          margin: -104px auto 0;
           position: relative;
-          left: 50%;
-          transform: translateX(-50%);
           z-index: 1;
           background-position: center;
           background-repeat: no-repeat;
@@ -1151,16 +1105,16 @@ export default function App() {
         }
         .experience-computer-screen {
           position: absolute;
-          left: 22.65%;
-          top: 12.68%;
-          width: 55.72%;
-          height: 52.58%;
+          left: 24.2%;
+          top: 24.4%;
+          width: 51.8%;
+          height: 52.1%;
           box-sizing: border-box;
           display: grid;
-          grid-template-columns: minmax(138px, 0.74fr) minmax(0, 1.26fr);
-          gap: clamp(8px, 1.35vw, 18px);
+          grid-template-columns: minmax(126px, 0.72fr) minmax(0, 1.28fr);
+          gap: clamp(7px, 1.1vw, 15px);
           align-items: start;
-          padding: clamp(12px, 1.95vw, 24px);
+          padding: clamp(10px, 1.55vw, 20px);
           overflow: hidden;
         }
         .experience-screen-folders {
@@ -1172,14 +1126,16 @@ export default function App() {
           z-index: 2;
         }
         .experience-screen-folder {
-          --folder-color: #ede39c;
-          --folder-tab-color: #e4ce5e;
+          --folder-color: #efe8ca;
+          --folder-tab-color: #9ea76b;
+          position: relative;
+          isolation: isolate;
           width: 100%;
-          min-height: clamp(66px, 7.4vw, 92px);
+          min-height: clamp(58px, 6.4vw, 76px);
           border: 0;
           border-radius: 6px;
           padding: 5px 4px 4px;
-          color: #202832;
+          color: #403b28;
           background: transparent;
           cursor: pointer;
           display: flex;
@@ -1188,31 +1144,55 @@ export default function App() {
           justify-content: flex-start;
           gap: 5px;
           transition:
-            transform 180ms ease,
             background-color 180ms ease,
             box-shadow 180ms ease,
             filter 180ms ease;
         }
+        .experience-screen-folder::before {
+          content: "";
+          position: absolute;
+          inset: -4px -3px;
+          z-index: -1;
+          border: 2px solid rgba(249,209,217,0);
+          border-radius: 8px;
+          background: rgba(255,255,255,0.1);
+          opacity: 0;
+          transition:
+            opacity 180ms ease,
+            border-color 180ms ease;
+        }
         .experience-screen-folder:hover,
         .experience-screen-folder:focus-visible,
         .experience-screen-folder.is-active {
-          background: rgba(255,255,255,0.24);
+          background: rgba(255,255,255,0.12);
           box-shadow: none;
-          filter: brightness(1.03);
-          transform: translateY(-3px);
+          filter: brightness(1.04);
+        }
+        .experience-screen-folder:hover::before,
+        .experience-screen-folder:focus-visible::before,
+        .experience-screen-folder.is-active::before {
+          opacity: 1;
+          border-color: rgba(249,209,217,0.82);
         }
         .experience-screen-folder:focus-visible {
-          outline: 3px solid rgba(185,125,123,0.82);
+          outline: 3px solid rgba(249,209,217,0.9);
           outline-offset: 2px;
         }
         .experience-screen-folder-icon {
           display: block;
-          width: clamp(56px, 6.8vw, 82px);
+          width: clamp(50px, 5.6vw, 66px);
           height: auto;
           margin-top: 4px;
           filter: drop-shadow(3px 4px 0 rgba(0,0,0,0.14));
           pointer-events: none;
           user-select: none;
+          transition: transform 180ms ease, filter 180ms ease;
+        }
+        .experience-screen-folder:hover .experience-screen-folder-icon,
+        .experience-screen-folder:focus-visible .experience-screen-folder-icon,
+        .experience-screen-folder.is-active .experience-screen-folder-icon {
+          filter: drop-shadow(4px 7px 0 rgba(0,0,0,0.22));
+          transform: translateY(-6px) rotate(-2deg) scale(1.06);
         }
         .experience-screen-folder-label {
           max-width: 100%;
@@ -1225,7 +1205,7 @@ export default function App() {
           overflow-wrap: anywhere;
         }
         .experience-file-window {
-          --window-accent: #758061;
+          --window-accent: #9ea76b;
           position: relative;
           z-index: 3;
           min-width: 0;
@@ -1235,10 +1215,10 @@ export default function App() {
           flex-direction: column;
           min-height: clamp(220px, 23vw, 300px);
           padding: clamp(22px, 2.6vw, 32px);
-          background: #e6eaed;
-          border: 3px solid #362F22;
+          background: #fff8e2;
+          border: 3px solid #4b442d;
           border-radius: 8px;
-          color: #362F22;
+          color: #403b28;
           box-shadow: 6px 7px 0 rgba(0,0,0,0.18);
           overflow: hidden;
           animation: experienceWindowOpen 240ms cubic-bezier(0.2, 0.8, 0.24, 1) both;
@@ -1251,7 +1231,7 @@ export default function App() {
           width: 100%;
           height: 8px;
           background: var(--window-accent);
-          border-bottom: 3px solid #362F22;
+          border-bottom: 3px solid #4b442d;
         }
         .experience-file-close {
           position: absolute;
@@ -1260,12 +1240,12 @@ export default function App() {
           z-index: 2;
           width: 27px;
           height: 27px;
-          border: 2px solid #362F22;
+          border: 2px solid #4b442d;
           border-radius: 5px;
           padding: 0;
           display: grid;
           place-items: center;
-          color: #362F22;
+          color: #403b28;
           background: rgba(255,255,255,0.64);
           cursor: pointer;
           font-family: 'Nunito', sans-serif;
@@ -1275,10 +1255,10 @@ export default function App() {
         }
         .experience-file-close:hover,
         .experience-file-close:focus-visible {
-          background: #ede39c;
+          background: #f9d1d9;
         }
         .experience-file-close:focus-visible {
-          outline: 2px solid rgba(185,125,123,0.82);
+          outline: 2px solid rgba(249,209,217,0.9);
           outline-offset: 2px;
         }
         .experience-file-next,
@@ -1439,17 +1419,17 @@ export default function App() {
           object-fit: cover;
         }
         .projects-shell {
-          max-width: 1220px;
+          max-width: 1260px;
           margin: 0 auto;
           position: relative;
           z-index: 1;
         }
         .project-folder-stack {
           position: relative;
-          width: min(94vw, 900px);
+          width: min(91vw, 950px);
           aspect-ratio: 1.32;
-          margin: 6px auto 0;
-          filter: drop-shadow(0 14px 16px rgba(0,0,0,0.26));
+          margin: -28px auto 0;
+          filter: drop-shadow(0 17px 19px rgba(0,0,0,0.28));
         }
         .project-folder-layer {
           position: absolute;
@@ -1492,7 +1472,7 @@ export default function App() {
           color: #2B2420;
           background: transparent;
           font-family: 'Nunito', sans-serif;
-          font-size: clamp(10px, 1.28vw, 14px);
+          font-size: 13px;
           font-weight: 900;
           letter-spacing: 0.04em;
           line-height: 1;
@@ -1547,14 +1527,14 @@ export default function App() {
           right: 11%;
           top: 27%;
           bottom: 5%;
-          padding: clamp(18px, 2.7vw, 32px) clamp(18px, 3.4vw, 38px) clamp(18px, 2.7vw, 30px);
+          padding: 30px 38px 28px;
           color: #2B2420;
           overflow: visible;
           isolation: isolate;
           display: flex;
           flex-direction: column;
           background:
-            linear-gradient(90deg, transparent 0 clamp(33px, 4vw, 44px), rgba(185,125,123,0.34) clamp(33px, 4vw, 44px) calc(clamp(33px, 4vw, 44px) + 2px), transparent calc(clamp(33px, 4vw, 44px) + 2px)),
+            linear-gradient(90deg, transparent 0 42px, rgba(185,125,123,0.34) 42px 44px, transparent 44px),
             linear-gradient(110deg, rgba(255,255,255,0.56), transparent 42%),
             repeating-linear-gradient(0deg, transparent 0 30px, rgba(99,82,55,0.16) 31px 33px),
             #fbf3d8;
@@ -1571,7 +1551,7 @@ export default function App() {
           content: "";
           position: absolute;
           inset: 0 0 auto;
-          height: clamp(16px, 2vw, 22px);
+          height: 22px;
           background:
             linear-gradient(90deg, rgba(255,255,255,0.22), transparent 36%),
             var(--paper-accent);
@@ -1581,10 +1561,10 @@ export default function App() {
         .project-file-paper::after {
           content: "";
           position: absolute;
-          left: clamp(18px, 2.2vw, 30px);
-          top: clamp(54px, 6vw, 72px);
+          left: 28px;
+          top: 64px;
           width: 13px;
-          height: clamp(92px, 12vw, 126px);
+          height: 112px;
           background:
             radial-gradient(circle at 50% 8px, #fbf3d8 0 4.5px, rgba(43,36,32,0.16) 5px 6px, transparent 6.5px),
             radial-gradient(circle at 50% 44px, #fbf3d8 0 4.5px, rgba(43,36,32,0.16) 5px 6px, transparent 6.5px),
@@ -1645,7 +1625,7 @@ export default function App() {
           min-height: 25px;
           padding: 5px 12px;
           font-family: 'Nunito', sans-serif;
-          font-size: clamp(9px, 1.15vw, 11px);
+          font-size: 11px;
           font-weight: 900;
           letter-spacing: 0.1em;
           line-height: 1;
@@ -1746,7 +1726,7 @@ export default function App() {
         }
         .project-title {
           font-family: 'Playfair Display', serif;
-          font-size: clamp(28px, 4vw, 44px);
+          font-size: 42px;
           font-weight: 900;
           line-height: 1.02;
           color: #2B2420;
@@ -1769,11 +1749,11 @@ export default function App() {
         }
         .project-desc {
           font-family: 'Nunito', sans-serif;
-          font-size: 15px;
-          line-height: 1.62;
+          font-size: 14px;
+          line-height: 1.6;
           color: #2B2420;
           margin: 0 var(--project-desc-right) 0 var(--project-desc-left);
-          max-width: 630px;
+          max-width: 610px;
         }
         .project-tags {
           display: flex;
@@ -1784,16 +1764,16 @@ export default function App() {
           margin-top: auto;
           margin-left: var(--project-tags-left);
           margin-right: var(--project-tags-right);
-          padding-top: 20px;
+          padding-top: 18px;
         }
         .project-skill-sticker {
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          min-height: 36px;
-          padding: 8px 12px;
+          min-height: 32px;
+          padding: 7px 11px;
           font-family: 'Nunito', sans-serif;
-          font-size: 13px;
+          font-size: 12px;
           font-weight: 800;
           color: #2B2420;
           background: rgba(255,248,234,0.64);
@@ -1818,16 +1798,16 @@ export default function App() {
           background:
             repeating-linear-gradient(90deg, rgba(54,47,34,0.06) 0 1px, transparent 1px 7px),
             linear-gradient(120deg, rgba(255,255,255,0.2), rgba(43,36,32,0.04)),
-            #e6eaed;
-          border: 3px solid #362F22;
+            #efe8ca;
+          border: 3px solid #4b442d;
           border-radius: 4px;
           box-shadow: 8px 8px 0 rgba(0,0,0,0.32);
         }
         .contact-terminal {
-          border: 3px solid #362F22;
+          border: 3px solid #4b442d;
           border-radius: 4px;
           overflow: hidden;
-          background: #141b20;
+          background: #1c1c1c;
           box-shadow:
             inset 0 0 0 1px rgba(230,234,237,0.06),
             4px 4px 0 rgba(0,0,0,0.18);
@@ -1840,29 +1820,29 @@ export default function App() {
           padding: 0 14px;
           background:
             linear-gradient(180deg, rgba(255,255,255,0.08), rgba(0,0,0,0.06)),
-            #303d47;
-          border-bottom: 3px solid #362F22;
+            #333333;
+          border-bottom: 3px solid #4b442d;
         }
         .contact-terminal-dot {
           width: 11px;
           height: 11px;
           border-radius: 50%;
-          background: #b97d7b;
+          background: #f9d1d9;
           border: 1px solid rgba(0,0,0,0.3);
           flex: 0 0 auto;
         }
         .contact-terminal-dot:nth-child(2) {
-          background: #ede39c;
+          background: #efe8ca;
         }
         .contact-terminal-dot:nth-child(3) {
-          background: #6c9770;
+          background: #9ea76b;
         }
         .contact-terminal-path {
           margin-left: 8px;
           font-family: 'Inter', monospace;
           font-size: 12px;
           font-weight: 700;
-          color: #c0cab8;
+          color: #efe8ca;
           letter-spacing: 0.02em;
         }
         .contact-terminal-body {
@@ -1872,8 +1852,8 @@ export default function App() {
             repeating-linear-gradient(to bottom, rgba(230,234,237,0.035) 0 1px, transparent 1px 28px),
             radial-gradient(circle at 18% 20%, rgba(89,109,133,0.2), transparent 30%),
             linear-gradient(120deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12)),
-            #141b20;
-          color: #c0cab8;
+            #1c1c1c;
+          color: #efe8ca;
         }
         .contact-terminal-block {
           margin-bottom: 24px;
@@ -1886,19 +1866,19 @@ export default function App() {
           letter-spacing: 0;
         }
         .contact-terminal-command {
-          color: #c0cab8;
+          color: #efe8ca;
           margin: 0 0 4px;
           font-weight: 700;
         }
         .contact-terminal-command::first-letter {
-          color: #b97d7b;
+          color: #f9d1d9;
         }
         .contact-terminal-prompt {
           white-space: pre-wrap;
         }
         .contact-terminal-output {
           display: inline-block;
-          color: #e6eaed;
+          color: #fff8e2;
           text-decoration: none;
           word-break: break-word;
           padding-left: 20px;
@@ -1910,21 +1890,60 @@ export default function App() {
         }
         .contact-terminal-output:hover,
         .contact-terminal-output:focus-visible {
-          color: #ede39c;
+          color: #f9d1d9;
           text-decoration: underline;
           text-underline-offset: 4px;
         }
         .contact-terminal-output:focus-visible {
-          outline: 2px solid #ede39c;
+          outline: 2px solid #f9d1d9;
           outline-offset: 4px;
+        }
+        .contact-terminal-message-line {
+          display: flex;
+          align-items: baseline;
+          gap: 8px;
+          margin: 4px 0 4px;
+          cursor: text;
+        }
+        .contact-terminal-prompt-symbol,
+        .contact-terminal-input {
+          font-family: 'Inter', 'Courier New', monospace;
+          font-size: clamp(14px, 1.55vw, 17px);
+          line-height: 1.55;
+          letter-spacing: 0;
+        }
+        .contact-terminal-prompt-symbol {
+          color: #f9d1d9;
+          font-weight: 700;
+          flex: 0 0 auto;
+        }
+        .contact-terminal-input {
+          min-width: 0;
+          flex: 1;
+          border: 0;
+          border-bottom: 1px solid rgba(239,232,202,0.28);
+          border-radius: 0;
+          background: transparent;
+          color: #fff8e2;
+          caret-color: #f9d1d9;
+          padding: 0 0 2px;
+          outline: none;
+        }
+        .contact-terminal-input::placeholder {
+          color: rgba(239,232,202,0.64);
+        }
+        .contact-terminal-input:focus {
+          border-bottom-color: #f9d1d9;
+          box-shadow: 0 1px 0 #f9d1d9;
         }
         .contact-terminal-cursor {
           display: inline-block;
           width: 9px;
           height: 18px;
-          background: #b97d7b;
-          box-shadow: 0 0 12px rgba(185,125,123,0.35);
+          background: #f9d1d9;
+          box-shadow: 0 0 12px rgba(249,209,217,0.38);
           animation: contact-terminal-cursor 1.1s steps(2, start) infinite;
+          animation-play-state: var(--contact-animation-state, running);
         }
         .contact-vinyl-stage {
           position: absolute;
@@ -1951,6 +1970,9 @@ export default function App() {
             inset 0 0 42px rgba(255,255,255,0.08),
             18px 24px 0 rgba(0,0,0,0.18);
           animation: contact-vinyl-spin 42s linear infinite;
+          animation-play-state: var(--contact-animation-state, running);
+          /* Cache the filtered stickers with the record while it rotates. */
+          will-change: transform;
           overflow: hidden;
         }
         .contact-vinyl::before {
@@ -2177,7 +2199,7 @@ export default function App() {
           overflow: hidden;
         }
         .about-paper-ref-teal {
-          background-color: #9fc1bd;
+          background-color: #c8cf98;
           background-image:
             repeating-linear-gradient(to bottom, transparent 0 15px, rgba(255,255,255,0.34) 15px 16px),
             linear-gradient(105deg, rgba(255,255,255,0.2), rgba(43,36,32,0.04)),
@@ -2185,7 +2207,7 @@ export default function App() {
           box-shadow: inset 0 0 0 2px rgba(255,255,255,0.38), inset 0 -18px 28px rgba(43,36,32,0.08);
         }
         .about-paper-ref-pink {
-          background-color: #d99397;
+          background-color: #f9d1d9;
           background-image:
             radial-gradient(circle at 18% 24%, rgba(255,255,255,0.16), transparent 26%),
             radial-gradient(circle at 76% 18%, rgba(43,36,32,0.08), transparent 24%),
@@ -2195,8 +2217,8 @@ export default function App() {
         .about-paper-ref-grid {
           background-color: #f3eadf;
           background-image:
-            linear-gradient(rgba(88,130,150,0.22) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(88,130,150,0.22) 1px, transparent 1px),
+            linear-gradient(rgba(158,167,107,0.28) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(158,167,107,0.28) 1px, transparent 1px),
             linear-gradient(105deg, rgba(255,255,255,0.28), rgba(43,36,32,0.04));
           background-size: 18px 18px, 18px 18px, auto;
           box-shadow: inset 0 0 0 1px rgba(43,36,32,0.08), inset 18px 0 0 rgba(220,210,199,0.42);
@@ -2208,7 +2230,7 @@ export default function App() {
           bottom: 34px;
           left: 15px;
           width: 12px;
-          background-image: radial-gradient(circle, #34434c 0 4px, transparent 4.6px);
+          background-image: radial-gradient(circle, #404040 0 4px, transparent 4.6px);
           background-size: 12px 34px;
           background-repeat: repeat-y;
           z-index: 0;
@@ -2237,7 +2259,7 @@ export default function App() {
           content: "";
           position: absolute;
           inset: 0;
-          background-color: #d99397;
+          background-color: #f9d1d9;
           background-image:
             radial-gradient(circle at 18% 24%, rgba(255,255,255,0.16), transparent 26%),
             radial-gradient(circle at 76% 18%, rgba(43,36,32,0.08), transparent 24%),
@@ -2500,6 +2522,17 @@ export default function App() {
           }
         }
         @media (max-width: 980px) {
+          .experience-heading-layout {
+            display: block;
+          }
+          .experience-heading-copy {
+            padding-top: 0;
+            max-width: 100%;
+          }
+          .experience-computer {
+            width: min(1180px, 108vw);
+            margin: -52px auto 0;
+          }
           .about-stack-grid {
             grid-template-columns: 1fr;
             max-width: 520px;
@@ -2519,6 +2552,7 @@ export default function App() {
           .project-folder-stack {
             width: min(100%, 540px);
             aspect-ratio: 1.02;
+            margin: 6px auto 0;
             filter: drop-shadow(0 12px 14px rgba(0,0,0,0.25));
           }
           .project-folder-label {
@@ -2614,7 +2648,7 @@ export default function App() {
           .experience-computer {
             width: min(820px, 198vw);
             max-width: none;
-            margin-top: -26px;
+            margin: -26px auto 0;
           }
           .experience-computer-screen {
             grid-template-columns: 126px minmax(0, 1fr);
@@ -2726,6 +2760,14 @@ export default function App() {
           .experience-file-window {
             transition: none !important;
           }
+          .experience-title-letter {
+            transition: none !important;
+            will-change: auto;
+          }
+          .experience-title-letter.is-lit {
+            text-shadow: none;
+            transform: none;
+          }
           .about-stack-angle,
           .about-paper-reveal,
           .about-paper-curl {
@@ -2751,9 +2793,9 @@ export default function App() {
         }
       `}</style>
             <div style={{ maxWidth: "100vw", overflowX: "hidden" }}>
-                <NavBar />
                 <HeroSection />
                 <AboutSection />
+                <FilmStripSection />
                 <ExperienceSection />
                 <ProjectsSection />
                 <ContactSection />
