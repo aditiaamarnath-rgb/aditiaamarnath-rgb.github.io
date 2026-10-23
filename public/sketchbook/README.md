@@ -9,8 +9,8 @@ concept credits [Matthew Yu](https://github.com/matthewyuart/personalportfolio).
 The supplied `sketchbook pt1.pdf` has 23 pages. PDF page 1 is excluded.
 The remaining 22 original sketches appear in 11 spreads, in this exact order:
 2/3, 4/5, 6/7, 8/9, 10/11, 12/13, 14/15, 16/17, 18/19, 20/21, 22/23.
-The first number is always the left page. The book returns to the first spread
-after its brief introductory riffle.
+The first number is always the left page. The book stays on the spread reached
+by its brief introductory riffle.
 
 `sketchbook pt2.pdf` follows part 1. All 20 of its pages are included in
 10 more spreads: 1/2, 3/4, 5/6, 7/8, 9/10, 11/12, 13/14, 15/16, 17/18, 19/20.
@@ -46,9 +46,9 @@ The book supports dragging, page buttons, and arrow keys. It has no visible page
 numbers, index, or magnifier. Reduced-motion preferences disable tilt and settle
 page turns immediately.
 
-On first scrolling the book into view, a short breeze riffles through its pages.
-This plays once per page load, waits for the artwork to be ready, and stops if
-the visitor scrolls away or starts turning a page. Reduced motion skips it.
+Each time the visitor scrolls down into the book, a short breeze riffles through
+its pages and leaves the final spread open. It stops if the visitor scrolls away
+or starts turning a page. Reduced motion skips it.
 
 The isolated HTML frame preserves the 3D geometry without inheriting the
 portfolio's global styles. Its URL respects Vite's deployment base path.

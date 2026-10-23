@@ -275,7 +275,7 @@ import { pages as PAGES, createSpread, bookGeometry } from "./pages.js";
    the way paper bends instead of pivoting like a flat door.
    ===================================================================== */
 const Q=new URLSearchParams(location.search);
-const M=PAGES.length, LAND=0;
+const M=PAGES.length;
 
 const wrap=document.getElementById('sbWrap');
 const stage=document.getElementById('sbStage');
@@ -568,9 +568,8 @@ addEventListener('keydown',e=>{
 
 
 /* ---------------------------------------------------------- the riffle */
-let riffle=null,riffleAt=0,introOn=false,introPlayed=false,manualTurned=false,introTimer=null;
+let riffle=null,riffleAt=0,introOn=false,introPlayed=false,manualTurned=false;
 function endIntro(){
-  clearTimeout(introTimer);
   introOn=false;wrap.classList.remove('intro','b2');
   spring=null;
   if(turn){idx=turn.to;turn=null;paint();}
@@ -583,7 +582,7 @@ function riffleStep(){
     idx=turn.to;turn=null;
     riffleAt++;
     if(introOn&&riffleAt<riffle.length){paint();riffleStep();}
-    else{endIntro();idx=LAND;paint();}
+    else{endIntro();paint();}
   });
 }
 function startIntro(){
@@ -612,7 +611,6 @@ function startIntro(){
   wrap.style.setProperty('--riffle-duration',duration+'s');
   riffleAt=0;introOn=true;wrap.classList.add('intro');
   riffleStep();
-  introTimer=setTimeout(()=>{endIntro();idx=LAND;paint();},2450);
 }
 
 addEventListener('message',event=>{
