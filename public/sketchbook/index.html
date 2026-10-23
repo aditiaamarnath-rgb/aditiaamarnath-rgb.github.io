@@ -490,6 +490,7 @@ stage.addEventListener('pointerdown',e=>{
   if(e.button!==0)return;
   const onBook=e.target.closest('.sb-zone');
   if(!onBook)return;
+  manualTurned=true;
   introPlayed=true;
   if(introOn)endIntro();
   e.preventDefault();
@@ -548,6 +549,7 @@ function cancel(){
   kick();
 }
 function step(dir){
+  manualTurned=true;
   introPlayed=true;
   if(introOn)endIntro();
   if(turn){ /* finish whatever is in flight first */ idx=turn.to;turn=null; }
@@ -566,7 +568,7 @@ addEventListener('keydown',e=>{
 
 
 /* ---------------------------------------------------------- the riffle */
-let riffle=null,riffleAt=0,introOn=false,introPlayed=false,introTimer=null;
+let riffle=null,riffleAt=0,introOn=false,introPlayed=false,manualTurned=false,introTimer=null;
 function endIntro(){
   clearTimeout(introTimer);
   introOn=false;wrap.classList.remove('intro','b2');
@@ -616,8 +618,15 @@ function startIntro(){
 addEventListener('message',event=>{
   if(event.origin!==location.origin||event.source!==parent)return;
   if(event.data?.type!=='sketchbook-visibility')return;
-  if(event.data.visible)startIntro();
-  else if(introOn)endIntro();
+  if(!event.data.inView){
+    if(introOn)endIntro();
+    introPlayed=false;
+    manualTurned=false;
+  }else if(!event.data.visible){
+    if(introOn)endIntro();
+  }else if(event.data.trigger&&!manualTurned){
+    startIntro();
+  }
 });
 
 /* ------------------------------------------------------------- boot */
@@ -625,10 +634,10 @@ addEventListener('message',event=>{
   await Promise.all(PAGES.map(async (p, i) => { p.url = await createSpread(p, i); }));
   idx=Q.has('shot')?(parseInt(Q.get('shot'),10)||0)%M:0;
   paint();applyView();
-  await Promise.all(PAGES.map(p=>{
-    const im=new Image();im.src=p.url;
-    return im.decode?im.decode().catch(()=>{}):new Promise(r=>{im.onload=im.onerror=r});
-  }));
+  const firstImage=new Image();firstImage.src=PAGES[idx].url;
+  // Fetch the opening riffle spreads without delaying readiness for their decode.
+  PAGES.slice(1,7).forEach(p=>{const im=new Image();im.src=p.url});
+  await (firstImage.decode?firstImage.decode().catch(()=>{}):new Promise(r=>{firstImage.onload=firstImage.onerror=r}));
   if(document.fonts&&document.fonts.ready)await document.fonts.ready.catch(()=>{});
   document.body.dataset.ready='1';
   const reportHeight=()=>parent.postMessage({type:'sketchbook-resize',height:document.documentElement.offsetHeight},location.origin);

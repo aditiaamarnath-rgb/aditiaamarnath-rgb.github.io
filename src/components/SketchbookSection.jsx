@@ -9,14 +9,16 @@ export default function SketchbookSection() {
     const frame = frameRef.current;
     let ready = false;
     let visible = false;
-    const notifyVisibility = () => {
-      if (ready) frame?.contentWindow?.postMessage({ type: 'sketchbook-visibility', visible }, window.location.origin);
+    let inView = false;
+    let enteredAt = 0;
+    const notifyVisibility = (trigger = false) => {
+      if (ready) frame?.contentWindow?.postMessage({ type: 'sketchbook-visibility', visible, inView, trigger }, window.location.origin);
     };
     const resizeFrame = (event) => {
       if (event.origin !== window.location.origin || event.source !== frameRef.current?.contentWindow) return;
       if (event.data?.type === 'sketchbook-ready') {
         ready = true;
-        notifyVisibility();
+        notifyVisibility(visible && enteredAt > 0 && performance.now() - enteredAt < 750);
       }
       if (event.data?.type === 'sketchbook-resize' && Number.isFinite(event.data.height)) {
         setFrameHeight(Math.max(160, Math.ceil(event.data.height)));
@@ -24,8 +26,13 @@ export default function SketchbookSection() {
     };
     window.addEventListener('message', resizeFrame);
     const observer = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting && entry.intersectionRatio >= 0.4;
-      notifyVisibility();
+      const nextVisible = entry.isIntersecting && entry.intersectionRatio >= 0.4;
+      const enteredFromAbove = nextVisible && !visible && entry.boundingClientRect.top >= 0;
+      visible = nextVisible;
+      inView = entry.isIntersecting;
+      if (enteredFromAbove) enteredAt = performance.now();
+      if (!inView) enteredAt = 0;
+      notifyVisibility(enteredFromAbove);
     }, { threshold: [0, 0.4], rootMargin: '0px 0px -8% 0px' });
     if (frame) observer.observe(frame);
     return () => {
