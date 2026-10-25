@@ -13,6 +13,9 @@ import headphonesSticker from "./assets/handdrawn-stickers/headphones.png";
 import nailPolishSticker from "./assets/handdrawn-stickers/polish.png";
 import buttonSticker from "./assets/handdrawn-stickers/button.png";
 import paperStarSticker from "./assets/handdrawn-stickers/star.png";
+import bobaSticker from "./assets/handdrawn-stickers/food/boba.png";
+import ramenSticker from "./assets/handdrawn-stickers/food/ramen.png";
+import smiskiSticker from "./assets/handdrawn-stickers/food/smiski.png";
 import bluprintProjectPreview from "./assets/bluprint-postit-preview.png";
 import databridgePostitPreview from "./assets/databridge-postit-preview.png";
 import interdisciplinaryPostitPreview from "./assets/interdisciplinary-postit-preview.png";
@@ -219,6 +222,33 @@ function HeroStickers() {
             y: 4,
             width: "clamp(64px, 6vw, 88px)",
             rotate: "15deg",
+        },
+        {
+            id: "ramen",
+            src: ramenSticker,
+            alt: "Hand-drawn bowl of ramen sticker",
+            x: 40,
+            y: 5,
+            width: "clamp(136px, 13vw, 194px)",
+            rotate: "-7deg",
+        },
+        {
+            id: "boba",
+            src: bobaSticker,
+            alt: "Hand-drawn boba tea sticker",
+            x: 6,
+            y: 79,
+            width: "clamp(74px, 7vw, 102px)",
+            rotate: "-6deg",
+        },
+        {
+            id: "smiski",
+            src: smiskiSticker,
+            alt: "Hand-drawn green Smiski playing a flute sticker",
+            x: 94,
+            y: 69,
+            width: "clamp(66px, 6.5vw, 94px)",
+            rotate: "9deg",
         },
     ];
     const [stickerPositions, setStickerPositions] = useState({});

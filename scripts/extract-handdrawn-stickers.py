@@ -115,25 +115,34 @@ def drawing_component(pixels, width, height):
     return keep
 
 
-# Bounds follow each original object, excluding neighboring drawings. The sheet
-# is 1640 x 2360; these coordinates use its 1312 x 1888 display coordinate space.
-REGIONS = {
-    'camera': {'polygon': [(165, 45), (745, 45), (755, 450), (420, 455), (415, 690), (30, 690), (30, 165), (165, 165)], 'holes': [(245, 585)]},
-    'polish': {'polygon': [(920, 12), (1195, 12), (1195, 455), (920, 455)]},
-    'button': {'polygon': [(45, 720), (305, 720), (305, 970), (45, 970)]},
-    'paint': {'polygon': [(25, 1020), (283, 1010), (285, 1108), (383, 1108), (389, 1300), (470, 1360), (470, 1688), (25, 1688)], 'holes': [(415, 1460)]},
-    'star': {'polygon': [(430, 1045), (704, 1045), (704, 1340), (430, 1340)]},
-    'headphones': {'polygon': [(835, 1090), (1290, 1090), (1290, 1868), (520, 1868), (520, 1390), (659, 1368), (710, 1255), (763, 1166)], 'holes': [(950, 1370)]},
+SHEETS = {
+    # Coordinates use the original sheet's 1312 x 1888 display space.
+    (1640, 2360): {'scale': 1.25, 'regions': {
+        'camera': {'polygon': [(165, 45), (745, 45), (755, 450), (420, 455), (415, 690), (30, 690), (30, 165), (165, 165)], 'holes': [(245, 585)]},
+        'polish': {'polygon': [(920, 12), (1195, 12), (1195, 455), (920, 455)]},
+        'button': {'polygon': [(45, 720), (305, 720), (305, 970), (45, 970)]},
+        'paint': {'polygon': [(25, 1020), (283, 1010), (285, 1108), (383, 1108), (389, 1300), (470, 1360), (470, 1688), (25, 1688)], 'holes': [(415, 1460)]},
+        'star': {'polygon': [(430, 1045), (704, 1045), (704, 1340), (430, 1340)]},
+        'headphones': {'polygon': [(835, 1090), (1290, 1090), (1290, 1868), (520, 1868), (520, 1390), (659, 1368), (710, 1255), (763, 1166)], 'holes': [(950, 1370)]},
+    }},
+    # Second supplied sheet; coordinates are native source pixels.
+    (2360, 1640): {'scale': 1, 'regions': {
+        'boba': {'polygon': [(700, 390), (1300, 390), (1300, 1250), (700, 1250)]},
+        'ramen': {'polygon': [(980, 40), (1900, 40), (1900, 780), (980, 780)]},
+        'smiski': {'polygon': [(1700, 400), (2320, 400), (2320, 1160), (1700, 1160)]},
+    }},
 }
 
 
 def extract(source, output_dir):
     width, height, original, profiles = read_png(source)
-    assert (width, height) == (1640, 2360), 'Use the original attached sheet without resizing'
+    assert (width, height) in SHEETS, 'Use one of the original attached sheets without resizing'
+    sheet = SHEETS[(width, height)]
+    scale = sheet['scale']
     output_dir.mkdir(parents=True, exist_ok=True)
     manifest = {'sourceSha256': hashlib.sha256(Path(source).read_bytes()).hexdigest(), 'sourceSize': [width, height], 'method': 'Direct crop and background alpha mask; original RGB and color profile retained; no resampling.', 'images': {}}
-    for name, region in REGIONS.items():
-        polygon = [(round(x * 1.25), round(y * 1.25)) for x, y in region['polygon']]
+    for name, region in sheet['regions'].items():
+        polygon = [(round(x * scale), round(y * scale)) for x, y in region['polygon']]
         x0, y0 = min(x for x, _ in polygon), min(y for _, y in polygon)
         x1, y1 = max(x for x, _ in polygon), max(y for _, y in polygon)
         w, h = x1 - x0, y1 - y0
@@ -151,7 +160,7 @@ def extract(source, output_dir):
                         removed[i] = 1
                         queue.append(i)
         for x, y in region.get('holes', []):
-            x, y = round(x * 1.25) - x0, round(y * 1.25) - y0
+            x, y = round(x * scale) - x0, round(y * scale) - y0
             i = y * w + x
             assert removable[i], f'{name}: background seed touches drawing'
             removed[i] = 1

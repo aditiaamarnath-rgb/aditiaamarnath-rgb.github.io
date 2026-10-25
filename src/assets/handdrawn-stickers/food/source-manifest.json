@@ -1,0 +1,43 @@
+{
+  "sourceSha256": "62d49ed68ad1d2bc3ee00813854cff811afb4a7e0149d48e52b7ed7c009c9720",
+  "sourceSize": [
+    2360,
+    1640
+  ],
+  "method": "Direct crop and background alpha mask; original RGB and color profile retained; no resampling.",
+  "images": {
+    "boba": {
+      "size": [
+        430,
+        734
+      ],
+      "sourceOrigin": [
+        785,
+        460
+      ],
+      "originalPixelsVerified": true
+    },
+    "ramen": {
+      "size": [
+        721,
+        656
+      ],
+      "sourceOrigin": [
+        1109,
+        74
+      ],
+      "originalPixelsVerified": true
+    },
+    "smiski": {
+      "size": [
+        352,
+        573
+      ],
+      "sourceOrigin": [
+        1878,
+        479
+      ],
+      "originalPixelsVerified": true
+    }
+  }
+}
