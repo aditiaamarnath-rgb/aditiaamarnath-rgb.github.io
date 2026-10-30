@@ -503,13 +503,13 @@ body {
 }
 
 .hero-sticker-layer .about-draggable-sticker {
-  left: calc(3% + var(--initial-sticker-x) * 0.46%);
-  top: calc(38% + var(--initial-sticker-y) * 0.59%);
+  left: calc(var(--initial-sticker-x) * 1%);
+  top: calc(var(--initial-sticker-y) * 1%);
 }
 @media (max-width: 700px) {
   .hero-sticker-layer .about-draggable-sticker {
-    left: calc(5% + var(--initial-sticker-x) * 0.86%);
-    top: calc(70% + var(--initial-sticker-y) * 0.26%);
+    left: calc(5% + var(--mobile-sticker-x) * 0.86%);
+    top: calc(70% + var(--mobile-sticker-y) * 0.26%);
   }
 }
 

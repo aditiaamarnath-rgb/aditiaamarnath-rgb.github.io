@@ -10,15 +10,19 @@ export default function SketchbookSection() {
     let ready = false;
     let visible = false;
     let inView = false;
-    let enteredAt = 0;
+    let pendingEntry = false;
     const notifyVisibility = (trigger = false) => {
-      if (ready) frame?.contentWindow?.postMessage({ type: 'sketchbook-visibility', visible, inView, trigger }, window.location.origin);
+      if (trigger) pendingEntry = true;
+      if (!inView) pendingEntry = false;
+      if (!ready) return;
+      frame?.contentWindow?.postMessage({ type: 'sketchbook-visibility', visible, inView, trigger: visible && pendingEntry }, window.location.origin);
+      if (visible) pendingEntry = false;
     };
     const resizeFrame = (event) => {
       if (event.origin !== window.location.origin || event.source !== frameRef.current?.contentWindow) return;
       if (event.data?.type === 'sketchbook-ready') {
         ready = true;
-        notifyVisibility(visible && enteredAt > 0 && performance.now() - enteredAt < 750);
+        notifyVisibility();
       }
       if (event.data?.type === 'sketchbook-resize' && Number.isFinite(event.data.height)) {
         setFrameHeight(Math.max(160, Math.ceil(event.data.height)));
@@ -30,8 +34,6 @@ export default function SketchbookSection() {
       const enteredFromAbove = nextVisible && !visible && entry.boundingClientRect.top >= 0;
       visible = nextVisible;
       inView = entry.isIntersecting;
-      if (enteredFromAbove) enteredAt = performance.now();
-      if (!inView) enteredAt = 0;
       notifyVisibility(enteredFromAbove);
     }, { threshold: [0, 0.4], rootMargin: '0px 0px -8% 0px' });
     if (frame) observer.observe(frame);

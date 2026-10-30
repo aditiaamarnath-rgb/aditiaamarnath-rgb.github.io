@@ -207,7 +207,9 @@ body { background:transparent; }
   max-width:1540px;
   /* Compensate for the bitmap's transparent padding as the book grows. */
   --book-growth:clamp(88px,calc(100vw - 1152px),288px);
-  margin:calc(-65px - var(--book-growth) * .0852272727) auto calc(-50px - var(--book-growth) * .0852272727);
+  /* The lifted leaf projects beyond the flat spread; keep it inside the frame. */
+  --turn-clearance:clamp(24px,3.8vw,55px);
+  margin:calc(-65px + var(--turn-clearance) - var(--book-growth) * .0852272727) auto calc(-50px + var(--turn-clearance) - var(--book-growth) * .0852272727);
 }
 .sb-3d { max-width:1440px; }
 .sb-arrow { padding:16px; color:#d5cdc1; }
@@ -283,6 +285,21 @@ const sb3d=document.getElementById('sb3d');
 const book=document.getElementById('sbBook');
 const capBox=document.getElementById('sbCaptions');
 const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+// Keep decoded textures alive: a URL in a CSS background is not a loaded page.
+const spreadImages=new Map();
+function prepareSpread(index){
+  const i=(index+M)%M;
+  if(!spreadImages.has(i)){
+    const image=new Image();
+    image.src=PAGES[i].url;
+    const ready=image.decode().then(()=>image).catch(error=>{
+      spreadImages.delete(i);
+      throw error;
+    });
+    spreadImages.set(i,ready);
+  }
+  return spreadImages.get(i);
+}
 
 /* ------------------------------------------------ the turning leaf */
 const N=18;            /* strips — enough for a smooth curve          */
@@ -372,6 +389,8 @@ function paint(){
   book.appendChild(a);book.appendChild(b);
   layout();
   caption();
+  // Warm adjacent spreads for pointer and keyboard turns, too.
+  if(!turn)Promise.all([prepareSpread(idx-1),prepareSpread(idx+1)]).catch(()=>{});
 }
 function caption(){
   capBox.textContent='';
@@ -418,8 +437,8 @@ function tick(now){
   if(spring&&turn){
     const s=spring;
     if(s.kind==='tween'){
-      // Keep the breeze's tempo even when a device renders fewer frames.
-      s.e+=elapsed;
+      // A delayed frame must not skip an entire leaf, especially on mobile.
+      s.e+=dt;
       const k=Math.min(1,s.e/s.dur);
       turn.t=s.from+(s.target-s.from)*k;
       applyTurn(turn.t);
@@ -492,7 +511,7 @@ stage.addEventListener('pointerdown',e=>{
   if(!onBook)return;
   manualTurned=true;
   introPlayed=true;
-  if(introOn)endIntro();
+  if(introOn||introPending)endIntro();
   e.preventDefault();
   stage.setPointerCapture(e.pointerId);
   const r=bookRect();
@@ -551,7 +570,7 @@ function cancel(){
 function step(dir){
   manualTurned=true;
   introPlayed=true;
-  if(introOn)endIntro();
+  if(introOn||introPending)endIntro();
   if(turn){ /* finish whatever is in flight first */ idx=turn.to;turn=null; }
   startTurn(dir,0);commit();
 }
@@ -568,8 +587,10 @@ addEventListener('keydown',e=>{
 
 
 /* ---------------------------------------------------------- the riffle */
-let riffle=null,riffleAt=0,introOn=false,introPlayed=false,manualTurned=false;
+let riffle=null,riffleAt=0,introOn=false,introPending=false,introPlayed=false,manualTurned=false,introRequest=0;
 function endIntro(){
+  introRequest++;
+  introPending=false;
   introOn=false;wrap.classList.remove('intro','b2');
   spring=null;
   if(turn){idx=turn.to;turn=null;paint();}
@@ -581,33 +602,33 @@ function riffleStep(){
   tweenTo(1,s.dur,()=>{
     idx=turn.to;turn=null;
     riffleAt++;
-    if(introOn&&riffleAt<riffle.length){paint();riffleStep();}
+    if(introOn&&riffleAt<riffle.length){riffleStep();}
     else{endIntro();paint();}
   });
 }
-function startIntro(){
-  if(introPlayed||!document.body.dataset.ready)return;
+async function startIntro(){
+  if(introPlayed||manualTurned||!document.body.dataset.ready)return;
   introPlayed=true;
   if(REDUCED||Q.has('nointro')||drag)return;
-  // Fewer turns, with the same first and last speeds, 0.75s shorter overall.
-  const originalSteps=Math.min(9,Math.max(6,M*3));
-  const originalDuration=Array.from({length:originalSteps},(_,r)=>0.09+0.25*Math.pow(r/(originalSteps-1),1.25)).reduce((sum,d)=>sum+d,0);
-  const steps=Math.max(3,originalSteps-3);
-  const duration=Math.max(steps*0.09+0.251,originalDuration-0.75);
-  // Fit the slowdown curve to the shorter duration while retaining 90ms at
-  // the start and 340ms at the finish.
-  let low=0.1,high=32;
-  for(let i=0;i<24;i++){
-    const exponent=(low+high)/2;
-    const total=Array.from({length:steps},(_,r)=>0.09+0.25*Math.pow(r/(steps-1),exponent)).reduce((sum,d)=>sum+d,0);
-    if(total>duration)low=exponent;else high=exponent;
+  const steps=Math.min(6,M-1);
+  const request=++introRequest;
+  introPending=true;
+  try{
+    // Both faces of every leaf must be decoded before the first one lifts.
+    await Promise.all(Array.from({length:steps+1},(_,i)=>prepareSpread(idx+i)));
+  }catch{
+    if(request===introRequest){introPending=false;introPlayed=false;}
+    return;
   }
+  if(request!==introRequest||manualTurned)return;
+  introPending=false;
   riffle=[];
   for(let r=0;r<steps;r++){
-    const bell=Math.sin(Math.PI*(r/(steps-1)));
     const progress=r/(steps-1);
-    riffle.push({bell:bell,dur:0.09+0.25*Math.pow(progress,high)});
+    // Each leaf stays visible for at least a quarter second, then eases out.
+    riffle.push({bell:Math.sin(Math.PI*progress),dur:0.26+0.20*progress*progress});
   }
+  const duration=riffle.reduce((sum,s)=>sum+s.dur,0);
   wrap.style.setProperty('--riffle-duration',duration+'s');
   riffleAt=0;introOn=true;wrap.classList.add('intro');
   riffleStep();
@@ -617,12 +638,10 @@ addEventListener('message',event=>{
   if(event.origin!==location.origin||event.source!==parent)return;
   if(event.data?.type!=='sketchbook-visibility')return;
   if(!event.data.inView){
-    if(introOn)endIntro();
+    if(introOn||introPending)endIntro();
     introPlayed=false;
     manualTurned=false;
-  }else if(!event.data.visible){
-    if(introOn)endIntro();
-  }else if(event.data.trigger&&!manualTurned){
+  }else if(event.data.visible&&event.data.trigger&&!manualTurned){
     startIntro();
   }
 });
@@ -632,10 +651,9 @@ addEventListener('message',event=>{
   await Promise.all(PAGES.map(async (p, i) => { p.url = await createSpread(p, i); }));
   idx=Q.has('shot')?(parseInt(Q.get('shot'),10)||0)%M:0;
   paint();applyView();
-  const firstImage=new Image();firstImage.src=PAGES[idx].url;
-  // Fetch the opening riffle spreads without delaying readiness for their decode.
-  PAGES.slice(1,7).forEach(p=>{const im=new Image();im.src=p.url});
-  await (firstImage.decode?firstImage.decode().catch(()=>{}):new Promise(r=>{firstImage.onload=firstImage.onerror=r}));
+  await prepareSpread(idx);
+  // Start loading the opening leaves early; startIntro awaits their decode.
+  Promise.all(Array.from({length:Math.min(6,M-1)},(_,i)=>prepareSpread(idx+i+1))).catch(()=>{});
   if(document.fonts&&document.fonts.ready)await document.fonts.ready.catch(()=>{});
   document.body.dataset.ready='1';
   const reportHeight=()=>parent.postMessage({type:'sketchbook-resize',height:document.documentElement.offsetHeight},location.origin);

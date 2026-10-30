@@ -47,8 +47,11 @@ numbers, index, or magnifier. Reduced-motion preferences disable tilt and settle
 page turns immediately.
 
 Each time the visitor scrolls down into the book, a short breeze riffles through
-its pages and leaves the final spread open. It stops if the visitor scrolls away
-or starts turning a page. Reduced motion skips it.
+six pages over about two seconds and leaves the final spread open. Both faces
+of every turning leaf are decoded before the animation begins. A pending entry
+is kept while the lazy frame loads, and crossing the initial visibility threshold
+does not interrupt a turn. It stops if the visitor scrolls fully away or starts
+turning a page. Reduced motion skips it.
 
 The isolated HTML frame preserves the 3D geometry without inheriting the
 portfolio's global styles. Its URL respects Vite's deployment base path.
