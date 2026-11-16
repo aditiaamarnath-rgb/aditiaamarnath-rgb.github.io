@@ -13,7 +13,7 @@
   right: 0;
   top: -22px;
   height: 24px;
-  background: #212121;
+  background: url("../assets/dark-paper-grain.svg") 0 22px, #212121;
   -webkit-mask: url("../assets/torn-edge.svg") repeat-x bottom / 420px 24px;
           mask: url("../assets/torn-edge.svg") repeat-x bottom / 420px 24px;
   pointer-events: none;
@@ -52,4 +52,20 @@
   .portfolio-sketchbook { padding: 52px 0 24px; }
   .portfolio-sketchbook-heading { padding: 0 14px; }
   .portfolio-sketchbook-frame { height: calc(46vw + 16px); }
+}
+
+/* Black construction-paper grain: transparent white speckles only, so the
+   section stays #212121 and the torn edge (which carries the same layer)
+   matches it exactly. Sits behind the heading and the sketchbook. */
+.portfolio-sketchbook::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("../assets/dark-paper-grain.svg");
+  pointer-events: none;
+  z-index: 0;
+}
+.portfolio-sketchbook > * {
+  position: relative;
+  z-index: 1;
 }
