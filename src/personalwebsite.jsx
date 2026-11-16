@@ -470,7 +470,7 @@ function HeroStickers() {
                         </defs>
                     </svg>
 
-                    {hobbyStickers.map((sticker) => {
+                    {hobbyStickers.map((sticker, index) => {
                         const position = stickerPositions[sticker.id];
 
                         return (
@@ -485,6 +485,7 @@ function HeroStickers() {
                                 onPointerCancel={endStickerDrag}
                                 style={{
                                     "--sticker-width": sticker.width,
+                                    "--peel-tilt": index % 2 ? "4deg" : "-4deg",
                                     "--sticker-rotate": sticker.rotate,
                                     "--initial-sticker-x": sticker.x,
                                     "--initial-sticker-y": sticker.y,
@@ -1181,6 +1182,31 @@ export default function App() {
         .about-draggable-sticker:focus-visible .about-hobby-blurb {
           opacity: 1;
           transform: translate(-50%, 0) rotate(-1deg) scale(1);
+        }
+        /* Peel-up on hover: animate the img, never the positioned button. */
+        .hero-sticker-layer .about-draggable-sticker img {
+          transform-origin: 50% 85%;
+          transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 200ms ease;
+        }
+        .hero-sticker-layer .about-draggable-sticker:not(.is-dragging):hover img,
+        .hero-sticker-layer .about-draggable-sticker:not(.is-dragging):focus-visible img {
+          transform: translateY(-6px) rotate(var(--peel-tilt, -4deg)) scale(1.04);
+        }
+        .hero-sticker-layer .about-draggable-sticker:not(.handdrawn-sticker):hover img,
+        .hero-sticker-layer .about-draggable-sticker:not(.handdrawn-sticker):focus-visible img,
+        .hero-sticker-layer .about-draggable-sticker:not(.handdrawn-sticker).is-dragging img {
+          filter: var(--white-sticker-border) drop-shadow(4px 12px 8px rgba(43,36,32,0.22));
+        }
+        .hero-sticker-layer .about-draggable-sticker.handdrawn-sticker:hover img,
+        .hero-sticker-layer .about-draggable-sticker.handdrawn-sticker:focus-visible img,
+        .hero-sticker-layer .about-draggable-sticker.handdrawn-sticker.is-dragging img {
+          filter: url(#hero-sticker-cut-edge) drop-shadow(4px 12px 8px rgba(43,36,32,0.22));
+        }
+        /* The button's lift spring already scales a held sticker up, so the
+           img only drops its peel here instead of stacking a second scale. */
+        .hero-sticker-layer .about-draggable-sticker.is-dragging img {
+          transform: none;
+          transition: filter 200ms ease;
         }
         .about-draggable-sticker.is-dragging .about-hobby-blurb {
           opacity: 0;
@@ -2963,6 +2989,12 @@ export default function App() {
           .about-paper-reveal,
           .about-paper-curl {
             transition: none !important;
+          }
+          .hero-sticker-layer .about-draggable-sticker img,
+          .hero-sticker-layer .about-draggable-sticker:hover img,
+          .hero-sticker-layer .about-draggable-sticker:focus-visible img {
+            transform: none !important;
+            transition: filter 200ms ease !important;
           }
           .about-paper-reveal,
           .about-paper-reveal.is-cascading,
