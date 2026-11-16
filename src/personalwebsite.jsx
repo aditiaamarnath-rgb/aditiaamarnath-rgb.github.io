@@ -43,7 +43,7 @@ function InjectFonts() {
         const link = document.createElement("link");
         link.rel = "stylesheet";
         link.href =
-            "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;700&family=Caveat:wght@400;600;700&family=Fraunces:opsz,wght@9..144,700;9..144,900&family=Inter:wght@400;600;700&family=Nunito:wght@400;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Press+Start+2P&display=swap";
+            "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;700&family=Caveat:wght@400;600;700&family=Inter:wght@600;700;800;900&family=Press+Start+2P&display=swap";
         document.head.appendChild(link);
     }, []);
     return null;
@@ -637,20 +637,20 @@ function AboutSection() {
                     <AboutStack tilt={-2} yOffset={16} zIndex={30}>
                         <article className="about-paper-surface about-ref-torn-teal about-paper-ref-teal about-board-postit">
                             <div className="about-paper-section about-paper-heading">
-                                <span style={{ fontFamily: "'Caveat', cursive", fontSize: 19, fontWeight: 700, color: ABOUT.scrapInk, opacity: 0.62, textTransform: "uppercase", marginBottom: 8, display: "block" }}>Background</span>
-                                <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 32, fontWeight: 900, color: ABOUT.scrapInk, margin: 0 }}>Education</h3>
+                                <span style={{ fontFamily: "var(--font-hand)", fontSize: 19, fontWeight: 700, color: ABOUT.scrapInk, opacity: 0.62, textTransform: "uppercase", marginBottom: 8, display: "block" }}>Background</span>
+                                <h3 style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 700, color: ABOUT.scrapInk, margin: 0 }}>Education</h3>
                             </div>
                             <div className="about-paper-section">
                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 16, marginBottom: 10 }}>
-                                    <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>2022 - 2026</span>
-                                    <span style={{ fontFamily: "'Caveat', cursive", fontSize: 16, color: ABOUT.twine }}>Dean&apos;s List</span>
+                                    <span style={{ fontFamily: "var(--font-ui)", fontWeight: 700, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>2022 - 2026</span>
+                                    <span style={{ fontFamily: "var(--font-hand)", fontSize: 16, color: ABOUT.twine }}>Dean&apos;s List</span>
                                 </div>
-                                <p style={{ fontFamily: "'Fraunces', serif", fontSize: 21, fontWeight: 700, margin: "0 0 4px" }}>B.S. Computer Science and Statistics</p>
-                                <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 14, opacity: 0.78, margin: 0 }}>University of Wisconsin-Madison</p>
+                                <p style={{ fontFamily: "var(--font-display)", fontSize: 21, fontWeight: 700, margin: "0 0 4px" }}>B.S. Computer Science and Statistics</p>
+                                <p style={{ fontFamily: "var(--font-ui)", fontSize: 14, opacity: 0.78, margin: 0 }}>University of Wisconsin-Madison</p>
                             </div>
                             <div className="about-paper-section">
-                                <p style={{ fontFamily: "'Caveat', cursive", fontSize: 21, margin: "0 0 8px" }}>Key Coursework:</p>
-                                <ul style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, lineHeight: 1.8, opacity: 0.72, paddingLeft: 18, margin: 0 }}>
+                                <p style={{ fontFamily: "var(--font-hand)", fontSize: 21, margin: "0 0 8px" }}>Key Coursework:</p>
+                                <ul style={{ fontFamily: "var(--font-ui)", fontSize: 13, lineHeight: 1.8, opacity: 0.72, paddingLeft: 18, margin: 0 }}>
                                     <li>Algorithms & Software Development</li>
                                     <li>Data Structures & Object-Oriented Programming</li>
                                     <li>Linear Algebra</li>
@@ -664,8 +664,8 @@ function AboutSection() {
                     <AboutStack tilt={3} yOffset={-8} zIndex={20}>
                         <article className="about-paper-surface about-ref-torn-pink about-paper-ref-pink about-board-postit">
                             <div className="about-paper-section about-paper-heading">
-                                <span style={{ fontFamily: "'Caveat', cursive", fontSize: 19, fontWeight: 700, color: ABOUT.scrapInk, opacity: 0.62, textTransform: "uppercase", marginBottom: 8, display: "block" }}>Vibe</span>
-                                <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 32, fontWeight: 900, color: ABOUT.scrapInk, margin: 0 }}>Hobbies</h3>
+                                <span style={{ fontFamily: "var(--font-hand)", fontSize: 19, fontWeight: 700, color: ABOUT.scrapInk, opacity: 0.62, textTransform: "uppercase", marginBottom: 8, display: "block" }}>Vibe</span>
+                                <h3 style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 700, color: ABOUT.scrapInk, margin: 0 }}>Hobbies</h3>
                                 <p className="hobbies-paper-copy">Photography, synth pop &amp; RnB, watercolor painting, scenic bike rides, and making press-on nails.</p>
                             </div>
                         </article>
@@ -674,28 +674,28 @@ function AboutSection() {
                     <AboutStack tilt={-1} yOffset={24} zIndex={10}>
                         <article className="about-paper-surface about-ref-torn-grid about-paper-ref-grid about-board-postit">
                             <div className="about-paper-section about-paper-heading">
-                                <span style={{ fontFamily: "'Caveat', cursive", fontSize: 19, fontWeight: 700, color: ABOUT.scrapInk, opacity: 0.62, textTransform: "uppercase", marginBottom: 8, display: "block" }}>Involvement</span>
-                                <h3 style={{ fontFamily: "'Fraunces', serif", fontSize: 32, fontWeight: 900, color: ABOUT.scrapInk, margin: 0 }}>Activities</h3>
+                                <span style={{ fontFamily: "var(--font-hand)", fontSize: 19, fontWeight: 700, color: ABOUT.scrapInk, opacity: 0.62, textTransform: "uppercase", marginBottom: 8, display: "block" }}>Involvement</span>
+                                <h3 style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 700, color: ABOUT.scrapInk, margin: 0 }}>Activities</h3>
                             </div>
                             <div className="about-paper-section">
                                 <div style={{ display: "grid", gap: 14 }}>
                                     <div>
-                                        <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>August 2026 - Now</span>
-                                        <p style={{ fontFamily: "'Fraunces', serif", fontSize: 19, fontWeight: 700, margin: "3px 0 0" }}>Undergraduate Research Assistant</p>
+                                        <span style={{ fontFamily: "var(--font-ui)", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>August 2026 - Now</span>
+                                        <p style={{ fontFamily: "var(--font-display)", fontSize: 19, fontWeight: 700, margin: "3px 0 0" }}>Undergraduate Research Assistant</p>
                                     </div>
                                     <div>
-                                        <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>September 2026 - Now</span>
-                                        <p style={{ fontFamily: "'Fraunces', serif", fontSize: 19, fontWeight: 700, margin: "3px 0 0" }}>Code-To-Connect</p>
+                                        <span style={{ fontFamily: "var(--font-ui)", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>September 2026 - Now</span>
+                                        <p style={{ fontFamily: "var(--font-display)", fontSize: 19, fontWeight: 700, margin: "3px 0 0" }}>Code-To-Connect</p>
                                     </div>
                                 </div>
                             </div>
                             <div className="about-paper-section">
                                 <div>
-                                    <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>2024 - Now</span>
-                                    <p style={{ fontFamily: "'Fraunces', serif", fontSize: 19, fontWeight: 700, margin: "3px 0 0" }}>Design Club</p>
+                                    <span style={{ fontFamily: "var(--font-ui)", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>2024 - Now</span>
+                                    <p style={{ fontFamily: "var(--font-display)", fontSize: 19, fontWeight: 700, margin: "3px 0 0" }}>Design Club</p>
                                 </div>
                                 <div style={{ marginTop: 18 }}>
-                                    <p style={{ fontFamily: "'Caveat', cursive", fontSize: 17, fontStyle: "italic", opacity: 0.82, margin: 0 }}>&quot;Making cool things with cool people.&quot;</p>
+                                    <p style={{ fontFamily: "var(--font-hand)", fontSize: 17, fontStyle: "italic", opacity: 0.82, margin: 0 }}>&quot;Making cool things with cool people.&quot;</p>
                                 </div>
                             </div>
                         </article>
@@ -1515,7 +1515,7 @@ export default function App() {
         }
         .experience-screen-folder-label {
           max-width: 100%;
-          font-family: 'Nunito', sans-serif;
+          font-family: var(--font-ui);
           font-size: clamp(10px, 1.05vw, 13px);
           font-weight: 900;
           line-height: 1.12;
@@ -1567,7 +1567,7 @@ export default function App() {
           color: #403b28;
           background: rgba(255,255,255,0.64);
           cursor: pointer;
-          font-family: 'Nunito', sans-serif;
+          font-family: var(--font-ui);
           font-size: 18px;
           font-weight: 900;
           line-height: 1;
@@ -1595,7 +1595,7 @@ export default function App() {
           background: color-mix(in srgb, var(--window-accent) 34%, #fff8ea);
           box-shadow: 2px 3px 0 rgba(0,0,0,0.14);
           cursor: pointer;
-          font-family: 'Nunito', sans-serif;
+          font-family: var(--font-ui);
           font-size: 27px;
           font-weight: 900;
           line-height: 1;
@@ -1667,7 +1667,7 @@ export default function App() {
           background: rgba(255,255,255,0.56);
           border: 2px solid rgba(54,47,34,0.5);
           border-radius: 4px;
-          font-family: 'Nunito', sans-serif;
+          font-family: var(--font-ui);
           font-size: clamp(9px, 0.9vw, 11px);
           font-weight: 900;
           letter-spacing: 0.08em;
@@ -1695,9 +1695,9 @@ export default function App() {
         .experience-file-title-row h3 {
           margin: 0;
           color: #362F22;
-          font-family: 'Playfair Display', serif;
+          font-family: var(--font-display);
           font-size: clamp(19px, 2.3vw, 30px);
-          font-weight: 900;
+          font-weight: 700;
           line-height: 1.08;
           letter-spacing: 0;
           min-width: 0;
@@ -1705,7 +1705,7 @@ export default function App() {
         .experience-file-window p {
           max-width: 560px;
           color: rgba(54,47,34,0.78);
-          font-family: 'Nunito', sans-serif;
+          font-family: var(--font-body);
           font-size: clamp(12px, 1.2vw, 15px);
           line-height: 1.5;
           margin: 0;
@@ -1803,7 +1803,7 @@ export default function App() {
           padding: 0;
           color: #2B2420;
           background: transparent;
-          font-family: 'Nunito', sans-serif;
+          font-family: var(--font-ui);
           font-size: 13px;
           font-weight: 900;
           letter-spacing: 0.04em;
@@ -1956,7 +1956,7 @@ export default function App() {
           max-width: 100%;
           min-height: 25px;
           padding: 5px 12px;
-          font-family: 'Nunito', sans-serif;
+          font-family: var(--font-ui);
           font-size: 11px;
           font-weight: 900;
           letter-spacing: 0.1em;
@@ -2050,7 +2050,7 @@ export default function App() {
           display: block;
           flex: 0 0 auto;
           color: #2B2420;
-          font-family: 'Caveat', cursive;
+          font-family: var(--font-hand);
           font-size: clamp(15px, 1.55vw, 22px);
           font-weight: 700;
           line-height: 1;
@@ -2094,9 +2094,9 @@ export default function App() {
           margin-right: var(--project-copy-right);
         }
         .project-title {
-          font-family: 'Playfair Display', serif;
-          font-size: 42px;
-          font-weight: 900;
+          font-family: var(--font-display);
+          font-size: 46px;
+          font-weight: 700;
           line-height: 1.02;
           color: #2B2420;
           margin: 0;
@@ -2104,7 +2104,7 @@ export default function App() {
         }
         .project-year {
           display: inline-block;
-          font-family: 'Nunito', sans-serif;
+          font-family: var(--font-ui);
           font-size: 12px;
           font-weight: 800;
           color: #2B2420;
@@ -2117,7 +2117,7 @@ export default function App() {
           transform: rotate(2deg);
         }
         .project-desc {
-          font-family: 'Nunito', sans-serif;
+          font-family: var(--font-body);
           font-size: 14px;
           line-height: 1.6;
           color: #2B2420;
@@ -2141,15 +2141,15 @@ export default function App() {
           justify-content: center;
           min-height: 32px;
           padding: 7px 11px;
-          font-family: 'Nunito', sans-serif;
+          font-family: var(--font-ui);
           font-size: 12px;
-          font-weight: 800;
+          font-weight: 700;
           color: #2B2420;
           background: rgba(255,248,234,0.64);
           border: 1px solid rgba(43,36,32,0.26);
           border-radius: 999px;
           box-shadow: 2px 3px 0 rgba(0,0,0,0.1);
-          letter-spacing: 0.03em;
+          letter-spacing: 0;
           transform: rotate(-0.7deg);
         }
         .project-skill-sticker:nth-child(2n) {
@@ -2208,7 +2208,7 @@ export default function App() {
         }
         .contact-terminal-path {
           margin-left: 8px;
-          font-family: 'Inter', monospace;
+          font-family: var(--font-mono);
           font-size: 12px;
           font-weight: 700;
           color: #efe8ca;
@@ -2229,7 +2229,7 @@ export default function App() {
         }
         .contact-terminal-command,
         .contact-terminal-output {
-          font-family: 'Inter', 'Courier New', monospace;
+          font-family: var(--font-mono);
           font-size: clamp(14px, 1.55vw, 17px);
           line-height: 1.55;
           letter-spacing: 0;
@@ -2276,7 +2276,7 @@ export default function App() {
         }
         .contact-terminal-prompt-symbol,
         .contact-terminal-input {
-          font-family: 'Inter', 'Courier New', monospace;
+          font-family: var(--font-mono);
           font-size: clamp(14px, 1.55vw, 17px);
           line-height: 1.55;
           letter-spacing: 0;
@@ -2409,7 +2409,7 @@ export default function App() {
           box-shadow: 0 9px 0 rgba(54,47,34,0.16), 0 -9px 0 rgba(54,47,34,0.13);
         }
         .contact-vinyl-label span {
-          font-family: 'Nunito', sans-serif;
+          font-family: var(--font-ui);
           font-size: clamp(10px, 1.2vw, 17px);
           font-weight: 800;
           letter-spacing: 0.17em;
@@ -2734,7 +2734,7 @@ export default function App() {
             #f3eadf;
           box-shadow: 4px 4px 0 rgba(43,36,32,0.14);
           color: #2B2420;
-          font-family: 'Caveat', cursive;
+          font-family: var(--font-hand);
           font-size: 18px;
           font-weight: 700;
           line-height: 1.08;

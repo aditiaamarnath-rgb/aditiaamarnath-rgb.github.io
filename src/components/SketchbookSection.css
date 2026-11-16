@@ -28,14 +28,14 @@
 }
 
 .portfolio-sketchbook-heading h2 {
-  font: 400 clamp(32px, 4.5vw, 54px)/1.15 'Playfair Display', Georgia, serif;
+  font: 400 clamp(32px, 4.5vw, 54px)/1.15 var(--font-display);
   letter-spacing: -.035em;
   color: #fff6df;
 }
 
 .portfolio-sketchbook-heading h2 span {
   margin-right: .15em;
-  font-family: 'Caveat', cursive;
+  font-family: var(--font-hand);
   color: #ffe1a1;
 }
 
