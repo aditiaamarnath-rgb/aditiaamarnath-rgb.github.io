@@ -137,6 +137,13 @@ const FoldText = ({
     const crease = reduceMotion ? 0 : safeCrease;
     const refold = hoverRefold && !reduceMotion ? safeRefold : 0;
     const lift = safeStyle === 'flip' && !reduceMotion ? 0.45 : 0;
+    // Paper swinging down on its crease carries past flat and settles back,
+    // instead of stopping dead where the ease curve ends.
+    const settle = safeStyle === 'paper' && !reduceMotion ? Math.min(9, angle * 0.09) : 0;
+    const swingPast = t => {
+      const k = clamp((t - 0.42) / 0.58, 0, 1);
+      return Math.sin(Math.PI * k) * (1 - k * 0.35);
+    };
     const unfoldDuration = reduceMotion ? Math.min(duration, 0.22) : duration;
     const staggerVars = { each: reduceMotion ? Math.min(safeStagger, 0.02) : safeStagger, from: staggerFrom };
 
@@ -180,10 +187,11 @@ const FoldText = ({
 
         const progress = unfoldEase(piece.t) * (1 - foldEase(piece.f));
         const rise = lift * Math.sin(Math.PI * clamp(progress, 0, 1));
-        const turn = `${axis}(${sign * ((1 - progress) * angle + tilt)}deg)`;
+        const past = piece.f > 0 ? 0 : settle * swingPast(piece.t);
+        const turn = `${axis}(${sign * ((1 - progress) * angle + tilt - past)}deg)`;
         piece.element.style.transform = rise > 0.001 ? `translateZ(${rise}em) ${turn}` : turn;
         piece.element.style.opacity = String(clamp(progress, 0, 1));
-        piece.element.style.setProperty('--fold-crease', shade(progress, tilt));
+        piece.element.style.setProperty('--fold-crease', shade(progress, tilt + past));
       });
     };
 

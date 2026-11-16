@@ -304,8 +304,14 @@ function prepareSpread(index){
 /* ------------------------------------------------ the turning leaf */
 const N=18;            /* strips — enough for a smooth curve          */
 const SPAN=bookGeometry.pageWidth/bookGeometry.width;
-const BETA=0.60;       /* peak curl of the arc, radians              */
-let idx=0, turn=null;  /* turn = {dir, from, to, t}                   */
+const BETA=0.60;       /* resting bend of a lifted leaf, radians     */
+const INTRO_BETA=0.62; /* a flicked leaf bends a little more         */
+const AIR=0.05;        /* extra curl per unit of angular speed (drag) */
+const MAX_CURL=1.05;
+/* the curl is its own underdamped spring, so the free edge lags,
+   catches up and ripples instead of being glued to the spine        */
+const CURL_K=320, CURL_C=20;
+let idx=0, turn=null;  /* turn = {dir, from, to, t, w, beta, bv}      */
 let strips=[];         /* the chain, kept for per-frame lighting       */
 
 function el(t,c){const e=document.createElement(t);if(c)e.className=c;return e}
@@ -351,9 +357,16 @@ function buildCurl(dir,from,to){
   }
   return c;
 }
+function curlTarget(t,w){
+  const bend=(introOn?INTRO_BETA:BETA)*Math.sin(Math.PI*t);
+  return Math.max(-MAX_CURL,Math.min(MAX_CURL,bend+AIR*w));
+}
 function applyTurn(t){
   const th=Math.PI*t;                       /* how far the leaf has swung */
-  const beta=(introOn ? 0.88 : BETA)*Math.sin(Math.PI*t);
+  /* no strip may pass through the spread it is resting on: near the
+     stack the curl is pressed flat, which is what makes it land */
+  const lim=Math.min(th,Math.PI-th);
+  const beta=Math.max(-lim,Math.min(lim,turn?turn.beta:0));
   const D=180/Math.PI;
   const tt=th+beta, td=2*beta/N;
   sb3d.style.setProperty('--tt',(tt*D).toFixed(2)+'deg');
@@ -421,42 +434,77 @@ addEventListener('resize',layout);
 /* ------------------------------------------------------ spring loop */
 let spring=null;
 function animateTo(target,onDone,stiff,damp){
-  spring={kind:'spring',v:0,target:target,done:onDone,k:stiff||150,c:damp||22};
+  /* carry the leaf's current momentum, so a flick keeps flying */
+  spring={kind:'spring',v:turn?turn.w:0,target:target,done:onDone,k:stiff||150,c:damp||22};
   kick();
 }
-/* the riffle wants a fixed tempo, not a spring settling time */
-function tweenTo(target,dur,onDone){
-  spring={kind:'tween',from:turn?turn.t:0,target:target,dur:dur,e:0,done:onDone};
+/* a riffled leaf snaps off the thumb, hangs near the top, then drops:
+   fast at both ends, slow in the middle, and the speed at each end
+   matches so consecutive leaves flow into each other */
+const RIFFLE_A=0.42;
+const riffleEase=s=>s+RIFFLE_A*Math.sin(2*Math.PI*s)/(2*Math.PI);
+/* the first leaf starts from rest and leaves at the shared speed */
+const riffleEaseIn=s=>(2-RIFFLE_A)*s*s+(RIFFLE_A-1)*s*s*s;
+function tweenTo(target,dur,onDone,ease){
+  spring={kind:'tween',from:turn?turn.t:0,target:target,dur:dur,e:0,done:onDone,ease:ease||riffleEase};
   kick();
+}
+function finishSpring(s){
+  turn.t=s.target;spring=null;
+  applyTurn(turn.t);
+  const d=s.done;d&&d();
+}
+function stepCurl(dt){
+  /* sub-step: the curl spring is stiff and frames can be long */
+  const n=Math.max(1,Math.ceil(dt/0.006)), h=dt/n;
+  const target=curlTarget(turn.t,turn.w);
+  for(let i=0;i<n;i++){
+    turn.bv+=(-CURL_K*(turn.beta-target)-CURL_C*turn.bv)*h;
+    turn.beta+=turn.bv*h;
+  }
+  return Math.abs(turn.bv)>0.004||Math.abs(turn.beta-target)>0.0015;
 }
 let raf=null,last=0;
 function tick(now){
   raf=null;
   const elapsed=(now-last)/1000||0.016;
   const dt=Math.min(0.032,elapsed);last=now;
-  if(spring&&turn){
-    const s=spring;
-    if(s.kind==='tween'){
-      // A delayed frame must not skip an entire leaf, especially on mobile.
-      s.e+=dt;
-      const k=Math.min(1,s.e/s.dur);
-      turn.t=s.from+(s.target-s.from)*k;
-      applyTurn(turn.t);
-      if(k>=1){spring=null;const d=s.done;d&&d();}
-    }else{
-      const x=turn.t-s.target;
-      s.v+= (-s.k*x - s.c*s.v)*dt;
-      turn.t+=s.v*dt;
-      if(Math.abs(turn.t-s.target)<0.002&&Math.abs(s.v)<0.02){
-        turn.t=s.target;spring=null;
-        applyTurn(turn.t);
-        const d=s.done;d&&d();
-      }else applyTurn(turn.t);
+  let live=false;
+  const cur=turn;
+  if(cur){
+    const t0=cur.t;
+    if(spring){
+      const s=spring;
+      if(s.kind==='tween'){
+        // A delayed frame must not skip an entire leaf, especially on mobile.
+        s.e+=dt;
+        const k=Math.min(1,s.e/s.dur);
+        cur.t=s.from+(s.target-s.from)*s.ease(k);
+        if(k>=1)finishSpring(s);
+      }else{
+        const x=cur.t-s.target;
+        s.v+=(-s.k*x-s.c*s.v)*dt;
+        cur.t+=s.v*dt;
+        /* the leaf stops dead on the stack instead of creeping in */
+        const landed=(s.target>=1&&cur.t>=1)||(s.target<=0&&cur.t<=0);
+        if(landed||(Math.abs(cur.t-s.target)<0.002&&Math.abs(s.v)<0.02))finishSpring(s);
+      }
+    }else if(drag&&drag.target!=null){
+      /* a hair of smoothing hides pointer jitter without feeling laggy */
+      cur.t+=(drag.target-cur.t)*(1-Math.exp(-dt*30));
+      live=Math.abs(drag.target-cur.t)>0.0005;
     }
+    if(turn===cur){
+      const w=(cur.t-t0)/dt;
+      cur.w+=(w-cur.w)*(1-Math.exp(-dt*16));
+      if(stepCurl(dt))live=true;
+      if(Math.abs(cur.w)>0.01)live=true;
+      applyTurn(cur.t);
+    }else if(turn)live=true;      /* a riffle just handed over to the next leaf */
   }
   viewSpring();
   /* kick() may already have queued the next frame from a done-callback */
-  if((spring||viewActive)&&raf===null) raf=requestAnimationFrame(tick);
+  if((spring||viewActive||live)&&raf===null) raf=requestAnimationFrame(tick);
 }
 function kick(){ if(raf===null){last=performance.now();raf=requestAnimationFrame(tick);} }
 
@@ -517,7 +565,7 @@ stage.addEventListener('pointerdown',e=>{
   const r=bookRect();
   const dir=(e.clientX-r.left)/r.width>0.5?'next':'prev';
   startTurn(dir,0);
-  drag={dir:dir,x0:e.clientX,w:r.width,moved:0,vel:0,tPrev:performance.now()};
+  drag={dir:dir,x0:e.clientX,w:r.width,moved:0,vel:0,target:null,tPrev:performance.now()};
 });
 stage.addEventListener('pointermove',e=>{
   if(!drag)return;
@@ -526,9 +574,12 @@ stage.addEventListener('pointermove',e=>{
   const raw=(drag.dir==='next'? -dx : dx)/(drag.w*0.62);
   const t=Math.max(0,Math.min(1,raw));
   const now=performance.now();
-  drag.vel=(t-(turn?turn.t:0))/Math.max(0.001,(now-drag.tPrev)/1000);
+  const prev=drag.target==null?0:drag.target;
+  const v=(t-prev)/Math.max(0.004,(now-drag.tPrev)/1000);
+  drag.vel+= (v-drag.vel)*0.5;        /* light filter: one event can lie */
   drag.tPrev=now;
-  if(turn){turn.t=t;applyTurn(t);}
+  drag.target=t;
+  kick();
 });
 function endDrag(e){
   if(!drag)return;
@@ -537,7 +588,9 @@ function endDrag(e){
   if(d.moved<6){                              /* a tap, not a drag */
     commit();return;
   }
-  const go = turn.t>0.42 || d.vel>1.1;
+  /* a stale velocity from a pointer that stopped moving is no flick */
+  const vel=performance.now()-d.tPrev<80?d.vel:0;
+  const go = (turn.t>0.42 && vel>-0.8) || vel>1.1;
   if(go)commit(); else cancel();
 }
 stage.addEventListener('dragstart',e=>e.preventDefault());
@@ -553,18 +606,20 @@ function startTurn(dir,t){
   spring=null;
   if(turn){idx=turn.to;turn=null;}      /* settle anything still in flight */
   const from=idx;
-  turn={dir:dir,from:from,to:dir==='next'?(from+1)%M:(from-1+M)%M,t:t||0};
+  turn={dir:dir,from:from,to:dir==='next'?(from+1)%M:(from-1+M)%M,t:t||0,w:0,beta:0,bv:0};
+  turn.beta=curlTarget(turn.t,0);
   paint();
 }
 function commit(){
   if(!turn)return;
   if(REDUCED){idx=turn.to;turn=null;paint();return;}
-  animateTo(1,()=>{idx=turn.to;turn=null;paint();},170,26);
+  /* slightly underdamped: it reaches the stack and stops there */
+  animateTo(1,()=>{idx=turn.to;turn=null;paint();},190,21);
   kick();
 }
 function cancel(){
   if(!turn)return;
-  animateTo(0,()=>{turn=null;paint();},150,24);
+  animateTo(0,()=>{turn=null;paint();},170,21);
   kick();
 }
 function step(dir){
@@ -598,13 +653,16 @@ function endIntro(){
 function riffleStep(){
   const s=riffle[riffleAt];
   wrap.classList.toggle('b2',s.bell>0.55);
+  /* the next leaf is already moving when it peels off the stack */
+  const w=riffleAt?(1+RIFFLE_A)/s.dur:0;
   startTurn('next',0);
+  turn.w=w;turn.beta=AIR*w*0.5;
   tweenTo(1,s.dur,()=>{
     idx=turn.to;turn=null;
     riffleAt++;
-    if(introOn&&riffleAt<riffle.length){riffleStep();}
-    else{endIntro();paint();}
-  });
+    if(introOn&&riffleAt<riffle.length){riffleStep();return;}
+    endIntro();paint();
+  },riffleAt?riffleEase:riffleEaseIn);
 }
 async function startIntro(){
   if(introPlayed||manualTurned||!document.body.dataset.ready)return;

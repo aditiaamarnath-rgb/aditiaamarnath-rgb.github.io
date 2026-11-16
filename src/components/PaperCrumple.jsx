@@ -7,19 +7,34 @@ import './PaperCrumple.css';
 const spring = (value = 0) => ({ value, target: value, velocity: 0 });
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const finite = (value, fallback) => (Number.isFinite(value) ? value : fallback);
-function advance(s, dt, duration, instant) {
+// The simulated crumple path depends only on the sheet's shape and seed, so
+// identical notes share one run instead of each blocking the main thread.
+const paperPaths = new Map();
+// `zeta` < 1 lets a spring overshoot and settle, which is what gives the sheet
+// weight when it is let go; 1 is the original critically damped response.
+function advance(s, dt, duration, instant, zeta = 1) {
   if (instant || duration <= 0) {
     s.value = s.target;
     s.velocity = 0;
     return false;
   }
   const omega = 8 / Math.max(0.06, duration);
-  const offset = s.value - s.target;
-  const term = s.velocity + omega * offset;
-  const decay = Math.exp(-omega * dt);
-  s.value = s.target + (offset + term * dt) * decay;
-  s.velocity = (s.velocity - omega * term * dt) * decay;
-  if (Math.abs(s.value - s.target) < 0.0001 && Math.abs(s.velocity) < 0.001) {
+  if (zeta >= 1) {
+    const offset = s.value - s.target;
+    const term = s.velocity + omega * offset;
+    const decay = Math.exp(-omega * dt);
+    s.value = s.target + (offset + term * dt) * decay;
+    s.velocity = (s.velocity - omega * term * dt) * decay;
+  } else {
+    const steps = Math.max(1, Math.ceil(dt / 0.004));
+    const h = dt / steps;
+    for (let i = 0; i < steps; i++) {
+      s.velocity += (-omega * omega * (s.value - s.target) - 2 * zeta * omega * s.velocity) * h;
+      s.value += s.velocity * h;
+    }
+  }
+  const scale = Math.max(1, Math.abs(s.target));
+  if (Math.abs(s.value - s.target) < 0.0001 * scale && Math.abs(s.velocity) < 0.001 * scale) {
     s.value = s.target;
     s.velocity = 0;
     return false;
@@ -274,7 +289,6 @@ const PaperCrumple = ({
   className = '',
   style
 }) => {
-  const pathCache = useRef(null);
   const rootRef = useRef(null);
   const canvasRef = useRef(null);
   const hitRef = useRef(null);
@@ -381,13 +395,10 @@ const PaperCrumple = ({
       }
     }
     const pathKey = JSON.stringify([paperWidth, paperHeight, resolution, foldTotal, sharpness, depth, seed]);
-    if (pathCache.current?.key !== pathKey) {
-      pathCache.current = {
-        key: pathKey,
-        value: createPaperPath(original, indices, shortSide, foldTotal, sharpness, depth, finite(seed, 7))
-      };
+    if (!paperPaths.has(pathKey)) {
+      paperPaths.set(pathKey, createPaperPath(original, indices, shortSide, foldTotal, sharpness, depth, finite(seed, 7)));
     }
-    const paperPath = pathCache.current.value;
+    const paperPath = paperPaths.get(pathKey);
     const renderPositions = new Float32Array(indices.length * 3);
     const renderNormals = new Float32Array(indices.length * 3);
     const renderUvs = new Float32Array(indices.length * 2);
@@ -508,8 +519,9 @@ const PaperCrumple = ({
       posX = spring(),
       posY = spring(),
       tiltX = spring(),
-      tiltY = spring();
-    const springs = [amount, memory, posX, posY, tiltX, tiltY];
+      tiltY = spring(),
+      sway = spring();
+    const springs = [amount, memory, posX, posY, tiltX, tiltY, sway];
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
     const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
@@ -530,7 +542,8 @@ const PaperCrumple = ({
       lastY = 0,
       lastMove = 0;
     let speedX = 0,
-      speedY = 0;
+      speedY = 0,
+      heldTime = 0;
     let held = false,
       keyboard = false,
       pointerId = null;
@@ -653,12 +666,46 @@ const PaperCrumple = ({
       const opts = options.current;
       let moving = false;
       const duration = held ? finite(opts.crumpleDuration, 0.55) : finite(opts.releaseDuration, 0.4);
-      for (const s of springs)
-        moving = advance(s, dt, s === amount || s === memory ? duration : 0.42, reduceMotion || keyboard) || moving;
+      const dragging = held && !keyboard && opts.draggable;
+      const lively = !reduceMotion && !keyboard;
+      // Velocity only arrives with pointer events, so let it bleed off when the
+      // hand stops; otherwise the sheet stays leaning after the pointer rests.
+      if (performance.now() - lastMove > 32) {
+        const fade = Math.exp(-dt * 12);
+        speedX *= fade;
+        speedY *= fade;
+        if (Math.abs(speedX) + Math.abs(speedY) < 1) speedX = speedY = 0;
+      }
+      if (dragging && lively) {
+        const maxTilt = THREE.MathUtils.degToRad(clamp(finite(opts.dragRotation, 10), 0, 60));
+        tiltX.target = clamp(speedY / 1800, -1, 1) * maxTilt;
+        tiltY.target = clamp(speedX / 1800, -1, 1) * maxTilt;
+        // Carried paper swings a little against the direction of travel.
+        sway.target = clamp(-speedX / 2600, -1, 1) * maxTilt * 0.6;
+        if (speedX || speedY) moving = true;
+      }
+      if (held && lively) {
+        // A held ball is never perfectly still: the hand keeps squeezing.
+        heldTime += dt;
+        const base = clamp(finite(opts.crumpleAmount, 0.85), 0, 1);
+        const settle = clamp((heldTime - duration * 0.6) / 0.5, 0, 1);
+        amount.target = clamp(base + Math.sin(heldTime * 7.5) * 0.018 * settle, 0, 1);
+        moving = true;
+      }
+      for (const s of springs) {
+        const isFold = s === amount || s === memory;
+        const isPose = s === tiltX || s === tiltY || s === sway;
+        const isPosition = s === posX || s === posY;
+        const time = isFold ? duration : dragging && isPosition ? 0.12 : isPose ? 0.5 : 0.55;
+        // Fold stays critically damped; the pose and the return home overshoot
+        // slightly so the sheet lands with some weight.
+        const zeta = isFold ? 1 : isPose ? 0.5 : dragging ? 0.85 : 0.62;
+        moving = advance(s, dt, time, reduceMotion || keyboard, lively ? zeta : 1) || moving;
+      }
       peak = Math.max(peak, amount.value);
       deform();
-      sheet.rotation.set(tiltX.value, tiltY.value, baseRotation);
-      if (held && !keyboard && opts.draggable) {
+      sheet.rotation.set(tiltX.value, tiltY.value, baseRotation + sway.value);
+      if (dragging) {
         const attribute = geometry.attributes.position;
         anchor.set(0, 0, 0);
         for (let i = 0; i < 3; i++) {
@@ -669,9 +716,11 @@ const PaperCrumple = ({
         plane.constant = -anchor.z;
         setPointer(pointerX, pointerY);
         if (raycaster.ray.intersectPlane(plane, world)) {
-          posX.value = posX.target = world.x - anchor.x;
-          posY.value = posY.target = world.y - anchor.y;
-          posX.velocity = posY.velocity = 0;
+          // Follow the grip on a stiff spring: the sheet trails the hand by a
+          // few frames, which reads as mass instead of a pinned bitmap.
+          posX.target = world.x - anchor.x;
+          posY.target = world.y - anchor.y;
+          if (Math.abs(posX.target - posX.value) + Math.abs(posY.target - posY.value) > 0.05) moving = true;
         }
       }
       sheet.position.set(posX.value, posY.value, 0);
@@ -753,7 +802,14 @@ const PaperCrumple = ({
             ? Math.max(memory.value, peak * clamp(finite(opts.creaseStrength, 0.18), 0, 1))
             : 0;
       }
-      tiltX.target = tiltY.target = 0;
+      tiltX.target = tiltY.target = sway.target = 0;
+      heldTime = 0;
+      const flung = !instant && !reduceMotion && !keyboard && performance.now() - lastMove < 90;
+      if (flung) {
+        // Hand the throw to the springs so the sheet drifts before it returns.
+        posX.velocity = clamp(speedX, -1600, 1600) * 0.6;
+        posY.velocity = clamp(-speedY, -1600, 1600) * 0.6;
+      }
       if (opts.returnToOrigin && opts.releaseBehavior !== 'stay') {
         posX.target = posY.target = 0;
       } else {
@@ -772,7 +828,7 @@ const PaperCrumple = ({
           Math.max(0, finite(opts.dragRadius, 180)),
           Math.max(0, viewportHeight / 2 - halfHeight - 16)
         );
-        const coast = !reduceMotion && !keyboard && performance.now() - lastMove < 90 ? 0.06 : 0;
+        const coast = flung ? 0.06 : 0;
         posX.target = clamp(posX.value + speedX * coast, -limitX, limitX);
         posY.target = clamp(posY.value - speedY * coast, -limitY, limitY);
       }
@@ -798,6 +854,7 @@ const PaperCrumple = ({
     cancelRef.current = () => finish(true);
     function start() {
       held = true;
+      heldTime = 0;
       peak = amount.value;
       amount.target = clamp(finite(options.current.crumpleAmount, 0.85), 0, 1);
       hit.setAttribute('aria-pressed', 'true');
@@ -838,18 +895,15 @@ const PaperCrumple = ({
       const x = event.clientX - rect.left,
         y = event.clientY - rect.top;
       const dt = Math.max(0.008, (now - lastMove) / 1000);
-      speedX = (x - lastX) / dt;
-      speedY = (y - lastY) / dt;
+      // Raw per-event speed is noisy (coalesced events, 1px jitters).
+      const blend = 1 - Math.exp(-dt * 30);
+      speedX += ((x - lastX) / dt - speedX) * blend;
+      speedY += ((y - lastY) / dt - speedY) * blend;
       lastX = x;
       lastY = y;
       lastMove = now;
       pointerX = clamp(x, 12, viewportWidth - 12);
       pointerY = clamp(y, 12, viewportHeight - 12);
-      const maxTilt = reduceMotion
-        ? 0
-        : THREE.MathUtils.degToRad(clamp(finite(options.current.dragRotation, 10), 0, 60));
-      tiltX.target = clamp(speedY / 1800, -1, 1) * maxTilt;
-      tiltY.target = clamp(speedX / 1800, -1, 1) * maxTilt;
       wake();
     }
     function pointerUp(event) {
@@ -915,7 +969,7 @@ const PaperCrumple = ({
     }
     function motionChange() {
       reduceMotion = media.matches;
-      if (reduceMotion) tiltX.target = tiltY.target = 0;
+      if (reduceMotion) tiltX.target = tiltY.target = sway.target = 0;
       wake();
     }
     function loseContext(event) {

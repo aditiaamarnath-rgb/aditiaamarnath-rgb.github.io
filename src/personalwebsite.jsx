@@ -152,8 +152,15 @@ function HeroStickers() {
     const dragState = useRef(null);
     const dragFrame = useRef(0);
     const pendingPointer = useRef(null);
+    // Per-sticker pickup springs (lift + sway), animated outside React renders.
+    const stickerMotion = useRef(new Map());
+    const motionFrame = useRef(0);
+    const motionTime = useRef(0);
 
-    useEffect(() => () => cancelAnimationFrame(dragFrame.current), []);
+    useEffect(() => () => {
+        cancelAnimationFrame(dragFrame.current);
+        cancelAnimationFrame(motionFrame.current);
+    }, []);
     // Desktop centers are percentages of the hero, matching the reference layout.
     const hobbyStickers = [
         {
@@ -278,6 +285,50 @@ function HeroStickers() {
     const [stickerPositions, setStickerPositions] = useState({});
     const [draggingSticker, setDraggingSticker] = useState(null);
 
+    const reduceStickerMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
+    // Underdamped springs: a sticker lifts off the page, swings against the
+    // direction it is dragged, and presses back down with a small bounce.
+    const stepStickerMotion = (now) => {
+        motionFrame.current = 0;
+        const dt = motionTime.current ? Math.min(0.034, (now - motionTime.current) / 1000) : 0.016;
+        motionTime.current = now;
+        let active = false;
+        stickerMotion.current.forEach((m, id) => {
+            const dragging = dragState.current?.id === id;
+            if (now - m.lastMove > 40) m.vx *= Math.exp(-dt * 10);
+            const liftTarget = dragging ? 1.07 : 1;
+            const swayTarget = dragging ? Math.max(-14, Math.min(14, -m.vx * 0.018)) : 0;
+            const steps = Math.ceil(dt / 0.004);
+            const h = dt / steps;
+            for (let i = 0; i < steps; i++) {
+                m.liftV += (-520 * (m.lift - liftTarget) - 2 * 0.42 * Math.sqrt(520) * m.liftV) * h;
+                m.lift += m.liftV * h;
+                m.swayV += (-260 * (m.sway - swayTarget) - 2 * 0.38 * Math.sqrt(260) * m.swayV) * h;
+                m.sway += m.swayV * h;
+            }
+            const settled = !dragging
+                && Math.abs(m.lift - 1) < 0.0005 && Math.abs(m.liftV) < 0.005
+                && Math.abs(m.sway) < 0.02 && Math.abs(m.swayV) < 0.05;
+            if (settled) {
+                m.element.style.removeProperty("--sticker-lift");
+                m.element.style.removeProperty("--sticker-sway");
+                stickerMotion.current.delete(id);
+                return;
+            }
+            active = true;
+            m.element.style.setProperty("--sticker-lift", m.lift.toFixed(4));
+            m.element.style.setProperty("--sticker-sway", `${m.sway.toFixed(3)}deg`);
+        });
+        if (active) motionFrame.current = requestAnimationFrame(stepStickerMotion);
+    };
+
+    const wakeStickerMotion = () => {
+        if (motionFrame.current) return;
+        motionTime.current = 0;
+        motionFrame.current = requestAnimationFrame(stepStickerMotion);
+    };
+
     const beginStickerDrag = (event, sticker) => {
         if (event.pointerType === "mouse" && event.button !== 0) return;
 
@@ -287,22 +338,47 @@ function HeroStickers() {
         event.preventDefault();
         event.currentTarget.setPointerCapture(event.pointerId);
 
+        const element = event.currentTarget;
         const rect = board.getBoundingClientRect();
-        const stickerRect = event.currentTarget.getBoundingClientRect();
+        const stickerRect = element.getBoundingClientRect();
+        const halfWidth = stickerRect.width / 2 + 10;
+        const halfHeight = stickerRect.height / 2 + 10;
         const currentPosition = {
             x: ((stickerRect.left + stickerRect.width / 2 - rect.left) / rect.width) * 100,
             y: ((stickerRect.top + stickerRect.height / 2 - rect.top) / rect.height) * 100,
         };
+        // Text never moves relative to the board mid-drag, so measure it once
+        // instead of forcing layout reads on every pointer frame.
+        const blocked = [...board.closest('section').querySelectorAll('.letter-greeting h1, .letter-intro p, .letter-contact, .letter-nav')].map((node) => {
+            const text = node.getBoundingClientRect();
+            return {
+                left: text.left - rect.left - halfWidth,
+                right: text.right - rect.left + halfWidth,
+                top: text.top - rect.top - halfHeight,
+                bottom: text.bottom - rect.top + halfHeight,
+            };
+        });
         dragState.current = {
             id: sticker.id,
-            rect,
-            halfWidth: stickerRect.width / 2 + 10,
-            halfHeight: stickerRect.height / 2 + 10,
+            element,
+            blocked,
+            halfWidth,
+            halfHeight,
             startPointerX: event.clientX,
             startPointerY: event.clientY,
             startX: currentPosition.x,
             startY: currentPosition.y,
+            position: null,
         };
+        if (!reduceStickerMotion()) {
+            const motion = stickerMotion.current.get(sticker.id)
+                ?? { element, lift: 1, liftV: 0, sway: 0, swayV: 0, vx: 0 };
+            motion.element = element;
+            motion.lastMove = event.timeStamp;
+            motion.lastX = event.clientX;
+            stickerMotion.current.set(sticker.id, motion);
+            wakeStickerMotion();
+        }
         setDraggingSticker(sticker.id);
     };
 
@@ -318,15 +394,7 @@ function HeroStickers() {
         const maxX = rect.width - drag.halfWidth;
         const minY = drag.halfHeight;
         const maxY = rect.height - drag.halfHeight;
-        const blocked = [...boardRef.current.closest('section').querySelectorAll('.letter-greeting h1, .letter-intro p, .letter-contact, .letter-nav')].map((element) => {
-            const text = element.getBoundingClientRect();
-            return {
-                left: text.left - rect.left - drag.halfWidth,
-                right: text.right - rect.left + drag.halfWidth,
-                top: text.top - rect.top - drag.halfHeight,
-                bottom: text.bottom - rect.top + drag.halfHeight,
-            };
-        });
+        const blocked = drag.blocked;
         const x = clamp(nextX, minX, maxX);
         const y = clamp(nextY, minY, maxY);
         const allowed = (point) => !blocked.some((area) => point.x > area.left && point.x < area.right && point.y > area.top && point.y < area.bottom);
@@ -337,14 +405,26 @@ function HeroStickers() {
         const candidates = allowed({ x, y }) ? [{ x, y }] : xs.flatMap((cx) => ys.map((cy) => ({ x: clamp(cx, minX, maxX), y: clamp(cy, minY, maxY) }))).filter(allowed);
         const position = candidates.reduce((best, point) => !best || Math.hypot(point.x - x, point.y - y) < Math.hypot(best.x - x, best.y - y) ? point : best, null);
         if (!position) return;
-        setStickerPositions((positions) => ({
-            ...positions,
-            [drag.id]: { x: position.x / rect.width * 100, y: position.y / rect.height * 100 },
-        }));
+        // Write straight to the element while dragging; React state is only
+        // committed on release, so the hero does not re-render every frame.
+        drag.position = { x: position.x / rect.width * 100, y: position.y / rect.height * 100 };
+        drag.element.style.left = `${drag.position.x}%`;
+        drag.element.style.top = `${drag.position.y}%`;
     };
 
     const moveSticker = (event) => {
-        if (!dragState.current) return;
+        const drag = dragState.current;
+        if (!drag) return;
+        const motion = stickerMotion.current.get(drag.id);
+        if (motion) {
+            const now = event.timeStamp;
+            const dt = Math.max(0.008, (now - motion.lastMove) / 1000);
+            const blend = 1 - Math.exp(-dt * 24);
+            motion.vx += ((event.clientX - motion.lastX) / dt - motion.vx) * blend;
+            motion.lastX = event.clientX;
+            motion.lastMove = now;
+            wakeStickerMotion();
+        }
         pendingPointer.current = { clientX: event.clientX, clientY: event.clientY };
         if (dragFrame.current) return;
         dragFrame.current = requestAnimationFrame(() => {
@@ -365,7 +445,12 @@ function HeroStickers() {
             event.currentTarget.releasePointerCapture(event.pointerId);
         }
 
+        const drag = dragState.current;
         dragState.current = null;
+        if (drag?.position) {
+            setStickerPositions((positions) => ({ ...positions, [drag.id]: drag.position }));
+        }
+        wakeStickerMotion();
         setDraggingSticker(null);
     };
 
@@ -1036,7 +1121,7 @@ export default function App() {
           touch-action: none;
           user-select: none;
           pointer-events: auto;
-          transform: translate(-50%, -50%) rotate(var(--sticker-rotate));
+          transform: translate(-50%, -50%) rotate(calc(var(--sticker-rotate) + var(--sticker-sway, 0deg))) scale(var(--sticker-lift, 1));
           transform-origin: center center;
           transition: filter 160ms ease;
         }
@@ -1796,12 +1881,17 @@ export default function App() {
         }
         @keyframes projectPaperUnfile {
           0% {
-            opacity: 0.2;
+            opacity: 0;
             transform: translate(var(--paper-start-x), var(--paper-start-y)) rotate(calc(var(--paper-tilt) - 2deg)) scale(0.96);
           }
-          62% {
+          16% {
             opacity: 1;
+          }
+          58% {
             transform: translate(0, -2.5%) rotate(calc(var(--paper-tilt) + 0.6deg)) scale(1.01);
+          }
+          80% {
+            transform: translate(0, 0.6%) rotate(calc(var(--paper-tilt) - 0.25deg)) scale(0.997);
           }
           100% {
             opacity: 1;

@@ -218,6 +218,10 @@ body {
   inset: 0;
   z-index: 4;
 }
+.letter-hero > .letter-intro,
+.letter-hero > .hero-sticker-layer {
+  transform: translateY(48px);
+}
 @media (max-width: 700px) {
   .hero-sticker-layer .about-draggable-sticker { width: min(var(--sticker-width), 140px); }
 }
