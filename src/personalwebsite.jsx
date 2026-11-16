@@ -753,10 +753,10 @@ function FilmStripSection() {
 
 /* ══════════════════ PROJECTS ══════════════════ */
 const PROJECTS = [
-    { tab: "Bluprint", badge: "Personalized Interior Decorator", title: "Bluprint", desc: "A room design website that takes user's style preferences and generates furniture recommendations. Includes a customizable diagram of room, visual representation of items recommended, and dashboard to view all decorated rooms.", tags: ["React","Node.js", "Three.js","MongoDB"], year: "2024", emoji: "🐚", image: bluprintProjectPreview, noteCaption: "click here for link^", projectUrl: "https://bluprint-iroq.onrender.com/", color: C.fresh, ink: C.ink, descColor: C.ink },
+    { tab: "Bluprint", badge: "Personalized Interior Decorator", title: "Bluprint", desc: "A room design website that takes user's style preferences and generates furniture recommendations. Includes a customizable diagram of room, visual representation of items recommended, and dashboard to view all decorated rooms.", tags: ["React","Node.js", "Three.js","MongoDB"], year: "2024", emoji: "🐚", image: bluprintProjectPreview, noteCaption: "see it live", projectUrl: "https://bluprint-iroq.onrender.com/", color: C.fresh, ink: C.ink, descColor: C.ink },
     { tab: "Databridge", badge: "Financial Ontology Platform", title: "Databridge", desc: "Detailed a technical specification for HGS internship: Microsoft Fabric-native financial data platform, defining the OneLake medallion architecture, Direct Lake semantic layer, capacity tiering, and security requirements across a 17-item decision register.\n", tags: ["SQL","Microsoft Fabric","Power BI","OneLake"], year: "2026", emoji: "🗺️", image: databridgePostitPreview, noteCaption: "final presentation day!!", color: C.yellow, ink: C.ink, descColor: C.ink },
-    { tab: "Tech and Humanity", badge: "Interdisciplinary Project", title: "Technology vs. Human Experiences", desc: "Interactive presentation detailing research study on whether technology/AI is replacing traditionally and evolutionarily human traits and experiences. Throughout this project, I use a psychological study CASA(Computers Are Social Actors), curiosity experiments, and popular media like WALL-E to examine how humans may become emotionally and behaviorally dependent on technology. \n", year: "2024", emoji: "📝", image: interdisciplinaryPostitPreview, noteCaption: "click to visit:", projectUrl: "https://prezi.com/p/1snxsaer21hu/?present=1", noteImageFit: "contain", color: C.softpink, ink: C.ink, descColor: C.ink },
-    { tab: "Wavelength", badge: "Personal Symptom Log", title: "Wavelength", desc: "A symptom-tracking website that lets users log physical and mental symptoms by text or voice. Includes graphs of recurring symptoms over time, a calendar of past entries, AI-generated summaries, and a PDF brief to bring to doctor's appointments.", tags: ["Vite","Firebase","Supabase","GroqCloud"], year: "2023", emoji: "🔍", image: wavelengthPostitPreview, noteCaption: "click below for link :)", noteCaptionPosition: "top", projectUrl: "https://wavelength-two-flame.vercel.app/", noteImageFit: "contain", color: C.azeitona, ink: C.ink, descColor: C.ink },
+    { tab: "Tech and Humanity", badge: "Interdisciplinary Project", title: "Technology vs. Human Experiences", desc: "Interactive presentation detailing research study on whether technology/AI is replacing traditionally and evolutionarily human traits and experiences. Throughout this project, I use a psychological study CASA(Computers Are Social Actors), curiosity experiments, and popular media like WALL-E to examine how humans may become emotionally and behaviorally dependent on technology. \n", year: "2024", emoji: "📝", image: interdisciplinaryPostitPreview, noteCaption: "see it live", projectUrl: "https://prezi.com/p/1snxsaer21hu/?present=1", noteImageFit: "contain", color: C.softpink, ink: C.ink, descColor: C.ink },
+    { tab: "Wavelength", badge: "Personal Symptom Log", title: "Wavelength", desc: "A symptom-tracking website that lets users log physical and mental symptoms by text or voice. Includes graphs of recurring symptoms over time, a calendar of past entries, AI-generated summaries, and a PDF brief to bring to doctor's appointments.", tags: ["Vite","Firebase","Supabase","GroqCloud"], year: "2023", emoji: "🔍", image: wavelengthPostitPreview, noteCaption: "see it live", noteCaptionPosition: "top", projectUrl: "https://wavelength-two-flame.vercel.app/", noteImageFit: "contain", color: C.azeitona, ink: C.ink, descColor: C.ink },
 ];
 const DEFAULT_PROJECT_INDEX = 0;
 
@@ -779,8 +779,20 @@ function ProjectsSection() {
         { projectIndex: 0, className: "project-folder-label-green" },
     ];
     const activeFolderLayer = folderLayers.find((layer) => layer.projectIndex === active) ?? folderLayers[0];
+    // Linked notes get a hand-drawn arrow aimed at the preview image:
+    // up when the caption sits below it, down when it sits on top.
     const projectNoteCaption = p.noteCaption ? (
-        <span className="project-grid-note-caption">{p.noteCaption}</span>
+        p.projectUrl ? (
+            <span className={`project-grid-note-caption has-arrow ${p.noteCaptionPosition === "top" ? "arrow-down" : ""}`}>
+                <span>{p.noteCaption}</span>
+                <svg className="caption-arrow" viewBox="0 0 48 32" aria-hidden="true">
+                    <path d="M3 24 C 14 26, 26 22, 36 10" />
+                    <path d="M28 9 L 37 9 L 38 18" />
+                </svg>
+            </span>
+        ) : (
+            <span className="project-grid-note-caption">{p.noteCaption}</span>
+        )
     ) : null;
 
     return (
@@ -860,7 +872,7 @@ function ProjectsSection() {
                                     href={p.projectUrl}
                                     target="_blank"
                                     rel="noreferrer"
-                                    aria-label={`Open ${p.title} project`}
+                                    aria-label={`Open ${p.title} live site (opens in new tab)`}
                                 >
                                     {p.noteCaptionPosition === "top" && projectNoteCaption}
                                     <img
@@ -1973,6 +1985,7 @@ export default function App() {
           box-shadow: 0 10px 14px rgba(43,36,32,0.16);
           transform: rotate(var(--grid-note-rotate));
           pointer-events: none;
+          transition: transform 220ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 220ms ease;
         }
         .project-grid-note-photo {
           display: flex;
@@ -1986,7 +1999,38 @@ export default function App() {
         }
         .project-grid-note-link:hover,
         .project-grid-note-link:focus-visible {
-          box-shadow: 0 12px 16px rgba(43,36,32,0.22);
+          box-shadow: 0 15px 20px rgba(43,36,32,0.22);
+          transform: translateY(-3px) rotate(var(--grid-note-rotate));
+        }
+        .project-grid-note-caption.has-arrow {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+        }
+        .caption-arrow {
+          flex: none;
+          width: 34px;
+          height: 24px;
+          overflow: visible;
+        }
+        .arrow-down .caption-arrow {
+          scale: 1 -1;
+        }
+        .caption-arrow path {
+          fill: none;
+          stroke: #2B2420;
+          stroke-width: 2.4;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+        }
+        .project-grid-note-link:hover .caption-arrow,
+        .project-grid-note-link:focus-visible .caption-arrow {
+          animation: arrow-wiggle 600ms cubic-bezier(0.34, 1.56, 0.64, 1) infinite alternate;
+        }
+        @keyframes arrow-wiggle {
+          from { transform: translate(0, 0) rotate(0deg); }
+          to { transform: translate(3px, -3px) rotate(-8deg); }
         }
         .project-grid-note-link:focus-visible {
           outline: 3px solid rgba(237,227,156,0.95);
@@ -3132,6 +3176,15 @@ export default function App() {
           .project-folder-stack .project-folder-layer.is-peeking,
           .project-folder-stack .project-folder-label.is-peeking {
             translate: none;
+          }
+          .project-grid-note-link:hover .caption-arrow,
+          .project-grid-note-link:focus-visible .caption-arrow {
+            animation: none !important;
+          }
+          .project-grid-note,
+          .project-grid-note-link:hover,
+          .project-grid-note-link:focus-visible {
+            transition: none !important;
           }
           .about-stack-shell.is-stuck .about-washi {
             animation: none !important;
