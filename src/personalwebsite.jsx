@@ -333,8 +333,13 @@ function HeroStickers() {
 
     const reduceStickerMotion = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
-    // Underdamped springs: a sticker lifts off the page, swings against the
-    // direction it is dragged, and presses back down with a small bounce.
+    // Underdamped springs drive three things per sticker:
+    //  - lift/sway: picked up while dragging, swings against the drag, presses
+    //    back down with a small bounce when dropped;
+    //  - peel: on hover the corner nearest the pointer lifts toward the viewer,
+    //    hinged on the opposite edge, and follows the pointer around the sticker.
+    const PEEL_K = 300;
+    const PEEL_ZETA = 0.48;
     const stepStickerMotion = (now) => {
         motionFrame.current = 0;
         const dt = motionTime.current ? Math.min(0.034, (now - motionTime.current) / 1000) : 0.016;
@@ -345,6 +350,7 @@ function HeroStickers() {
             if (now - m.lastMove > 40) m.vx *= Math.exp(-dt * 10);
             const liftTarget = dragging ? 1.07 : 1;
             const swayTarget = dragging ? Math.max(-14, Math.min(14, -m.vx * 0.018)) : 0;
+            const peelTarget = m.hover && !dragging ? 1 : 0;
             const steps = Math.ceil(dt / 0.004);
             const h = dt / steps;
             for (let i = 0; i < steps; i++) {
@@ -352,19 +358,33 @@ function HeroStickers() {
                 m.lift += m.liftV * h;
                 m.swayV += (-260 * (m.sway - swayTarget) - 2 * 0.38 * Math.sqrt(260) * m.swayV) * h;
                 m.sway += m.swayV * h;
+                m.peelV += (-PEEL_K * (m.peel - peelTarget) - 2 * PEEL_ZETA * Math.sqrt(PEEL_K) * m.peelV) * h;
+                m.peel += m.peelV * h;
             }
-            const settled = !dragging
-                && Math.abs(m.lift - 1) < 0.0005 && Math.abs(m.liftV) < 0.005
-                && Math.abs(m.sway) < 0.02 && Math.abs(m.swayV) < 0.05;
-            if (settled) {
-                m.element.style.removeProperty("--sticker-lift");
-                m.element.style.removeProperty("--sticker-sway");
+            // When it slaps back down it may dip a hair past flat, never far.
+            m.peel = Math.max(-0.08, m.peel);
+            // The lifted corner glides after the pointer rather than snapping.
+            const follow = 1 - Math.exp(-dt * 16);
+            m.dx += (m.aimX - m.dx) * follow;
+            m.dy += (m.aimY - m.dy) * follow;
+
+            const moving = dragging
+                || Math.abs(m.lift - 1) > 0.0005 || Math.abs(m.liftV) > 0.005
+                || Math.abs(m.sway) > 0.02 || Math.abs(m.swayV) > 0.05
+                || Math.abs(m.peel - peelTarget) > 0.001 || Math.abs(m.peelV) > 0.01
+                || Math.abs(m.aimX - m.dx) > 0.002 || Math.abs(m.aimY - m.dy) > 0.002;
+            if (!moving && !m.hover) {
+                ["--sticker-lift", "--sticker-sway", "--peel", "--peel-dx", "--peel-dy"].forEach((name) => m.element.style.removeProperty(name));
                 stickerMotion.current.delete(id);
                 return;
             }
-            active = true;
-            m.element.style.setProperty("--sticker-lift", m.lift.toFixed(4));
-            m.element.style.setProperty("--sticker-sway", `${m.sway.toFixed(3)}deg`);
+            const style = m.element.style;
+            style.setProperty("--sticker-lift", m.lift.toFixed(4));
+            style.setProperty("--sticker-sway", `${m.sway.toFixed(3)}deg`);
+            style.setProperty("--peel", m.peel.toFixed(4));
+            style.setProperty("--peel-dx", m.dx.toFixed(4));
+            style.setProperty("--peel-dy", m.dy.toFixed(4));
+            if (moving) active = true;
         });
         if (active) motionFrame.current = requestAnimationFrame(stepStickerMotion);
     };
@@ -373,6 +393,63 @@ function HeroStickers() {
         if (motionFrame.current) return;
         motionTime.current = 0;
         motionFrame.current = requestAnimationFrame(stepStickerMotion);
+    };
+
+    const stickerMotionFor = (id, element) => {
+        let motion = stickerMotion.current.get(id);
+        if (!motion) {
+            motion = { element, lift: 1, liftV: 0, sway: 0, swayV: 0, vx: 0, lastMove: 0, lastX: 0,
+                peel: 0, peelV: 0, hover: false, aimX: 0.55, aimY: 0.55, dx: 0.55, dy: 0.55 };
+            stickerMotion.current.set(id, motion);
+        }
+        motion.element = element;
+        return motion;
+    };
+
+    // Which corner peels: the pointer's direction from the sticker's centre,
+    // pushed out to the rim so a pointer near the middle still picks a side.
+    const aimPeel = (motion, event) => {
+        const rect = motion.element.getBoundingClientRect();
+        let x = (event.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+        let y = (event.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
+        const length = Math.hypot(x, y);
+        if (length < 0.001) { x = 0.55; y = 0.55; }
+        else {
+            const reach = Math.min(1, Math.max(0.6, length));
+            x = (x / length) * reach;
+            y = (y / length) * reach;
+        }
+        motion.aimX = x;
+        motion.aimY = y;
+    };
+
+    const peelStart = (event, sticker) => {
+        if (event.pointerType === "touch" || reduceStickerMotion()) return;
+        const motion = stickerMotionFor(sticker.id, event.currentTarget);
+        if (!motion.hover) {
+            // Start the peel from where the pointer came in.
+            aimPeel(motion, event);
+            motion.dx = motion.aimX;
+            motion.dy = motion.aimY;
+        }
+        motion.hover = true;
+        wakeStickerMotion();
+    };
+
+    const peelEnd = (sticker) => {
+        const motion = stickerMotion.current.get(sticker.id);
+        if (!motion) return;
+        motion.hover = false;
+        wakeStickerMotion();
+    };
+
+    const peelFocus = (event, sticker) => {
+        if (!event.currentTarget.matches(":focus-visible") || reduceStickerMotion()) return;
+        const motion = stickerMotionFor(sticker.id, event.currentTarget);
+        motion.hover = true;
+        motion.aimX = motion.dx = 0.6;
+        motion.aimY = motion.dy = 0.6;
+        wakeStickerMotion();
     };
 
     const beginStickerDrag = (event, sticker) => {
@@ -417,12 +494,9 @@ function HeroStickers() {
             position: null,
         };
         if (!reduceStickerMotion()) {
-            const motion = stickerMotion.current.get(sticker.id)
-                ?? { element, lift: 1, liftV: 0, sway: 0, swayV: 0, vx: 0 };
-            motion.element = element;
+            const motion = stickerMotionFor(sticker.id, element);
             motion.lastMove = event.timeStamp;
             motion.lastX = event.clientX;
-            stickerMotion.current.set(sticker.id, motion);
             wakeStickerMotion();
         }
         setDraggingSticker(sticker.id);
@@ -460,7 +534,14 @@ function HeroStickers() {
 
     const moveSticker = (event) => {
         const drag = dragState.current;
-        if (!drag) return;
+        if (!drag) {
+            const hovered = [...stickerMotion.current.values()].find((m) => m.element === event.currentTarget && m.hover);
+            if (hovered) {
+                aimPeel(hovered, event);
+                wakeStickerMotion();
+            }
+            return;
+        }
         const motion = stickerMotion.current.get(drag.id);
         if (motion) {
             const now = event.timeStamp;
@@ -516,7 +597,7 @@ function HeroStickers() {
                         </defs>
                     </svg>
 
-                    {hobbyStickers.map((sticker, index) => {
+                    {hobbyStickers.map((sticker) => {
                         const position = stickerPositions[sticker.id];
 
                         return (
@@ -529,9 +610,12 @@ function HeroStickers() {
                                 onPointerMove={moveSticker}
                                 onPointerUp={endStickerDrag}
                                 onPointerCancel={endStickerDrag}
+                                onPointerEnter={(event) => peelStart(event, sticker)}
+                                onPointerLeave={() => peelEnd(sticker)}
+                                onFocus={(event) => peelFocus(event, sticker)}
+                                onBlur={() => peelEnd(sticker)}
                                 style={{
                                     "--sticker-width": sticker.width,
-                                    "--peel-tilt": index % 2 ? "4deg" : "-4deg",
                                     "--sticker-rotate": sticker.rotate,
                                     "--initial-sticker-x": sticker.x,
                                     "--initial-sticker-y": sticker.y,
@@ -1249,30 +1333,33 @@ export default function App() {
           opacity: 1;
           transform: translate(-50%, 0) rotate(-1deg) scale(1);
         }
-        /* Peel-up on hover: animate the img, never the positioned button. */
+        /* Peel: --peel (0..1, springy) and --peel-dx/--peel-dy (direction of the
+           lifting corner, -1..1) are written by the sticker motion loop. The img
+           hinges on the edge opposite the pointer and that corner rises toward
+           the viewer; the button keeps its own position transform. */
         .hero-sticker-layer .about-draggable-sticker img {
-          transform-origin: 50% 85%;
-          transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 200ms ease;
+          transform-origin: calc(50% - var(--peel-dx, 0) * 50%) calc(50% - var(--peel-dy, 0) * 50%);
+          transform:
+            perspective(520px)
+            translateY(calc(var(--peel, 0) * -3px))
+            rotateX(calc(var(--peel, 0) * var(--peel-dy, 0) * 16deg))
+            rotateY(calc(var(--peel, 0) * var(--peel-dx, 0) * -16deg))
+            scale(calc(1 + var(--peel, 0) * 0.035));
         }
-        .hero-sticker-layer .about-draggable-sticker:not(.is-dragging):hover img,
-        .hero-sticker-layer .about-draggable-sticker:not(.is-dragging):focus-visible img {
-          transform: translateY(-6px) rotate(var(--peel-tilt, -4deg)) scale(1.04);
+        /* The shadow stretches out under the lifted corner. */
+        .hero-sticker-layer .about-draggable-sticker:not(.handdrawn-sticker) img {
+          filter: var(--white-sticker-border) drop-shadow(
+            calc(3px + var(--peel, 0) * (1px + var(--peel-dx, 0) * 3px))
+            calc(5px + var(--peel, 0) * (6px + var(--peel-dy, 0) * 3px))
+            calc(max(0px, var(--peel, 0) * 8px))
+            rgba(43,36,32,0.24));
         }
-        .hero-sticker-layer .about-draggable-sticker:not(.handdrawn-sticker):hover img,
-        .hero-sticker-layer .about-draggable-sticker:not(.handdrawn-sticker):focus-visible img,
-        .hero-sticker-layer .about-draggable-sticker:not(.handdrawn-sticker).is-dragging img {
-          filter: var(--white-sticker-border) drop-shadow(4px 12px 8px rgba(43,36,32,0.22));
-        }
-        .hero-sticker-layer .about-draggable-sticker.handdrawn-sticker:hover img,
-        .hero-sticker-layer .about-draggable-sticker.handdrawn-sticker:focus-visible img,
-        .hero-sticker-layer .about-draggable-sticker.handdrawn-sticker.is-dragging img {
-          filter: url(#hero-sticker-cut-edge) drop-shadow(4px 12px 8px rgba(43,36,32,0.22));
-        }
-        /* The button's lift spring already scales a held sticker up, so the
-           img only drops its peel here instead of stacking a second scale. */
-        .hero-sticker-layer .about-draggable-sticker.is-dragging img {
-          transform: none;
-          transition: filter 200ms ease;
+        .hero-sticker-layer .about-draggable-sticker.handdrawn-sticker img {
+          filter: url(#hero-sticker-cut-edge) drop-shadow(
+            calc(1px + var(--peel, 0) * (3px + var(--peel-dx, 0) * 3px))
+            calc(3px + var(--peel, 0) * (8px + var(--peel-dy, 0) * 3px))
+            calc(2px + max(0px, var(--peel, 0) * 6px))
+            rgba(43,36,32,calc(0.18 + var(--peel, 0) * 0.04)));
         }
         .about-draggable-sticker.is-dragging .about-hobby-blurb {
           opacity: 0;
@@ -3108,11 +3195,12 @@ export default function App() {
           .project-grid-note-link:focus-visible {
             transition: none !important;
           }
-          .hero-sticker-layer .about-draggable-sticker img,
+          .hero-sticker-layer .about-draggable-sticker img {
+            transform: none !important;
+          }
           .hero-sticker-layer .about-draggable-sticker:hover img,
           .hero-sticker-layer .about-draggable-sticker:focus-visible img {
-            transform: none !important;
-            transition: filter 200ms ease !important;
+            --peel: 1;
           }
           .about-paper-reveal,
           .about-paper-reveal.is-cascading,
