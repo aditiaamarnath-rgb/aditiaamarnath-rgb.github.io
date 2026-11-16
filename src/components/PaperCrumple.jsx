@@ -287,8 +287,7 @@ const PaperCrumple = ({
   onStateChange,
   onError,
   className = '',
-  style,
-  children
+  style
 }) => {
   const rootRef = useRef(null);
   const canvasRef = useRef(null);
@@ -1171,7 +1170,6 @@ const PaperCrumple = ({
         style={{ visibility: status === 'ready' ? 'visible' : 'hidden' }}
       />
       <span className="paper-crumple-focus" aria-hidden="true" />
-      {children}
       <span className="paper-crumple-sr" role="status">
         {status === 'loading'
           ? 'Loading interactive paper.'

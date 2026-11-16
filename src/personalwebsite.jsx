@@ -5,7 +5,6 @@ import { Mascot } from "page-mascot";
 import FoldText from "./components/FoldText";
 import PaperCrumple from "./components/PaperCrumple";
 import SketchbookSection from "./components/SketchbookSection";
-import useInView from "./hooks/useInView";
 import arrayRegularFont from "../fonts/Array-Regular.otf";
 import bikeSticker from "./assets/bike-sticker.png";
 import cameraSticker from "./assets/handdrawn-stickers/camera.png";
@@ -558,31 +557,8 @@ function AboutStack({ children, tilt, yOffset = 0, zIndex = 1 }) {
         : tilt === 3
             ? { src: aboutHobbiesNote, title: "Hobbies" }
             : { src: aboutActivitiesNote, title: "Activities" };
-    const tape = ABOUT_TAPE[note.title];
-    const [shellRef, stuck] = useInView();
-    const [paperState, setPaperState] = useState("flat");
-    const flattenTimer = useRef(0);
-    useEffect(() => () => clearTimeout(flattenTimer.current), []);
-    // Tape comes back only once the sheet has mostly unfolded, not the instant
-    // the pointer lets go while it is still a ball.
-    const trackPaper = (state) => {
-        clearTimeout(flattenTimer.current);
-        if (state === "flat") flattenTimer.current = setTimeout(() => setPaperState("flat"), 450);
-        else setPaperState(state);
-    };
     return (
-        <div
-            ref={shellRef}
-            className={`about-stack-shell ${stuck ? "is-stuck" : ""} ${paperState !== "flat" ? "is-lifted" : ""}`}
-            style={{
-                transform: `translateY(${yOffset}px)`,
-                zIndex,
-                "--tape-color": tape.color,
-                "--tape-rotate": tape.rotate,
-                "--tape-pos": tape.pos,
-                "--tape-delay": tape.delay,
-            }}
-        >
+        <div className="about-stack-shell" style={{ transform: `translateY(${yOffset}px)`, zIndex }}>
             <PaperCrumple
                 src={note.src}
                 alt={`${note.title} post-it note`}
@@ -603,22 +579,13 @@ function AboutStack({ children, tilt, yOffset = 0, zIndex = 1 }) {
                 paperTexture={0.08}
                 draggable
                 returnToOrigin
-                onStateChange={trackPaper}
-            >
-                <span className="about-washi" aria-hidden="true" />
-            </PaperCrumple>
+            />
             <div className="about-note-text">{children}</div>
         </div>
     );
 }
 
 const ABOUT = { scrapInk: "#2B2420", twine: "#8A6D4B" };
-// --tape-pos is the fraction across the paper's width where the tape is centred.
-const ABOUT_TAPE = {
-    Education: { color: "rgba(185,125,123,0.55)", rotate: "-6deg", pos: 0.38, delay: "0ms" },
-    Hobbies: { color: "rgba(158,167,107,0.55)", rotate: "4deg", pos: 0.5, delay: "120ms" },
-    Activities: { color: "rgba(128,155,165,0.55)", rotate: "-3deg", pos: 0.6, delay: "240ms" },
-};
 
 function AboutSection() {
     return (
@@ -2515,37 +2482,6 @@ export default function App() {
           padding-top: 32px;
           perspective: 1300px;
         }
-        /* Washi tape: lives inside .paper-crumple so it can use the measured
-           paper size (--pc-image-*) and sit exactly on the sheet's top edge. */
-        .about-washi {
-          position: absolute;
-          top: calc(50% - var(--pc-image-height, 520px) / 2 - 15px);
-          left: calc(50% + (var(--tape-pos, 0.5) - 0.5) * var(--pc-image-width, 400px));
-          width: 118px;
-          height: 30px;
-          z-index: 40;
-          pointer-events: none;
-          background:
-            repeating-linear-gradient(90deg, rgba(255,255,255,0.18) 0 6px, transparent 6px 12px),
-            var(--tape-color);
-          clip-path: polygon(3% 0, 97% 4%, 100% 22%, 96% 45%, 100% 70%, 97% 100%, 2% 96%, 0 74%, 4% 50%, 0 26%);
-          mix-blend-mode: multiply;
-          opacity: 0;
-          transform: translate(-50%, -18px) rotate(var(--tape-rotate)) scale(1.08, 0.9);
-          transform-origin: 50% 100%;
-        }
-        .about-stack-shell.is-stuck .about-washi {
-          animation: washi-stick 420ms cubic-bezier(0.2, 0.8, 0.24, 1) var(--tape-delay, 0ms) both;
-        }
-        .about-stack-shell.is-lifted .about-washi {
-          opacity: 0 !important;
-          transition: opacity 120ms linear;
-        }
-        @keyframes washi-stick {
-          0% { opacity: 0; transform: translate(-50%, -18px) rotate(var(--tape-rotate)) scale(1.08, 0.9); }
-          60% { opacity: 1; transform: translate(-50%, 1px) rotate(var(--tape-rotate)) scale(1.03, 0.94); }
-          100% { opacity: 1; transform: translate(-50%, 0) rotate(var(--tape-rotate)) scale(1, 1); }
-        }
         .about-stack-angle {
           transform: rotate(var(--about-rotate));
           transition: transform 520ms cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -3171,11 +3107,6 @@ export default function App() {
           .project-grid-note-link:hover,
           .project-grid-note-link:focus-visible {
             transition: none !important;
-          }
-          .about-stack-shell.is-stuck .about-washi {
-            animation: none !important;
-            opacity: 1;
-            transform: translate(-50%, 0) rotate(var(--tape-rotate));
           }
           .hero-sticker-layer .about-draggable-sticker img,
           .hero-sticker-layer .about-draggable-sticker:hover img,
