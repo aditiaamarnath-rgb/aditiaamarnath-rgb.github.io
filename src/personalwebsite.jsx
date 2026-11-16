@@ -73,23 +73,15 @@ const C = {
 };
 
 /* ── Section heading with diamond bullet ── */
-function SectionHeading({ children, fontSize = "clamp(46px,5vw,76px)", marginBottom = 36, underlineColor }) {
-    const [ref, inView] = useInView({ threshold: 0.6 });
+function SectionHeading({ children, fontSize = "clamp(46px,5vw,76px)", marginBottom = 36 }) {
     return (
-        <div ref={ref} style={{ marginBottom }}>
+        <div style={{ marginBottom }}>
             <h2 className="page-heading" style={{
                 fontSize,
                 color: C.ink,
                 margin: 0,
             }}>
-                <span className="heading-underline-wrap" style={underlineColor ? { "--underline-color": underlineColor } : undefined}>
-                    {children}
-                    {/* Marker stroke: a wobbly main pass that overshoots, plus a thinner second pass. */}
-                    <svg className={`heading-underline ${inView ? "is-drawn" : ""}`} viewBox="0 0 300 24" preserveAspectRatio="none" aria-hidden="true">
-                        <path d="M4 15 C 40 9, 80 18, 120 13 S 200 8, 240 14 S 285 16, 299 9" pathLength="1" />
-                        <path className="heading-underline-second" d="M18 19 C 60 15, 115 21, 170 17 S 248 14, 284 18" pathLength="1" />
-                    </svg>
-                </span>
+                {children}
             </h2>
         </div>
     );
@@ -631,7 +623,7 @@ const ABOUT_TAPE = {
 function AboutSection() {
     return (
         <section id="aboutme" className="about-corkboard-section" aria-label="About Me">
-            <SectionHeading marginBottom={16} underlineColor="#b97d7b">about me</SectionHeading>
+            <SectionHeading marginBottom={16}>about me</SectionHeading>
             <div className="about-corkboard-frame">
                 <div className="about-corkboard-postits about-stack-grid">
                     <AboutStack tilt={-2} yOffset={16} zIndex={30}>
@@ -798,7 +790,7 @@ function ProjectsSection() {
     return (
         <section id="projects" style={{ background: C.cream, padding: "72px clamp(18px, 4vw, 52px) 96px", position: "relative", overflow: "hidden" }}>
 
-            <SectionHeading underlineColor="#809ba5">projects</SectionHeading>
+            <SectionHeading>projects</SectionHeading>
 
             <div className="projects-shell">
                 <div className="project-folder-stack" role="tablist" aria-label="Projects">
@@ -938,7 +930,7 @@ const EXPERIENCE_CARDS = EXPERIENCES.map((experience) => ({
 function ExperienceSection() {
     return (
         <section id="experience" className="paper-experiences">
-            <SectionHeading marginBottom={10} underlineColor="#9ea76b">experiences</SectionHeading>
+            <SectionHeading marginBottom={10}>experiences</SectionHeading>
             <p className="paper-section-note">A few places I’ve learned, contributed, and grown.</p>
             <div className="experience-orbit-stage">
                 <OrbitCardStack
@@ -1068,7 +1060,7 @@ function ContactSection() {
             </div>
 
             <div style={{ position: "relative", zIndex: 2 }}>
-                <SectionHeading underlineColor="#caaeb5">contact information</SectionHeading>
+                <SectionHeading>contact information</SectionHeading>
             </div>
 
             <div className="contact-terminal-shell">
