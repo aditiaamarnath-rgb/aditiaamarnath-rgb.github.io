@@ -242,6 +242,85 @@ body {
   color: #362f22;
   scroll-margin-top: 24px;
 }
+/* Leave room for the fixed compact nav when jumping to a section. */
+#home, #aboutme, #experience, #projects, #contactme { scroll-margin-top: 64px; }
+
+/* Compact section nav: a smaller copy of the hero's pixel buttons. */
+.compact-nav {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  z-index: 100;
+  display: flex;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background-color: rgba(244, 240, 231, 0.92);
+  background-image: url('./assets/paper-grain.svg');
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 6px 18px rgba(43, 36, 32, 0.12);
+  opacity: 0;
+  transform: translate(-50%, -140%);
+  pointer-events: none;
+  transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 180ms ease;
+}
+.compact-nav.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  pointer-events: auto;
+}
+.compact-nav a {
+  position: relative;
+  isolation: isolate;
+  padding: 8px 12px 10px;
+  color: #342d34;
+  font: 400 8px/1.2 'Press Start 2P', 'Courier New', monospace;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+  -webkit-font-smoothing: none;
+  filter: drop-shadow(2px 3px 0 #756871);
+  transition: transform 120ms steps(2, end), filter 120ms steps(2, end);
+}
+.compact-nav a::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  box-sizing: border-box;
+  border: 2px solid #51454d;
+  border-right-width: 3px;
+  border-bottom-width: 3px;
+  background: #c594a4;
+  box-shadow: inset 2px 2px 0 #e9c5cf, inset -2px -2px 0 #956b7a;
+  clip-path: polygon(3px 0, calc(100% - 3px) 0, calc(100% - 3px) 2px, 100% 2px, 100% calc(100% - 3px), calc(100% - 3px) calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 3px calc(100% - 3px), 0 calc(100% - 3px), 0 3px, 3px 3px);
+  transition: background-color 120ms ease;
+}
+.compact-nav a:hover { transform: translateY(-1px); filter: drop-shadow(2px 4px 0 #756871); }
+.compact-nav a:hover::before { background: #d3a8b5; }
+/* Pressed in: the offset shadow collapses and the button shifts into it. */
+.compact-nav a.is-pressed,
+.compact-nav a[aria-current],
+.compact-nav a:active {
+  transform: translate(2px, 2px);
+  filter: drop-shadow(0 1px 0 #756871);
+}
+.compact-nav a.is-pressed::before,
+.compact-nav a[aria-current]::before {
+  background: #b07d8e;
+  box-shadow: inset 2px 2px 0 #956b7a, inset -2px -2px 0 #c594a4;
+}
+.compact-nav a:focus-visible { outline: 2px solid #51454d; outline-offset: 3px; }
+@media (max-width: 700px) {
+  .compact-nav { gap: 4px; padding: 5px 6px; max-width: calc(100vw - 16px); }
+  .compact-nav a { padding: 7px 7px 9px; font-size: 7px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .compact-nav,
+  .compact-nav.is-visible { transform: translate(-50%, 0); transition: opacity 180ms ease; }
+  .compact-nav a { transition: none; }
+}
 #aboutme,
 #experience { padding: 82px clamp(24px, 6vw, 96px) 100px; }
 #aboutme .about-corkboard-frame {

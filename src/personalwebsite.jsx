@@ -88,11 +88,57 @@ function SectionHeading({ children, fontSize = "clamp(46px,5vw,76px)", marginBot
 }
 
 /* ══════════════════ NAV ══════════════════ */
+const NAV_LINKS = [["home", "home"], ["about", "aboutme"], ["experience", "experience"], ["projects", "projects"], ["contact", "contactme"]];
+
 function NavBar() {
     return (
         <nav className="letter-nav" aria-label="Main navigation">
-            {[["home", "home"], ["about", "aboutme"], ["experience", "experience"], ["projects", "projects"], ["contact", "contactme"]].map(([label, id]) => (
+            {NAV_LINKS.map(([label, id]) => (
                 <a key={id} href={`#${id}`}>{label}</a>
+            ))}
+        </nav>
+    );
+}
+
+/* Slim pixel-button bar that drops in once the hero nav has scrolled away. */
+function CompactNav() {
+    const [visible, setVisible] = useState(false);
+    const [activeId, setActiveId] = useState("home");
+
+    useEffect(() => {
+        if (!("IntersectionObserver" in window)) return undefined;
+        const heroNav = document.querySelector("#home .letter-nav");
+        const navObserver = new IntersectionObserver(([entry]) => setVisible(!entry.isIntersecting), { threshold: 0 });
+        if (heroNav) navObserver.observe(heroNav);
+
+        // A thin band across the middle of the viewport decides the active section.
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) setActiveId(entry.target.id);
+            });
+        }, { rootMargin: "-45% 0px -50% 0px" });
+        NAV_LINKS.forEach(([, id]) => {
+            const section = document.getElementById(id);
+            if (section) sectionObserver.observe(section);
+        });
+        return () => {
+            navObserver.disconnect();
+            sectionObserver.disconnect();
+        };
+    }, []);
+
+    return (
+        <nav className={`compact-nav ${visible ? "is-visible" : ""}`} aria-label="Section navigation" aria-hidden={!visible}>
+            {NAV_LINKS.map(([label, id]) => (
+                <a
+                    key={id}
+                    href={`#${id}`}
+                    tabIndex={visible ? 0 : -1}
+                    aria-current={activeId === id ? "location" : undefined}
+                    className={activeId === id ? "is-pressed" : ""}
+                >
+                    {label}
+                </a>
             ))}
         </nav>
     );
@@ -1070,7 +1116,9 @@ export default function App() {
           font-display: swap;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scroll-behavior: smooth; }
+        @media (prefers-reduced-motion: no-preference) {
+          html { scroll-behavior: smooth; }
+        }
         body { background: #efe8ca; }
         button { outline: none; }
         .about-corkboard-section {
@@ -3084,6 +3132,7 @@ export default function App() {
           }
         }
       `}</style>
+            <CompactNav />
             <div style={{ maxWidth: "100vw", overflowX: "hidden" }}>
                 <HeroSection />
                 <AboutSection />
