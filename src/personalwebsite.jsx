@@ -1865,7 +1865,28 @@ export default function App() {
           isolation: isolate;
           display: flex;
           flex-direction: column;
+          /* Keeps the layout box the same size; the visible border is on the sheet. */
+          border: 4px solid transparent;
+          transform: none;
+          transform-origin: 50% 92%;
+          animation: projectPaperUnfile 480ms cubic-bezier(0.2, 0.8, 0.24, 1) both;
+        }
+        /* The sheet: every paper visual (accent band, binder holes, lines, margin,
+           border, shadow) lives on this one tilted layer, so the sheet still sits
+           askew while the article's text renders straight and sharp. */
+        .project-file-paper::before {
+          content: "";
+          position: absolute;
+          inset: -4px;
+          z-index: -1;
+          pointer-events: none;
           background:
+            radial-gradient(circle at 50% 8px, rgba(251,243,216,0.72) 0 4.5px, rgba(43,36,32,0.115) 5px 6px, transparent 6.5px) 28px 64px / 13px 112px no-repeat,
+            radial-gradient(circle at 50% 44px, rgba(251,243,216,0.72) 0 4.5px, rgba(43,36,32,0.115) 5px 6px, transparent 6.5px) 28px 64px / 13px 112px no-repeat,
+            radial-gradient(circle at 50% 80px, rgba(251,243,216,0.72) 0 4.5px, rgba(43,36,32,0.115) 5px 6px, transparent 6.5px) 28px 64px / 13px 112px no-repeat,
+            linear-gradient(rgba(43,36,32,0.28), rgba(43,36,32,0.28)) 0 19px / 100% 3px no-repeat,
+            linear-gradient(90deg, rgba(255,255,255,0.22), transparent 36%) 0 0 / 100% 22px no-repeat,
+            linear-gradient(var(--paper-accent), var(--paper-accent)) 0 0 / 100% 22px no-repeat,
             linear-gradient(90deg, transparent 0 42px, rgba(185,125,123,0.34) 42px 44px, transparent 44px),
             linear-gradient(110deg, rgba(255,255,255,0.56), transparent 42%),
             repeating-linear-gradient(0deg, transparent 0 30px, rgba(99,82,55,0.16) 31px 33px),
@@ -1875,35 +1896,8 @@ export default function App() {
             0 18px 24px rgba(0,0,0,0.24),
             inset 0 0 0 2px rgba(255,255,255,0.36),
             5px 6px 0 rgba(43,36,32,0.16);
-          transform: translateY(0) rotate(var(--paper-tilt));
+          transform: rotate(var(--paper-tilt));
           transform-origin: 50% 92%;
-          animation: projectPaperUnfile 480ms cubic-bezier(0.2, 0.8, 0.24, 1) both;
-        }
-        .project-file-paper::before {
-          content: "";
-          position: absolute;
-          inset: 0 0 auto;
-          height: 22px;
-          background:
-            linear-gradient(90deg, rgba(255,255,255,0.22), transparent 36%),
-            var(--paper-accent);
-          border-bottom: 3px solid rgba(43,36,32,0.28);
-          z-index: 0;
-        }
-        .project-file-paper::after {
-          content: "";
-          position: absolute;
-          left: 28px;
-          top: 64px;
-          width: 13px;
-          height: 112px;
-          background:
-            radial-gradient(circle at 50% 8px, #fbf3d8 0 4.5px, rgba(43,36,32,0.16) 5px 6px, transparent 6.5px),
-            radial-gradient(circle at 50% 44px, #fbf3d8 0 4.5px, rgba(43,36,32,0.16) 5px 6px, transparent 6.5px),
-            radial-gradient(circle at 50% 80px, #fbf3d8 0 4.5px, rgba(43,36,32,0.16) 5px 6px, transparent 6.5px);
-          pointer-events: none;
-          z-index: 0;
-          opacity: 0.72;
         }
         .project-file-paper > * {
           position: relative;
@@ -2060,20 +2054,20 @@ export default function App() {
         @keyframes projectPaperUnfile {
           0% {
             opacity: 0;
-            transform: translate(var(--paper-start-x), var(--paper-start-y)) rotate(calc(var(--paper-tilt) - 2deg)) scale(0.96);
+            transform: translate(var(--paper-start-x), var(--paper-start-y)) rotate(-2deg) scale(0.96);
           }
           16% {
             opacity: 1;
           }
           58% {
-            transform: translate(0, -2.5%) rotate(calc(var(--paper-tilt) + 0.6deg)) scale(1.01);
+            transform: translate(0, -2.5%) rotate(0.6deg) scale(1.01);
           }
           80% {
-            transform: translate(0, 0.6%) rotate(calc(var(--paper-tilt) - 0.25deg)) scale(0.997);
+            transform: translate(0, 0.6%) rotate(-0.25deg) scale(0.997);
           }
           100% {
             opacity: 1;
-            transform: translate(0, 0) rotate(var(--paper-tilt)) scale(1);
+            transform: none;
           }
         }
         @keyframes projectPaperElementIn {
