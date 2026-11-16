@@ -4,6 +4,22 @@
   color: #fff2d3;
 }
 
+/* Ripped-paper edge where the cream contact section meets the dark one. */
+.portfolio-sketchbook { position: relative; }
+.portfolio-sketchbook::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -22px;
+  height: 24px;
+  background: #212121;
+  -webkit-mask: url("../assets/torn-edge.svg") repeat-x bottom / 420px 24px;
+          mask: url("../assets/torn-edge.svg") repeat-x bottom / 420px 24px;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .portfolio-sketchbook-heading {
   max-width: 850px;
   margin: 0 auto;
