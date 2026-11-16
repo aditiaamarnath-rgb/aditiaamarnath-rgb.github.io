@@ -762,6 +762,8 @@ const DEFAULT_PROJECT_INDEX = 0;
 
 function ProjectsSection() {
     const [active, setActive] = useState(DEFAULT_PROJECT_INDEX);
+    const [peekIndex, setPeekIndex] = useState(null);
+    const isPeeking = (projectIndex) => peekIndex === projectIndex && active !== projectIndex;
     const p = PROJECTS[active];
     const projectTags = p.tags ?? [];
     const folderLayers = [
@@ -794,7 +796,7 @@ function ProjectsSection() {
                             src={layer.src}
                             alt={layer.alt}
                             aria-hidden="true"
-                            className={`project-folder-layer ${layer.className}`}
+                            className={`project-folder-layer ${layer.className} ${isPeeking(layer.projectIndex) ? "is-peeking" : ""}`}
                             style={{ zIndex: layer.zIndex }}
                             draggable="false"
                         />
@@ -810,8 +812,12 @@ function ProjectsSection() {
                                 role="tab"
                                 aria-selected={active === projectIndex}
                                 aria-controls="project-panel"
-                                className={`project-folder-label ${className} ${active === projectIndex ? "is-active" : ""}`}
+                                className={`project-folder-label ${className} ${active === projectIndex ? "is-active" : ""} ${isPeeking(projectIndex) ? "is-peeking" : ""}`}
                                 onClick={() => setActive(projectIndex)}
+                                onMouseEnter={() => setPeekIndex(projectIndex)}
+                                onMouseLeave={() => setPeekIndex(null)}
+                                onFocus={() => setPeekIndex(projectIndex)}
+                                onBlur={() => setPeekIndex(null)}
                             >
                                 {proj.tab}
                             </button>
@@ -1739,6 +1745,19 @@ export default function App() {
           object-fit: contain;
           pointer-events: none;
           user-select: none;
+        }
+        /* Peek: the hovered folder is pulled up a little. Uses the individual
+           translate property so existing transforms on these elements stay. */
+        .project-folder-stack .project-folder-layer,
+        .project-folder-stack .project-folder-label {
+          transition: translate 220ms cubic-bezier(0.34, 1.56, 0.64, 1), filter 220ms ease;
+        }
+        .project-folder-stack .project-folder-layer.is-peeking,
+        .project-folder-stack .project-folder-label.is-peeking {
+          translate: 0 -6px;
+        }
+        .project-folder-stack .project-folder-layer.is-peeking {
+          filter: drop-shadow(0 -2px 3px rgba(43,36,32,0.12)) brightness(1.03);
         }
         .project-folder-layer-blue {
           top: -10%;
@@ -3109,6 +3128,10 @@ export default function App() {
           .about-paper-reveal,
           .about-paper-curl {
             transition: none !important;
+          }
+          .project-folder-stack .project-folder-layer.is-peeking,
+          .project-folder-stack .project-folder-label.is-peeking {
+            translate: none;
           }
           .about-stack-shell.is-stuck .about-washi {
             animation: none !important;
