@@ -38,45 +38,6 @@ body {
   background: #efe8ca;
 }
 
-/* Orbit styles stay scoped so the original portfolio layout is preserved. */
-.projects-orbit-stage {
-  min-height: 780px;
-  display: flex;
-  align-items: center;
-}
-.projects-orbit-card {
-  width: min(78vw, 21rem);
-  height: 600px;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  border-style: solid;
-  font-family: var(--font-body);
-}
-.projects-orbit-card img {
-  display: block;
-  object-fit: contain;
-}
-@media (max-width: 700px) {
-  .projects-orbit { --orbit-spread-scale: 0.32; }
-  .projects-orbit-stage { min-height: 780px; }
-}
-
-.projects-orbit-card .orbit-card-content {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-height: 0;
-}
-.projects-orbit-card .orbit-card-description {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-}
-.projects-orbit-card .orbit-card-footer {
-  flex-shrink: 0;
-}
-
 /* Paper correspondence opening page. */
 .letter-hero {
   position: relative;
@@ -551,7 +512,7 @@ body {
 .experience-letter .experience-letter-organization { font: 24px var(--font-hand); color: #6d7a67; margin-top: 16px; }
 .experience-letter h3 { font: 500 36px/1.1 var(--font-display); margin: 10px 0 20px; }
 .experience-letter > p:last-child { font: 14px/1.6 var(--font-body); color: #514b40; }
-#projects { padding-top: 108px; }
+#projects { padding-top: 44px !important; }
 #contactme .contact-terminal-shell {
   background:
     repeating-linear-gradient(90deg, #ffffff08 0 1px, transparent 1px 7px),
@@ -655,3 +616,109 @@ body {
 #contactme .contact-terminal-send:disabled { opacity: 0.5; cursor: default; }
 #contactme .contact-terminal-send:focus-visible { outline: 2px solid #222; outline-offset: 3px; }
 #contactme .contact-terminal-send-status { font: 13px/1.6 var(--font-mono); color: #333; }
+
+/* Projects folder fan (ProjectFolderFan.jsx). Ported from
+   design/projects-folder-fan.reference.html; see PROJECTS_FOLDER_FAN.md. */
+#projects {
+  --f-accent: 'Times New Roman', Times, serif;
+  --f-display: 'Playfair Display', Georgia, serif;
+  --dw: 400;
+  --f-hand: 'Nothing You Could Do', cursive;
+  --hs: 0.72;
+  --f-label: 'DM Mono', monospace;
+  --f-body: 'Plus Jakarta Sans', sans-serif;
+  --f-sticker: 'Plus Jakarta Sans', sans-serif;
+  color: #362F22;
+  font-family: var(--f-body);
+}
+/* No italics anywhere in this section. */
+#projects em, #projects i, #projects cite { font-style: normal; }
+#projects a { color: #362F22; }
+#projects a:hover { color: #1f1a14; }
+#projects .pff-stage { position: relative; width: 100%; max-width: 1280px; margin: 6px auto 0; transition: height 318ms cubic-bezier(.2,.8,.2,1); }
+
+@keyframes peekIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes arrowWiggle{0%,100%{transform:rotate(0)}50%{transform:rotate(-8deg) translateY(-2px)}}
+@keyframes paperFlip{0%{opacity:0;transform:perspective(1400px) translateY(38%) rotateX(0)}12%{opacity:1}48%{transform:perspective(1400px) translateY(-9%) rotateX(-34deg)}74%{transform:perspective(1400px) translateY(1.5%) rotateX(6deg)}100%{opacity:1;transform:perspective(1400px) translateY(0) rotateX(0)}}
+@keyframes noteDrop{0%{opacity:0;transform:perspective(900px) translate(-8%,-22%) rotateX(26deg) rotate(calc(var(--note-rot) - 9deg)) scale(1.12);animation-timing-function:cubic-bezier(.55,0,.9,.55)}18%{opacity:1}68%{transform:perspective(900px) translate(1.5%,1.5%) rotateX(0) rotate(calc(var(--note-rot) + 1.5deg)) scale(.995);animation-timing-function:cubic-bezier(.2,.7,.3,1)}100%{opacity:1;transform:perspective(900px) translate(0,0) rotateX(0) rotate(var(--note-rot)) scale(1)}}
+@keyframes flipThrough{0%{opacity:0;transform:translate(var(--x),45%) rotateX(0) rotate(0)}10%{opacity:1}42%{transform:translate(calc(var(--x) * 1.8),-17%) rotateX(-50deg) rotate(calc(var(--r) * 2.2))}66%{transform:translate(calc(var(--x) * .6),3%) rotateX(11deg) rotate(calc(var(--r) * -.6))}84%{transform:translate(var(--x),-1%) rotateX(-3deg) rotate(calc(var(--r) * 1.2))}100%{opacity:1;transform:translate(var(--x),0) rotateX(0) rotate(var(--r))}}
+@keyframes noteSway{0%,100%{transform:rotate(var(--note-rot))}50%{transform:rotate(calc(var(--note-rot) + .7deg)) translateY(-.75px)}}
+
+#projects .paper-in{animation:paperFlip 450ms linear 86ms both}
+#projects .postit{transform:rotate(var(--note-rot));transform-origin:50% 30%;box-shadow:0 2px 2px rgba(54,47,34,.1),4px 14px 22px rgba(54,47,34,.2);animation:noteDrop 280ms linear 435ms both,noteSway 7s ease-in-out .715s infinite;transition:translate 400ms ease,scale 400ms ease,box-shadow 400ms ease}
+#projects .postit:hover{translate:0 -3px;scale:1.012;box-shadow:0 2px 3px rgba(54,47,34,.11),6px 18px 26px rgba(54,47,34,.23)}
+#projects .postit:hover .caption-arrow{animation-duration:1.1s}
+#projects .logo-sticker{position:relative;display:inline-flex;align-items:center;transition:rotate 260ms ease,translate 260ms ease}
+#projects .logo-sticker:hover{rotate:-6deg;translate:0 -2px}
+#projects .logo-art{filter:drop-shadow(1.8px 0 0 #fff) drop-shadow(-1.8px 0 0 #fff) drop-shadow(0 1.8px 0 #fff) drop-shadow(0 -1.8px 0 #fff) drop-shadow(0 2px 2.5px rgba(54,47,34,.3))}
+#projects .logo-tip{position:absolute;left:50%;bottom:calc(100% + 9px);translate:-50% 4px;rotate:6deg;opacity:0;pointer-events:none;white-space:nowrap;font-family:var(--f-hand);font-size:calc(19px * var(--hs));line-height:1.2;letter-spacing:0;color:#362F22;background:rgba(251,248,239,.92);padding:2px 8px 3px;border-radius:4px;box-shadow:0 1px 3px rgba(54,47,34,.16);transition:opacity 220ms ease,translate 220ms ease}
+#projects .logo-sticker:hover .logo-tip{opacity:1;translate:-50% 0}
+#projects .flip-sheet{position:absolute;inset:0;border-radius:3px;background-image:repeating-linear-gradient(to bottom,transparent 0 33px,rgba(110,140,170,.14) 33px 34px);box-shadow:0 1px 2px rgba(54,47,34,.12),0 6px 14px rgba(54,47,34,.12);transform-origin:50% 100%;animation:flipThrough 350ms linear var(--d) both}
+#projects .peek-in{animation:peekIn 200ms ease both}
+#projects .caption-arrow{animation:arrowWiggle 1.6s ease-in-out infinite;transform-origin:20% 80%;fill:none;stroke:#362F22;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+#projects .cardstock::after{content:"";position:absolute;inset:0;border-radius:inherit;background-image:url('./assets/card-paper-grain.svg');background-size:180px 180px;mix-blend-mode:multiply;opacity:.6;pointer-events:none}
+#projects .front-panel{background-image:linear-gradient(180deg,rgba(255,255,255,.26),rgba(255,255,255,0) 9%),linear-gradient(to top,transparent 0 10px,rgba(54,47,34,.08) 10px 11px,rgba(255,255,255,.3) 11px 12px,transparent 12px 19px,rgba(54,47,34,.07) 19px 20px,rgba(255,255,255,.26) 20px 21px,transparent 21px);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -1px 0 rgba(54,47,34,.1),inset 1px 0 0 rgba(255,255,255,.18),0 -2px 5px rgba(54,47,34,.16)}
+#projects .folder-btn:focus-visible{outline:2px dashed #362F22;outline-offset:6px;border-radius:12px}
+#projects .close-btn:hover{background:#fbf8ef;color:#362F22;border-color:rgba(54,47,34,.5)}
+#projects .close-btn:focus-visible{outline:2px dashed #362F22;outline-offset:3px}
+#projects .note-link:hover .note-caption-text{text-decoration:underline}
+#projects .desc-scroll::-webkit-scrollbar{width:6px}
+#projects .desc-scroll::-webkit-scrollbar-thumb{background:rgba(54,47,34,.25);border-radius:3px}
+
+/* Card: position, size and motion (values from the reference markup). */
+#projects .folder-card { position: absolute; left: 50%; transform-origin: 50% 100%; transition: transform 298ms cubic-bezier(.2,.8,.2,1), width 318ms cubic-bezier(.2,.8,.2,1), opacity 198ms ease; }
+#projects .folder-btn { display: block; width: 100%; padding: 0; margin: 0; border: 0; background: transparent; position: relative; text-align: left; color: inherit; font: inherit; }
+#projects .pff-art { display: block; position: relative; width: 100%; transition: filter 220ms ease, height 318ms cubic-bezier(.2,.8,.2,1); }
+#projects .pff-back { position: absolute; left: 0; right: 0; bottom: 0; border-radius: 6px 7px 4px 4px; box-shadow: inset 0 0 0 1px rgba(54,47,34,.06); }
+#projects .folder-tab { position: absolute; top: 0; transition: clip-path 318ms cubic-bezier(.2,.8,.2,1); }
+#projects .pff-tab-label { position: absolute; left: 8%; right: 8%; top: 20%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; padding: 0 6px; font-family: var(--f-label); font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; color: #2b241c; white-space: nowrap; overflow: hidden; }
+#projects .pff-sheet-lined { position: absolute; left: 5%; right: 10%; bottom: 12px; background-color: #f8f4e8; background-image: repeating-linear-gradient(to bottom, transparent 0 13px, rgba(110,140,170,.2) 13px 14px); border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,.12); transform: rotate(-1.3deg); }
+#projects .pff-sheet-plain { position: absolute; left: 9%; right: 5%; bottom: 12px; background-color: #fffdf8; border-radius: 2px; box-shadow: 0 1px 2px rgba(0,0,0,.12); transform: rotate(0.9deg); }
+#projects .pff-paperclip { position: absolute; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+#projects .pff-front { position: absolute; left: 0; right: 0; bottom: 0; border-radius: 3px 3px 5px 5px; }
+#projects .pff-face { position: absolute; left: 28px; right: 28px; display: flex; flex-direction: column; gap: 10px; transition: opacity 200ms ease; }
+#projects .pff-face-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+#projects .pff-face-title { font-family: var(--f-display); font-weight: var(--dw); font-size: 25px; line-height: 1.15; color: #362F22; }
+#projects .pff-face-year { font-family: var(--f-accent); font-style: normal; font-size: 17px; color: #4a4033; flex-shrink: 0; }
+#projects .pff-face-peek { display: flex; flex-direction: column; gap: 10px; }
+#projects .pff-face-badge { font-family: var(--f-accent); font-style: normal; font-size: 16px; line-height: 1.2; color: #4a4033; }
+
+/* Opened folder: flip sheets, the page and its contents. */
+#projects .pff-flip-box { position: absolute; left: 6%; right: 6%; bottom: 4%; perspective: 1400px; pointer-events: none; }
+#projects .pff-paper { position: absolute; left: 4.5%; right: 4.5%; bottom: 3.5%; transform-origin: 50% 92%; }
+#projects .pff-paper-sheet { position: absolute; inset: 0; background-color: #fbf8ef; background-image: repeating-linear-gradient(to bottom, transparent 0 33px, rgba(110,140,170,.16) 33px 34px); border-top: 12px solid; border-radius: 4px; box-shadow: 0 2px 2px rgba(54,47,34,.08), 0 18px 34px rgba(54,47,34,.22); }
+#projects .pff-paper-grid { position: relative; height: 100%; box-sizing: border-box; padding: 40px 48px 32px; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 40px; }
+#projects .pff-paper-copy { display: flex; flex-direction: column; min-height: 0; }
+#projects .pff-paper-badge { font-family: var(--f-label); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #6b5d4a; line-height: 1.2; }
+#projects .pff-paper-heading { display: flex; align-items: baseline; gap: 16px; margin-top: 10px; }
+#projects .pff-paper-title { margin: 0; font-family: var(--f-display); font-weight: var(--dw); font-size: 46px; line-height: 1.12; color: #362F22; }
+#projects .pff-paper-year { font-family: var(--f-accent); font-style: normal; font-size: 26px; color: #4a4033; }
+#projects .pff-paper-desc { margin: 22px 0 0; flex: 1; min-height: 0; overflow-y: auto; padding-right: 8px; font-family: var(--f-body); font-size: 15px; line-height: 1.75; color: #362F22; }
+#projects .pff-logos { --ls: 34px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 16px; margin-top: 20px; padding: 4px 3px; }
+#projects .pff-logo-icon { display: block; width: var(--ls); height: var(--ls); overflow: visible; }
+#projects .pff-logo-icon path { stroke-linecap: round; stroke-linejoin: round; }
+#projects .pff-logo-word { display: block; padding: 0.28em 0.75em 0.34em; border-radius: 999px; color: #fff; font-family: var(--f-sticker); font-weight: 700; font-size: calc(var(--ls) * 0.4); letter-spacing: 0.01em; white-space: nowrap; }
+#projects .pff-paper-note { display: flex; align-items: center; justify-content: center; min-height: 0; }
+#projects .pff-postit { margin: 0; display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 360px; box-sizing: border-box; padding: 16px 16px 12px; text-decoration: none; position: relative; }
+#projects .pff-tape { position: absolute; top: -12px; left: 50%; width: 92px; height: 24px; margin-left: -46px; background-color: rgba(255,255,255,.55); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+#projects .pff-postit-img { display: block; width: 100%; height: 230px; background-color: rgba(255,255,255,.35); }
+#projects .pff-postit-caption { display: flex; align-items: center; justify-content: center; gap: 8px; text-align: center; font-family: var(--f-hand); font-weight: 600; font-size: calc(26px * var(--hs)); color: #362F22; }
+#projects .close-btn { position: absolute; z-index: 3; top: 22px; right: 22px; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px; border: 1px solid rgba(54,47,34,.22); border-radius: 999px; background-color: rgba(251,248,239,.6); color: rgba(54,47,34,.55); font-family: var(--f-hand); font-weight: 600; font-size: calc(22px * var(--hs)); cursor: pointer; transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease; }
+#projects .close-btn svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+
+/* Phones (not on the canvas; follows v1): one column, post-it under the text. */
+@media (max-width: 700px) {
+  #projects .pff-paper-grid { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; gap: 18px; padding: 30px 20px 20px; }
+  #projects .pff-paper-title { font-size: 32px; }
+  #projects .pff-paper-year { font-size: 20px; }
+  #projects .pff-paper-desc { margin-top: 14px; font-size: 14px; line-height: 1.65; }
+  #projects .pff-logos { margin-top: 14px; }
+  #projects .pff-postit { max-width: 300px; }
+  #projects .pff-postit-img { height: 160px; }
+  #projects .close-btn { top: 16px; right: 12px; min-height: 36px; padding: 0 12px; }
+  /* Keep the subtitle clear of the close button in the paper's corner. */
+  #projects .pff-paper-badge { align-self: flex-start; max-width: calc(100% - 96px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #projects *, #projects *::before, #projects *::after { animation: none !important; transition: none !important; }
+}
