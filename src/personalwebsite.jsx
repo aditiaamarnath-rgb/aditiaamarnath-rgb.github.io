@@ -685,20 +685,20 @@ function AboutSection() {
                             </div>
                             <div className="about-paper-section">
                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 16, marginBottom: 10 }}>
-                                    <span style={{ fontFamily: "var(--font-ui)", fontWeight: 700, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>2022 - 2026</span>
-                                    <span style={{ fontFamily: "var(--font-hand)", fontSize: 16, color: ABOUT.twine }}>Dean&apos;s List</span>
+                                    <span style={{ fontFamily: "var(--font-ui)", fontWeight: 700, fontSize: 12, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>2025 - 2028</span>
+                                    <span style={{ fontFamily: "var(--font-hand)", fontSize: 16, opacity: 0.78 }}>Dean&apos;s List</span>
                                 </div>
                                 <p style={{ fontFamily: "var(--font-display)", fontSize: 21, fontWeight: 700, margin: "0 0 4px" }}>B.S. Computer Science and Statistics</p>
                                 <p style={{ fontFamily: "var(--font-ui)", fontSize: 14, opacity: 0.78, margin: 0 }}>University of Wisconsin-Madison</p>
                             </div>
                             <div className="about-paper-section">
                                 <p style={{ fontFamily: "var(--font-hand)", fontSize: 21, margin: "0 0 8px" }}>Key Coursework:</p>
-                                <ul style={{ fontFamily: "var(--font-ui)", fontSize: 13, lineHeight: 1.8, opacity: 0.72, paddingLeft: 18, margin: 0 }}>
+                                <ul style={{ fontFamily: "var(--font-ui)", fontSize: 13, fontWeight: 500, lineHeight: 1.8, opacity: 0.92, paddingLeft: 18, margin: 0 }}>
                                     <li>Algorithms & Software Development</li>
                                     <li>Data Structures & Object-Oriented Programming</li>
-                                    <li>Linear Algebra</li>
-                                    <li>Calculus III</li>
+                                    <li>Linear Algebra & Calculus III</li>
                                     <li>Statistical Methods in R</li>
+                                    <li>Computer Engineering</li>
                                 </ul>
                             </div>
                         </article>
@@ -709,7 +709,7 @@ function AboutSection() {
                             <div className="about-paper-section about-paper-heading">
                                 <span style={{ fontFamily: "var(--font-hand)", fontSize: 19, fontWeight: 700, color: ABOUT.scrapInk, opacity: 0.62, textTransform: "uppercase", marginBottom: 8, display: "block" }}>Vibe</span>
                                 <h3 style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 700, color: ABOUT.scrapInk, margin: 0 }}>Hobbies</h3>
-                                <p className="hobbies-paper-copy">Photography, synth pop &amp; RnB, watercolor painting, scenic bike rides, and making press-on nails.</p>
+                                <p className="hobbies-paper-copy">Photography, synth pop &amp; RnB, piano, watercolor painting, scenic bike rides, and making press-on nails.</p>
                             </div>
                         </article>
                     </AboutStack>
@@ -723,21 +723,29 @@ function AboutSection() {
                             <div className="about-paper-section">
                                 <div style={{ display: "grid", gap: 14 }}>
                                     <div>
-                                        <span style={{ fontFamily: "var(--font-ui)", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>August 2026 - Now</span>
+                                        <span style={{ fontFamily: "var(--font-ui)", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>September 2026 - Now</span>
                                         <p style={{ fontFamily: "var(--font-display)", fontSize: 19, fontWeight: 700, margin: "3px 0 0" }}>Undergraduate Research Assistant</p>
                                     </div>
                                     <div>
-                                        <span style={{ fontFamily: "var(--font-ui)", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>September 2026 - Now</span>
-                                        <p style={{ fontFamily: "var(--font-display)", fontSize: 19, fontWeight: 700, margin: "3px 0 0" }}>Code-To-Connect</p>
+                                        <span style={{ fontFamily: "var(--font-ui)", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>October 2026 - Now</span>
+                                        <p style={{ fontFamily: "var(--font-display)", fontSize: 19, fontWeight: 700, margin: "3px 0 0" }}>AI Safety Fellow, WAISI</p>
+                                    </div>
+                                    <div>
+                                        <span style={{ fontFamily: "var(--font-ui)", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>September 2025 - Now</span>
+                                        <p style={{ fontFamily: "var(--font-display)", fontSize: 19, fontWeight: 700, margin: "3px 0 0" }}>Education Chair, Code To Connect</p>
+                                    </div>
+                                    <div>
+                                        <span style={{ fontFamily: "var(--font-ui)", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>September 2025 - Now</span>
+                                        <p style={{ fontFamily: "var(--font-display)", fontSize: 19, fontWeight: 700, margin: "3px 0 0" }}>Women and Computing Machines</p>
+                                    </div>
+                                    <div>
+                                        <span style={{ fontFamily: "var(--font-ui)", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>September 2025 - Now</span>
+                                        <p style={{ fontFamily: "var(--font-display)", fontSize: 19, fontWeight: 700, margin: "3px 0 0" }}>Social Tennis</p>
                                     </div>
                                 </div>
                             </div>
-                            <div className="about-paper-section">
+                            <div className="about-paper-section" style={{ paddingTop: 0 }}>
                                 <div>
-                                    <span style={{ fontFamily: "var(--font-ui)", fontWeight: 700, fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", opacity: 0.52 }}>2024 - Now</span>
-                                    <p style={{ fontFamily: "var(--font-display)", fontSize: 19, fontWeight: 700, margin: "3px 0 0" }}>Design Club</p>
-                                </div>
-                                <div style={{ marginTop: 18 }}>
                                     <p style={{ fontFamily: "var(--font-hand)", fontSize: 17, fontStyle: "italic", opacity: 0.82, margin: 0 }}>&quot;Making cool things with cool people.&quot;</p>
                                 </div>
                             </div>
