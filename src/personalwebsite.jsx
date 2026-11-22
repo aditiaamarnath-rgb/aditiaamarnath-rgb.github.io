@@ -5,6 +5,7 @@ import { Mascot } from "page-mascot";
 import FoldText from "./components/FoldText";
 import PaperCrumple from "./components/PaperCrumple";
 import SketchbookSection from "./components/SketchbookSection";
+import StarTrail from "./components/StarTrail";
 import ProjectFolderFan from "./components/ProjectFolderFan";
 import arrayRegularFont from "../fonts/Array-Regular.otf";
 import bikeSticker from "./assets/bike-sticker.png";
@@ -33,6 +34,17 @@ import vinylRabbitStampSticker from "./assets/vinyl-rabbit-stamp-sticker-cutout.
 import aboutEducationNote from "./assets/about-original-0.png";
 import aboutHobbiesNote from "./assets/about-original-1.png";
 import aboutActivitiesNote from "./assets/about-original-2.png";
+import aboutHobbiesBlankNote from "./assets/about-hobbies-blank.png";
+import filmGraduation from "./assets/film/film-graduation.jpg";
+import filmBluprintDemoTable from "./assets/film/film-bluprint-demo-table.jpg";
+import filmHgsInternCohort from "./assets/film/film-hgs-intern-cohort.jpg";
+import filmMadhacksSwag from "./assets/film/film-madhacks-swag.jpg";
+import filmYouthGovHouseChamber from "./assets/film/film-youth-gov-house-chamber.jpg";
+import filmFriendsSelfie from "./assets/film/film-friends-selfie.jpg";
+import filmHgsOfficeGroup from "./assets/film/film-hgs-office-group.jpg";
+import filmBluprintTeamSelfie from "./assets/film/film-bluprint-team-selfie.jpg";
+import filmYouthGovTeam from "./assets/film/film-youth-gov-team.jpg";
+import filmHgsElevatorTeam from "./assets/film/film-hgs-elevator-team.jpg";
 
 function InjectFonts() {
     useEffect(() => {
@@ -96,56 +108,18 @@ function NavBar() {
     );
 }
 
-/* Slim pixel-button bar that drops in once the hero nav has scrolled away. */
-function CompactNav() {
-    const [visible, setVisible] = useState(false);
-    const [activeId, setActiveId] = useState("home");
-
-    useEffect(() => {
-        if (!("IntersectionObserver" in window)) return undefined;
-        const heroNav = document.querySelector("#home .letter-nav");
-        const navObserver = new IntersectionObserver(([entry]) => setVisible(!entry.isIntersecting), { threshold: 0 });
-        if (heroNav) navObserver.observe(heroNav);
-
-        // A thin band across the middle of the viewport decides the active section.
-        const sectionObserver = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) setActiveId(entry.target.id);
-            });
-        }, { rootMargin: "-45% 0px -50% 0px" });
-        NAV_LINKS.forEach(([, id]) => {
-            const section = document.getElementById(id);
-            if (section) sectionObserver.observe(section);
-        });
-        return () => {
-            navObserver.disconnect();
-            sectionObserver.disconnect();
-        };
-    }, []);
-
-    return (
-        <nav className={`compact-nav ${visible ? "is-visible" : ""}`} aria-label="Section navigation" aria-hidden={!visible}>
-            {NAV_LINKS.map(([label, id]) => (
-                <a
-                    key={id}
-                    href={`#${id}`}
-                    tabIndex={visible ? 0 : -1}
-                    aria-current={activeId === id ? "location" : undefined}
-                    className={activeId === id ? "is-pressed" : ""}
-                >
-                    {label}
-                </a>
-            ))}
-        </nav>
-    );
-}
-
 /* ══════════════════ HERO ══════════════════ */
 function HeroSection() {
     return (
         <section id="home" className="letter-hero" aria-labelledby="hero-title">
+            {/* Soft blurred flowers + film grain (design/inspo/home-background-inspo.png). */}
+            <div className="hero-backdrop" aria-hidden="true">
+                <span className="hero-bloom hero-bloom-a" />
+                <span className="hero-bloom hero-bloom-b" />
+            </div>
+            <StarTrail />
             <NavBar />
-            <HeroStickers />
+            {!STICKERS_ON_HOBBIES_NOTE && <HeroStickers />}
             <div className="letter-intro">
                 <div className="letter-greeting">
                 <h1 id="hero-title" className="page-heading">
@@ -181,7 +155,7 @@ function HeroSection() {
                     label="Aditi’s mascot — click to say hello"
                 />
             </div>
-                <p>I'm currently an undergraduate student at the University of Wisconsin–Madison, majoring in Computer Science and Statistics. I'm passionate about exploring the intersection of technology and data, with particular interests in machine learning, artificial intelligence, and software development.</p>
+                <p>I'm currently an undergraduate student at the University of Wisconsin–Madison, majoring in Computer Science and Statistics. I'm passionate about exploring the overlap between technology and data, with particular interests in machine learning, artificial intelligence, and software development.</p>
                 <p>This website is a culmination of my academics and professional interests, but also my personality and creative side. I hope you enjoy ;)</p>
 
                 <a className="letter-contact" href="#contactme">let’s connect</a>
@@ -190,7 +164,24 @@ function HeroSection() {
     );
 }
 
-function HeroStickers() {
+// Testing: show the hobby stickers on the Hobbies post-it (with its description
+// removed) instead of in the hero. Set to false to put everything back.
+const STICKERS_ON_HOBBIES_NOTE = true;
+
+// Sticker layout on the Hobbies post-it: centres and widths are % of the note.
+// Stickers left out of this map (bike, paper-star, button) aren't shown on the note;
+// their art and data are kept, so add a line here to bring one back.
+const POSTIT_STICKER_LAYOUT = {
+    camera: { x: 25, y: 41, width: "29%", rotate: "-6deg" },
+    headphones: { x: 61, y: 35, width: "23%", rotate: "7deg" },
+    paint: { x: 85, y: 43, width: "17%", rotate: "5deg" },
+    polish: { x: 80, y: 63, width: "12%", rotate: "10deg" },
+    ramen: { x: 53, y: 77, width: "25%", rotate: "5deg" },
+    boba: { x: 18, y: 83, width: "14%", rotate: "-7deg" },
+    smiski: { x: 82, y: 85, width: "15%", rotate: "9deg" },
+};
+
+function HeroStickers({ placement = "hero" }) {
     const boardRef = useRef(null);
     const dragState = useRef(null);
     const dragFrame = useRef(0);
@@ -325,6 +316,11 @@ function HeroStickers() {
             rotate: "9deg",
         },
     ];
+    const stickers = placement === "postit"
+        ? hobbyStickers
+            .filter((sticker) => POSTIT_STICKER_LAYOUT[sticker.id]) // only stickers with a spot on the note (no bike)
+            .map((sticker) => ({ ...sticker, ...POSTIT_STICKER_LAYOUT[sticker.id] }))
+        : hobbyStickers;
     const [stickerPositions, setStickerPositions] = useState({});
     const [draggingSticker, setDraggingSticker] = useState(null);
 
@@ -469,7 +465,9 @@ function HeroStickers() {
         };
         // Text never moves relative to the board mid-drag, so measure it once
         // instead of forcing layout reads on every pointer frame.
-        const blocked = [...board.closest('section').querySelectorAll('.letter-greeting h1, .letter-intro p, .letter-contact, .letter-nav')].map((node) => {
+        // On the Hobbies note the stickers roam the whole page and may cover any text.
+        const roamAnywhere = placement === "postit";
+        const blocked = roamAnywhere ? [] : [...board.closest('section').querySelectorAll('.letter-greeting h1, .letter-intro p, .letter-contact, .letter-nav')].map((node) => {
             const text = node.getBoundingClientRect();
             return {
                 left: text.left - rect.left - halfWidth,
@@ -482,6 +480,7 @@ function HeroStickers() {
             id: sticker.id,
             element,
             blocked,
+            roamAnywhere,
             halfWidth,
             halfHeight,
             startPointerX: event.clientX,
@@ -507,10 +506,20 @@ function HeroStickers() {
         const nextX = drag.startX / 100 * rect.width + event.clientX - drag.startPointerX;
         const nextY = drag.startY / 100 * rect.height + event.clientY - drag.startPointerY;
         const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-        const minX = drag.halfWidth;
-        const maxX = rect.width - drag.halfWidth;
-        const minY = drag.halfHeight;
-        const maxY = rect.height - drag.halfHeight;
+        let minX = drag.halfWidth;
+        let maxX = rect.width - drag.halfWidth;
+        let minY = drag.halfHeight;
+        let maxY = rect.height - drag.halfHeight;
+        if (drag.roamAnywhere) {
+            // Bounds become the whole document, expressed in the board's coordinates.
+            const root = document.documentElement;
+            const pageLeft = rect.left + window.scrollX;
+            const pageTop = rect.top + window.scrollY;
+            minX = drag.halfWidth - pageLeft;
+            maxX = root.clientWidth - pageLeft - drag.halfWidth;
+            minY = drag.halfHeight - pageTop;
+            maxY = root.scrollHeight - pageTop - drag.halfHeight;
+        }
         const blocked = drag.blocked;
         const x = clamp(nextX, minX, maxX);
         const y = clamp(nextY, minY, maxY);
@@ -579,7 +588,7 @@ function HeroStickers() {
     };
 
     return (
-                <div className="about-draggable-sticker-layer hero-sticker-layer" ref={boardRef} aria-label="Draggable hobby stickers">
+                <div className={`about-draggable-sticker-layer hero-sticker-layer ${placement === "postit" ? "postit-sticker-layer" : ""}`} ref={boardRef} aria-label="Draggable hobby stickers">
                     <svg width="0" height="0" aria-hidden="true" style={{ position: "absolute" }}>
                         <defs>
                             <filter id="hero-sticker-cut-edge" x="-12%" y="-12%" width="124%" height="124%" colorInterpolationFilters="sRGB">
@@ -594,7 +603,7 @@ function HeroStickers() {
                         </defs>
                     </svg>
 
-                    {hobbyStickers.map((sticker) => {
+                    {stickers.map((sticker) => {
                         const position = stickerPositions[sticker.id];
 
                         return (
@@ -636,7 +645,7 @@ function AboutStack({ children, tilt, yOffset = 0, zIndex = 1 }) {
     const note = tilt === -2
         ? { src: aboutEducationNote, title: "Education" }
         : tilt === 3
-            ? { src: aboutHobbiesNote, title: "Hobbies" }
+            ? { src: STICKERS_ON_HOBBIES_NOTE ? aboutHobbiesBlankNote : aboutHobbiesNote, title: "Hobbies" }
             : { src: aboutActivitiesNote, title: "Activities" };
     return (
         <div className="about-stack-shell" style={{ transform: `translateY(${yOffset}px)`, zIndex }}>
@@ -660,7 +669,13 @@ function AboutStack({ children, tilt, yOffset = 0, zIndex = 1 }) {
                 paperTexture={0.08}
                 draggable
                 returnToOrigin
+                disabled={note.title === "Hobbies"} // Hobbies stays flat: no crumple
             />
+            {note.title === "Hobbies" && STICKERS_ON_HOBBIES_NOTE && (
+                <div className="about-note-stickers">
+                    <HeroStickers placement="postit" />
+                </div>
+            )}
             <div className="about-note-text">{children}</div>
         </div>
     );
@@ -677,7 +692,6 @@ function AboutSection() {
                     <AboutStack tilt={-2} yOffset={16} zIndex={30}>
                         <article className="about-paper-surface about-ref-torn-teal about-paper-ref-teal about-board-postit">
                             <div className="about-paper-section about-paper-heading">
-                                <span style={{ fontFamily: "var(--font-hand)", fontSize: 19, fontWeight: 700, color: ABOUT.scrapInk, opacity: 0.62, textTransform: "uppercase", marginBottom: 8, display: "block" }}>Background</span>
                                 <h3 style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 700, color: ABOUT.scrapInk, margin: 0 }}>Education</h3>
                             </div>
                             <div className="about-paper-section">
@@ -704,7 +718,6 @@ function AboutSection() {
                     <AboutStack tilt={3} yOffset={-8} zIndex={20}>
                         <article className="about-paper-surface about-ref-torn-pink about-paper-ref-pink about-board-postit">
                             <div className="about-paper-section about-paper-heading">
-                                <span style={{ fontFamily: "var(--font-hand)", fontSize: 19, fontWeight: 700, color: ABOUT.scrapInk, opacity: 0.62, textTransform: "uppercase", marginBottom: 8, display: "block" }}>Vibe</span>
                                 <h3 style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 700, color: ABOUT.scrapInk, margin: 0 }}>Hobbies</h3>
                                 <p className="hobbies-paper-copy">Photography, synth pop &amp; RnB, piano, watercolor painting, scenic bike rides, and making press-on nails.</p>
                             </div>
@@ -714,7 +727,6 @@ function AboutSection() {
                     <AboutStack tilt={-1} yOffset={24} zIndex={10}>
                         <article className="about-paper-surface about-ref-torn-grid about-paper-ref-grid about-board-postit">
                             <div className="about-paper-section about-paper-heading">
-                                <span style={{ fontFamily: "var(--font-hand)", fontSize: 19, fontWeight: 700, color: ABOUT.scrapInk, opacity: 0.62, textTransform: "uppercase", marginBottom: 8, display: "block" }}>Involvement</span>
                                 <h3 style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 700, color: ABOUT.scrapInk, margin: 0 }}>Activities</h3>
                             </div>
                             <div className="about-paper-section">
@@ -756,14 +768,17 @@ function AboutSection() {
 }
 
 /* ══════════════════ MOVING FILM STRIP ══════════════════ */
-// Add your photos here later: import each image above, then replace `src: null`.
 const FILM_PHOTOS = [
-    { src: null, alt: "Aditi photo 1", mark: "✿" },
-    { src: null, alt: "Aditi photo 2", mark: "♡" },
-    { src: null, alt: "Aditi photo 3", mark: "✦" },
-    { src: null, alt: "Aditi photo 4", mark: "☻" },
-    { src: null, alt: "Aditi photo 5", mark: "❀" },
-    { src: null, alt: "Aditi photo 6", mark: "☆" },
+    { src: filmGraduation, alt: "Graduation portrait in a blue cap and gown outside the Academics building" },
+    { src: filmBluprintDemoTable, alt: "Bluprint team beside their project poster and demo table" },
+    { src: filmHgsInternCohort, alt: "HGS intern cohort in front of a wall of company logos" },
+    { src: filmMadhacksSwag, alt: "MadHacks badges, stickers and swag spread across a table" },
+    { src: filmYouthGovHouseChamber, alt: "Amarnath nameplate on a desk in the ornate House chamber" },
+    { src: filmFriendsSelfie, alt: "Selfie with two friends in lanyards at an event" },
+    { src: filmHgsOfficeGroup, alt: "Group photo with the HGS team in the office" },
+    { src: filmBluprintTeamSelfie, alt: "Selfie with the Bluprint team in front of their poster" },
+    { src: filmYouthGovTeam, alt: "Youth and Government group beside a “For a Better Us” banner" },
+    { src: filmHgsElevatorTeam, alt: "HGS team posing in an office elevator lobby" },
 ];
 
 function FilmFrames({ hidden = false }) {
@@ -772,14 +787,7 @@ function FilmFrames({ hidden = false }) {
             {FILM_PHOTOS.map((photo, index) => (
                 <figure className="film-frame" key={`${hidden ? "copy" : "original"}-${index}`}>
                     <span className="film-frame-number" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-                    {photo.src ? (
-                        <img src={photo.src} alt={hidden ? "" : photo.alt} />
-                    ) : (
-                        <div className="film-photo-placeholder" role={hidden ? undefined : "img"} aria-label={hidden ? undefined : `${photo.alt} placeholder`}>
-                            <span aria-hidden="true">{photo.mark}</span>
-                            <small>your photo here</small>
-                        </div>
-                    )}
+                    <img src={photo.src} alt={hidden ? "" : photo.alt} decoding="async" />
                 </figure>
             ))}
         </div>
@@ -804,12 +812,12 @@ const PROJECTS = [
     { front: "#a8ae95", back: "#989f85", tabL: 3, tabW: 36, accent: "#9ea76b", noteColor: "#dfe4b9", noteRot: -5, tilt: 0.8, tab: "Bluprint", badge: "Personalized Interior Decorator", title: "Bluprint", desc: "A room design website that takes user's style preferences and generates furniture recommendations. Includes a customizable diagram of room, visual representation of items recommended, and dashboard to view all decorated rooms.", tags: ["React","Node.js", "Three.js","MongoDB"], year: "2024", emoji: "🐚", image: bluprintProjectPreview, noteCaption: "see it live", projectUrl: "https://bluprint-iroq.onrender.com/", color: C.fresh, ink: C.ink, descColor: C.ink },
     { front: "#f6d2da", back: "#e9bfc9", tabL: 32, tabW: 36, accent: "#e3a7b4", noteColor: "#efe8ca", noteRot: -6, tilt: -0.6, tab: "Databridge", badge: "Financial Ontology Platform", title: "Databridge", desc: "Detailed a technical specification for HGS internship: Microsoft Fabric-native financial data platform, defining the OneLake medallion architecture, Direct Lake semantic layer, capacity tiering, and security requirements across a 17-item decision register.\n", tags: ["SQL","Microsoft Fabric","Power BI","OneLake"], year: "2026", emoji: "🗺️", image: databridgePostitPreview, noteCaption: "final presentation day!!", color: C.yellow, ink: C.ink, descColor: C.ink },
     { front: "#d6b891", back: "#c6a57d", tabL: 61, tabW: 36, accent: "#cfc38d", noteColor: "#f9d1d9", noteRot: 4, tilt: 1, tab: "Tech and Humanity", badge: "Interdisciplinary Project", title: "Technology vs. Human Experiences", desc: "Interactive presentation detailing research study on whether technology/AI is replacing traditionally and evolutionarily human traits and experiences. Throughout this project, I use a psychological study CASA(Computers Are Social Actors), curiosity experiments, and popular media like WALL-E to examine how humans may become emotionally and behaviorally dependent on technology. \n", year: "2024", emoji: "📝", image: interdisciplinaryPostitPreview, noteCaption: "see it live", projectUrl: "https://prezi.com/p/1snxsaer21hu/?present=1", noteImageFit: "contain", color: C.softpink, ink: C.ink, descColor: C.ink },
-    { front: "#abcee3", back: "#98bdd4", tabL: 3, tabW: 36, accent: "#8fb3cf", noteColor: "#dfe4b9", noteRot: -5, tilt: -1.2, tab: "Wavelength", badge: "Personal Symptom Log", title: "Wavelength", desc: "A symptom-tracking website that lets users log physical and mental symptoms by text or voice. Includes graphs of recurring symptoms over time, a calendar of past entries, AI-generated summaries, and a PDF brief to bring to doctor's appointments.", tags: ["Vite","Firebase","Supabase","GroqCloud"], year: "2023", emoji: "🔍", image: wavelengthPostitPreview, noteCaption: "see it live", noteCaptionPosition: "top", projectUrl: "https://wavelength-two-flame.vercel.app/", noteImageFit: "contain", color: C.azeitona, ink: C.ink, descColor: C.ink },
+    { front: "#abcee3", back: "#98bdd4", tabL: 3, tabW: 36, accent: "#8fb3cf", noteColor: "#dfe4b9", noteRot: -5, tilt: -1.2, tab: "Wavelength", badge: "Personal Symptom Log", title: "Wavelength", desc: "A symptom-tracking website that lets users log physical and mental symptoms by text or voice. Includes graphs of recurring symptoms over time, a calendar of past entries, AI-generated summaries, and a PDF brief to bring to doctor's appointments.", tags: ["Vite","Firebase","Supabase","GroqCloud"], year: "2023", emoji: "🔍", image: wavelengthPostitPreview, noteFitImage: true, noteCaption: "see it live", noteCaptionPosition: "top", projectUrl: "https://wavelength-two-flame.vercel.app/", noteImageFit: "contain", color: C.azeitona, ink: C.ink, descColor: C.ink },
 ];
 
 function ProjectsSection() {
     return (
-        <section id="projects" style={{ background: C.cream, padding: "72px clamp(18px, 4vw, 52px) 96px", position: "relative", overflow: "hidden" }}>
+        <section id="projects" style={{ padding: "72px clamp(18px, 4vw, 52px) 96px", position: "relative", overflow: "hidden" }}>
             <SectionHeading>projects</SectionHeading>
             <ProjectFolderFan projects={PROJECTS} />
         </section>
@@ -1115,7 +1123,7 @@ export default function App() {
         }
         .about-draggable-sticker {
           position: absolute;
-          width: var(--sticker-width);
+          width: calc(var(--sticker-width) * 1.191);
           border: 0;
           background: transparent;
           padding: 0;
@@ -2561,7 +2569,6 @@ export default function App() {
           }
         }
       `}</style>
-            <CompactNav />
             <div style={{ maxWidth: "100vw", overflowX: "hidden" }}>
                 <HeroSection />
                 <AboutSection />

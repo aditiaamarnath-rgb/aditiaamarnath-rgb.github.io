@@ -43,8 +43,8 @@ body {
   position: relative;
   isolation: isolate;
   min-height: max(720px, 100svh);
-  background-color: #f4f0e7;
-  background-image: url('./assets/paper-grain.svg');
+  /* Warm grey under the blurred flowers (see .hero-backdrop). */
+  background-color: #c2c2b1; /* lands on ~#c0c0b4 with the grain */
   color: #26241f;
 }
 /* Home background, after design/inspo/home-background-inspo.png: two big
@@ -127,13 +127,13 @@ body {
   border: 0;
   border-radius: 0;
   background: transparent;
-  color: #342d34;
+  color: #34352d;
   font: 400 10px/1.2 var(--font-pixel);
   letter-spacing: 0;
   text-decoration: none;
   text-transform: uppercase;
   -webkit-font-smoothing: none;
-  filter: drop-shadow(4px 5px 0 #756871);
+  filter: drop-shadow(4px 5px 0 #7d7e70);
   transition: transform 120ms steps(2, end), filter 120ms steps(2, end);
 }
 .letter-nav a::before {
@@ -142,28 +142,28 @@ body {
   z-index: -1;
   inset: 0;
   box-sizing: border-box;
-  border: 4px solid #51454d;
+  border: 4px solid #55564c;
   border-right-width: 6px;
   border-bottom-width: 6px;
-  background: #c594a4;
-  box-shadow: inset 4px 4px 0 #e9c5cf, inset -4px -4px 0 #956b7a;
+  background: #d4d4c6;
+  box-shadow: inset 4px 4px 0 #e7e7dd, inset -4px -4px 0 #a9a997;
   clip-path: polygon(6px 0, calc(100% - 6px) 0, calc(100% - 6px) 4px, 100% 4px, 100% calc(100% - 6px), calc(100% - 6px) calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 6px calc(100% - 6px), 0 calc(100% - 6px), 0 6px, 6px 6px);
   transition: background-color 120ms ease;
 }
 .letter-nav a:hover {
   background: transparent;
   transform: translateY(-2px);
-  filter: drop-shadow(4px 7px 0 #756871);
+  filter: drop-shadow(4px 7px 0 #7d7e70);
 }
-.letter-nav a:hover::before { background: #d3a8b5; }
+.letter-nav a:hover::before { background: #dddcd0; }
 .letter-nav a:active {
   transform: translate(3px, 4px);
-  filter: drop-shadow(1px 1px 0 #756871);
+  filter: drop-shadow(1px 1px 0 #7d7e70);
 }
 .letter-nav a:focus-visible {
-  outline: 3px solid #51454d;
+  outline: 3px solid #55564c;
   outline-offset: 5px;
-  filter: drop-shadow(0 0 4px #51454d) drop-shadow(4px 5px 0 #756871);
+  filter: drop-shadow(0 0 4px #55564c) drop-shadow(4px 5px 0 #7d7e70);
 }
 .letter-intro {
   position: relative;
@@ -234,7 +234,7 @@ body {
   transform: translateY(48px);
 }
 @media (max-width: 700px) {
-  .hero-sticker-layer .about-draggable-sticker { width: min(var(--sticker-width), 140px); }
+  .hero-sticker-layer .about-draggable-sticker { width: min(calc(var(--sticker-width) * 1.191), 167px); }
 }
 
 @media (max-width: 700px) {
@@ -253,85 +253,9 @@ body {
   color: #362f22;
   scroll-margin-top: 24px;
 }
-/* Leave room for the fixed compact nav when jumping to a section. */
+/* A little breathing room above a section when jumping to it from the nav. */
 #home, #aboutme, #experience, #projects, #contactme { scroll-margin-top: 64px; }
 
-/* Compact section nav: a smaller copy of the hero's pixel buttons. */
-.compact-nav {
-  position: fixed;
-  top: 10px;
-  left: 50%;
-  z-index: 100;
-  display: flex;
-  gap: 8px;
-  padding: 6px 8px;
-  border-radius: 6px;
-  background-color: rgba(244, 240, 231, 0.92);
-  background-image: url('./assets/paper-grain.svg');
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-  box-shadow: 0 6px 18px rgba(43, 36, 32, 0.12);
-  opacity: 0;
-  transform: translate(-50%, -140%);
-  pointer-events: none;
-  transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity 180ms ease;
-}
-.compact-nav.is-visible {
-  opacity: 1;
-  transform: translate(-50%, 0);
-  pointer-events: auto;
-}
-.compact-nav a {
-  position: relative;
-  isolation: isolate;
-  padding: 8px 12px 10px;
-  color: #342d34;
-  font: 400 8px/1.2 var(--font-pixel);
-  text-decoration: none;
-  text-transform: uppercase;
-  white-space: nowrap;
-  -webkit-font-smoothing: none;
-  filter: drop-shadow(2px 3px 0 #756871);
-  transition: transform 120ms steps(2, end), filter 120ms steps(2, end);
-}
-.compact-nav a::before {
-  content: '';
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  box-sizing: border-box;
-  border: 2px solid #51454d;
-  border-right-width: 3px;
-  border-bottom-width: 3px;
-  background: #c594a4;
-  box-shadow: inset 2px 2px 0 #e9c5cf, inset -2px -2px 0 #956b7a;
-  clip-path: polygon(3px 0, calc(100% - 3px) 0, calc(100% - 3px) 2px, 100% 2px, 100% calc(100% - 3px), calc(100% - 3px) calc(100% - 3px), calc(100% - 3px) 100%, 3px 100%, 3px calc(100% - 3px), 0 calc(100% - 3px), 0 3px, 3px 3px);
-  transition: background-color 120ms ease;
-}
-.compact-nav a:hover { transform: translateY(-1px); filter: drop-shadow(2px 4px 0 #756871); }
-.compact-nav a:hover::before { background: #d3a8b5; }
-/* Pressed in: the offset shadow collapses and the button shifts into it. */
-.compact-nav a.is-pressed,
-.compact-nav a[aria-current],
-.compact-nav a:active {
-  transform: translate(2px, 2px);
-  filter: drop-shadow(0 1px 0 #756871);
-}
-.compact-nav a.is-pressed::before,
-.compact-nav a[aria-current]::before {
-  background: #b07d8e;
-  box-shadow: inset 2px 2px 0 #956b7a, inset -2px -2px 0 #c594a4;
-}
-.compact-nav a:focus-visible { outline: 2px solid #51454d; outline-offset: 3px; }
-@media (max-width: 700px) {
-  .compact-nav { gap: 4px; padding: 5px 6px; max-width: calc(100vw - 16px); }
-  .compact-nav a { padding: 7px 7px 9px; font-size: 7px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .compact-nav,
-  .compact-nav.is-visible { transform: translate(-50%, 0); transition: opacity 180ms ease; }
-  .compact-nav a { transition: none; }
-}
 #aboutme,
 #experience { padding: 82px clamp(24px, 6vw, 96px) 100px; }
 #aboutme .about-corkboard-frame {
@@ -413,13 +337,14 @@ body {
   z-index: 1;
   width: 100%;
   overflow: hidden;
-  filter: drop-shadow(2px 7px 5px #2b242029);
+  filter: drop-shadow(2.5px 8.5px 8.5px #332c2226);
   transform: rotate(-0.45deg) scale(1.01);
 }
 .film-strip-track {
   display: flex;
   width: max-content;
-  animation: film-strip-roll 34s linear infinite;
+  /* One loop = all 10 photos; 80s is about 8s per frame, slower than the old 6-photo/34s pace. */
+  animation: film-strip-roll 80s linear infinite;
   will-change: transform;
 }
 .film-strip-window:hover .film-strip-track,
@@ -430,10 +355,12 @@ body {
   flex: none;
   gap: 8px;
   padding: 25px 10px;
-  background: #181714;
-  border-top: 2px solid #050505;
-  border-bottom: 2px solid #050505;
-  box-shadow: inset 0 2px 0 #f4f0e71a, inset 0 -2px 0 #f4f0e714;
+  /* Charcoal stock, halfway between the original near-black and the site's olive grey, with light grain. */
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E") 0 0 / 220px 220px, #2e2e28;
+  background-blend-mode: soft-light;
+  border-top: 2px solid #1c1d19;
+  border-bottom: 2px solid #1c1d19;
+  box-shadow: inset 0 2px 0 #f4f0e71c, inset 0 -2px 0 #f4f0e714;
 }
 .film-strip-set::before,
 .film-strip-set::after {
@@ -442,8 +369,9 @@ body {
   left: 0;
   right: 0;
   height: 9px;
-  background: repeating-linear-gradient(90deg, transparent 0 7px, #f4f0e7 7px 17px, transparent 17px 24px);
-  opacity: 0.94;
+  /* Slightly rounded sprocket holes in the page's cream. */
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='9'%3E%3Crect x='7' y='0.5' width='10' height='8' rx='1.25' fill='%23f0ecdf'/%3E%3C/svg%3E") 0 0 / 24px 9px repeat-x;
+  opacity: 0.92;
 }
 .film-strip-set::before { top: 6px; transform: skewX(-3deg); }
 .film-strip-set::after { bottom: 6px; transform: skewX(2deg); }
@@ -454,10 +382,10 @@ body {
   height: clamp(108px, 12.5vw, 172px);
   margin: 0;
   overflow: hidden;
-  border: 3px solid #050505;
-  border-radius: 2px 5px 3px 4px / 4px 2px 5px 3px;
-  background: #d8d0bd;
-  box-shadow: inset 0 0 0 1px #f8f1df40, 1px 0 0 #f4f0e738, -1px 1px 0 #050505;
+  border: 3px solid #1c1d19;
+  border-radius: 3px 4.5px 3.5px 4px / 4px 3px 4.5px 3.5px;
+  background: #d8d3c1;
+  box-shadow: inset 0 0 0 1px #f8f1df20, 1px 0 0 #f4f0e72e, -1px 1px 0 #1c1d19;
 }
 .film-frame:nth-child(3n + 1) { transform: rotate(-0.35deg); }
 .film-frame:nth-child(3n + 2) { transform: translateY(1px) rotate(0.28deg); }
@@ -467,27 +395,18 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: saturate(0.88) contrast(0.95) sepia(0.08);
-}
-.film-frame::after {
-  content: '';
-  position: absolute;
-  inset: 3px 2px 2px 4px;
-  pointer-events: none;
-  border: 1px dashed #fff9e83d;
-  border-radius: 3px 1px 4px 2px;
-  transform: rotate(0.25deg);
+  /* Shown in their true colours: no fading or tint. */
 }
 .film-frame-number {
   position: absolute;
   z-index: 2;
   right: 7px;
   bottom: 4px;
-  color: #fff9e8;
-  font: 9px/1 var(--font-ui);
-  letter-spacing: 0.12em;
-  opacity: 0.78;
-  text-shadow: 0 1px 2px #000;
+  color: #f8f4e6;
+  font: 400 7px/1 var(--font-pixel);
+  letter-spacing: 0;
+  opacity: 0.82;
+  text-shadow: 0 1px 2px #000000a6;
 }
 .film-photo-placeholder {
   width: 100%;
@@ -516,7 +435,7 @@ body {
   .film-memories { padding: 2px 0 38px; }
   .film-strip-set { gap: 6px; padding-top: 23px; padding-bottom: 23px; }
   .film-strip-set::before,
-  .film-strip-set::after { height: 10px; background-size: auto 10px; }
+  .film-strip-set::after { height: 10px; background-size: 26px 10px; }
   .film-strip-set::before { top: 6px; }
   .film-strip-set::after { bottom: 6px; }
   .film-frame { width: 168px; height: 116px; }
@@ -554,6 +473,16 @@ body {
 .experience-letter h3 { font: 500 36px/1.1 var(--font-display); margin: 10px 0 20px; }
 .experience-letter > p:last-child { font: 14px/1.6 var(--font-body); color: #514b40; }
 #projects { padding-top: 44px !important; }
+/* Soft gingham in the home page's tones: warm grey-olive stripes crossing on a
+   pale olive cream, so the overlaps read as the darker gingham squares. */
+#projects {
+  --gingham: rgba(150, 152, 120, 0.13);
+  background-color: #eeedde;
+  background-image:
+    linear-gradient(90deg, var(--gingham) 50%, transparent 50%),
+    linear-gradient(var(--gingham) 50%, transparent 50%);
+  background-size: 112px 112px;
+}
 #contactme .contact-terminal-shell {
   background:
     repeating-linear-gradient(90deg, #ffffff08 0 1px, transparent 1px 7px),
@@ -608,7 +537,8 @@ body {
 }
 
 /* Keep the experience notes’ wide proportions in the Orbit stack. */
-#experience { padding-top: 28px; padding-bottom: 28px; }
+/* Bottom room lets the fanned back cards clear the projects gingham. */
+#experience { padding-top: 28px; padding-bottom: 160px; }
 #experience .paper-section-note { margin: 0; }
 .experience-orbit-stage { min-height: 0; margin-top: -24px; }
 .experience-orbit { padding-top: 0; padding-bottom: 0; }
@@ -743,6 +673,10 @@ body {
 #projects .pff-postit { margin: 0; display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 360px; box-sizing: border-box; padding: 16px 16px 12px; text-decoration: none; position: relative; }
 #projects .pff-tape { position: absolute; top: -12px; left: 50%; width: 92px; height: 24px; margin-left: -46px; background-color: rgba(255,255,255,.55); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
 #projects .pff-postit-img { display: block; width: 100%; height: 230px; background-color: rgba(255,255,255,.35); }
+/* Post-it hugs the picture: image keeps its own aspect ratio, no letterbox bands. */
+#projects .pff-postit-img.pff-postit-img-natural { height: auto; background-color: transparent; }
+/* That note is also 15% larger, grown evenly from its centre. */
+#projects .pff-postit:has(.pff-postit-img-natural) { width: 115%; max-width: 414px; margin-inline: -7.5%; align-self: center; }
 #projects .pff-postit-caption { display: flex; align-items: center; justify-content: center; gap: 8px; text-align: center; font-family: var(--f-hand); font-weight: 600; font-size: calc(26px * var(--hs)); color: #362F22; }
 #projects .close-btn { position: absolute; z-index: 3; top: 22px; right: 22px; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px; border: 1px solid rgba(54,47,34,.22); border-radius: 999px; background-color: rgba(251,248,239,.6); color: rgba(54,47,34,.55); font-family: var(--f-hand); font-weight: 600; font-size: calc(22px * var(--hs)); cursor: pointer; transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease; }
 #projects .close-btn svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
@@ -756,6 +690,9 @@ body {
   #projects .pff-logos { margin-top: 14px; }
   #projects .pff-postit { max-width: 300px; }
   #projects .pff-postit-img { height: 160px; }
+  #projects .pff-postit-img.pff-postit-img-natural { height: auto; }
+  /* Phones: the note already spans the paper, so it stays full-column instead of growing. */
+  #projects .pff-postit:has(.pff-postit-img-natural) { width: 100%; max-width: 300px; margin-inline: 0; }
   #projects .close-btn { top: 16px; right: 12px; min-height: 36px; padding: 0 12px; }
   /* Keep the subtitle clear of the close button in the paper's corner. */
   #projects .pff-paper-badge { align-self: flex-start; max-width: calc(100% - 96px); }
@@ -763,3 +700,33 @@ body {
 @media (prefers-reduced-motion: reduce) {
   #projects *, #projects *::before, #projects *::after { animation: none !important; transition: none !important; }
 }
+
+/* Testing: hobby stickers on the Hobbies post-it (STICKERS_ON_HOBBIES_NOTE).
+   The overlay matches the note's paper: 400x520, centred in its 640px scene. */
+.about-note-stickers {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 5;
+  width: min(400px, 100%);
+  aspect-ratio: 400 / 520;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.postit-sticker-layer.hero-sticker-layer .about-draggable-sticker {
+  left: calc(var(--initial-sticker-x) * 1%);
+  top: calc(var(--initial-sticker-y) * 1%);
+  width: calc(var(--sticker-width) * 1.191);
+}
+@media (max-width: 700px) {
+  .postit-sticker-layer.hero-sticker-layer .about-draggable-sticker {
+    left: calc(var(--initial-sticker-x) * 1%);
+    top: calc(var(--initial-sticker-y) * 1%);
+    width: calc(var(--sticker-width) * 1.191);
+  }
+}
+
+/* Hobbies stickers can be dragged anywhere on the page: let them leave the About section
+   and sit above the other post-its and the sections below. */
+#aboutme.about-corkboard-section:has(.about-note-stickers) { overflow: visible; z-index: 5; }
+#aboutme .about-stack-shell:has(.about-note-stickers) { z-index: 40 !important; }

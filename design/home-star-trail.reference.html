@@ -1,0 +1,294 @@
+<!doctype html>
+<!--
+  DESIGN REFERENCE ONLY (exported from the Claude Design canvas "Home page star trail").
+  Not part of the build. .dc.html template syntax: {{holes}}, <sc-for>, <sc-if>, DCLogic.renderVals().
+  The hero background, nav, heading and mascot in here are mock-ups of the real page; port ONLY the star trail.
+  See STAR_TRAIL.md for the spec.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home page star trail</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&amp;family=Press+Start+2P&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#3b4d4e}a:hover{color:#26241f}
+.bloom{position:absolute;transform:translate(-50%,-50%) rotate(var(--turn));--cream:#d4d7ab;
+background:
+radial-gradient(circle calc(var(--s) * .2) at 50% 20%,var(--cream) 97%,transparent 100%),
+radial-gradient(circle calc(var(--s) * .2) at 78.5% 40.7%,var(--cream) 97%,transparent 100%),
+radial-gradient(circle calc(var(--s) * .2) at 67.6% 74.3%,var(--cream) 97%,transparent 100%),
+radial-gradient(circle calc(var(--s) * .2) at 32.4% 74.3%,var(--cream) 97%,transparent 100%),
+radial-gradient(circle calc(var(--s) * .2) at 21.5% 40.7%,var(--cream) 97%,transparent 100%),
+radial-gradient(circle calc(var(--s) * .16) at 50% 50%,var(--cream) 97%,transparent 100%);
+filter:blur(calc(var(--s) * .04))}
+.grain{position:absolute;inset:0;background-image:url(GRAIN_PLACEHOLDER(the site already has its own grain in .hero-backdrop::after));background-size:220px 220px;mix-blend-mode:overlay;pointer-events:none}
+.pix{position:relative;display:inline-block;padding:15px 23px 19px;color:#34352d;font:400 10px/1.2 'Press Start 2P',monospace;text-transform:uppercase;text-decoration:none;filter:drop-shadow(4px 5px 0 #7d7e70)}
+.pix::before{content:"";position:absolute;inset:0;z-index:-1;box-sizing:border-box;border:4px solid #55564c;border-right-width:6px;border-bottom-width:6px;background:#d4d4c6;box-shadow:inset 4px 4px 0 #e7e7dd,inset -4px -4px 0 #a9a997}
+.star{position:absolute;transform:translate(-50%,-50%);pointer-events:auto;transition:translate 480ms cubic-bezier(.2,1.35,.4,1)}
+.star-in{display:block;transform:rotate(var(--r))}
+.star svg{display:block;overflow:visible;transition:rotate 300ms cubic-bezier(.3,1.6,.5,1),scale 300ms cubic-bezier(.3,1.6,.5,1)}
+.star path,.star circle{stroke:var(--ink);stroke-linecap:round;stroke-linejoin:round;fill:var(--fill)}
+.ia-spin .star:hover svg{rotate:22deg;scale:1.35}
+.rip-a{animation:ripA 520ms cubic-bezier(.3,1.5,.5,1) var(--rd) both}
+.rip-b{animation:ripB 520ms cubic-bezier(.3,1.5,.5,1) var(--rd) both}
+@keyframes ripA{0%{scale:1}40%{scale:1.55}100%{scale:1}}
+@keyframes ripB{0%{scale:1}40%{scale:1.55}100%{scale:1}}
+/* entrance: doodle */
+.ent-doodle .star-in{animation:pop 560ms cubic-bezier(.3,1.5,.5,1) var(--d) both}
+.ent-doodle path:not(.tint),.ent-doodle circle{stroke-dasharray:1 1;stroke-dashoffset:1;fill-opacity:0;animation:draw 560ms cubic-bezier(.4,0,.2,1) var(--d) forwards,fillIn 420ms ease calc(var(--d) + 380ms) forwards}
+.ent-doodle .tint{opacity:0;animation:tintIn 420ms ease calc(var(--d) + 380ms) forwards}
+/* entrance: comet */
+.ent-comet .star-in{animation:cometPop 620ms cubic-bezier(.2,1.6,.4,1) var(--d) both}
+/* entrance: constellation */
+.ent-const .star-in{animation:glint 700ms cubic-bezier(.2,1.5,.4,1) var(--d) both}
+/* entrance: sweep (loops) */
+.ent-sweep .star-in{animation:sweep 5.2s ease-in-out var(--d) infinite}
+/* idle */
+.idle-twinkle svg{animation:twinkle 3.4s ease-in-out var(--t) infinite}
+.idle-float svg{animation:floaty var(--fdur) ease-in-out var(--t) infinite}
+.idle-shimmer svg{animation:shimmer 2.8s ease-in-out var(--t) infinite}
+.comet{position:absolute;left:0;top:0;offset-anchor:50% 50%;offset-rotate:0deg;opacity:0;animation:cometRun var(--cd) linear var(--cdelay) forwards;pointer-events:none}
+.comet svg{display:block;overflow:visible;animation:spin 900ms linear infinite}
+.comet path{fill:#fbfde9;stroke:#fbfde9;stroke-width:1.4;stroke-linejoin:round}
+@keyframes cometRun{0%{offset-distance:0%;opacity:0}4%{opacity:var(--co)}92%{opacity:var(--co)}100%{offset-distance:100%;opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fillIn{to{fill-opacity:1}}
+@keyframes tintIn{to{opacity:1}}
+@keyframes trailIn{to{opacity:1}}
+@keyframes pop{0%{opacity:0;transform:scale(.55) rotate(calc(var(--r) - 10deg))}20%{opacity:1}60%{transform:scale(1.12) rotate(calc(var(--r) + 8deg))}100%{opacity:1;transform:scale(1) rotate(var(--r))}}
+@keyframes cometPop{0%{opacity:0;transform:scale(.1) rotate(calc(var(--r) - 90deg));filter:brightness(1.6)}45%{opacity:1;transform:scale(1.45) rotate(calc(var(--r) + 10deg))}100%{opacity:1;transform:scale(1) rotate(var(--r));filter:none}}
+@keyframes glint{0%{opacity:0;transform:scale(0) rotate(calc(var(--r) - 120deg))}50%{opacity:1;transform:scale(1.3) rotate(calc(var(--r) + 12deg))}100%{opacity:1;transform:scale(1) rotate(var(--r))}}
+@keyframes twinkle{0%,100%{transform:scale(1) rotate(0deg)}50%{transform:scale(1.16) rotate(14deg)}}
+@keyframes floaty{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(var(--fx),var(--fy)) rotate(9deg)}}
+@keyframes shimmer{0%,100%{opacity:1;transform:scale(1)}45%{opacity:.55;transform:scale(.94)}55%{opacity:1;transform:scale(1.08)}}
+@keyframes sweep{0%{opacity:0;transform:scale(.3) rotate(calc(var(--r) - 30deg))}9%{opacity:1;transform:scale(1.22) rotate(calc(var(--r) + 6deg))}15%{transform:scale(1) rotate(var(--r))}68%{opacity:1;transform:scale(1) rotate(var(--r))}84%{opacity:0;transform:scale(.6) rotate(calc(var(--r) + 20deg))}100%{opacity:0}}
+.trail-line{opacity:0;animation:trailIn 900ms ease 100ms forwards}
+.trail-reveal{stroke-dasharray:1 1;stroke-dashoffset:1;animation:draw var(--ld) linear var(--ldelay) forwards}
+.replay{position:absolute;left:24px;bottom:22px;z-index:5;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 14px;border:1px solid rgba(38,36,31,.3);border-radius:999px;background:rgba(244,240,231,.55);color:#3b3a33;font:12px Georgia,serif;cursor:pointer}
+.replay:hover{background:rgba(244,240,231,.9)}
+@media (prefers-reduced-motion: reduce){.star,.star-in,.star svg,.star path,.star circle,.star .tint,.trail-line,.trail-reveal,.comet{animation:none !important;stroke-dashoffset:0 !important;fill-opacity:1 !important;opacity:1 !important}.comet{display:none}}
+</style>
+</helmet>
+<section style="--ink: {{ink}}; --fill: {{fill}}; position: relative; width: 1440px; height: 900px; overflow: hidden; isolation: isolate; background-color: #c2c2b1; color: #26241f; font-family: 'Sentient', Georgia, serif">
+<div aria-hidden="true" style="position: absolute; inset: 0; z-index: -1; overflow: hidden">
+<span class="bloom" style="--s: 662px; --turn: -8deg; width: 662px; height: 662px; left: 21%; top: 72%"></span>
+<span class="bloom" style="--s: 749px; --turn: 14deg; width: 749px; height: 749px; left: 77%; top: 24%"></span>
+<span class="grain"></span>
+</div>
+<svg aria-hidden="true" width="0" height="0" style="position: absolute"><defs><pattern id="sketch-hatch" patternUnits="userSpaceOnUse" width="{{hatchGap}}" height="{{hatchGap}}" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="{{hatchGap}}" style="stroke: {{ink}}; stroke-width: {{hatchW}}; stroke-linecap: round"></line></pattern></defs></svg>
+<sc-if value="{{alive}}" hint-placeholder-val="{{true}}">
+<div onMouseMove="{{moveMouse}}" onMouseLeave="{{leaveMouse}}" style="position: absolute; inset: 0; z-index: 1">
+<sc-if value="{{showLine}}" hint-placeholder-val="{{true}}">
+<svg class="trail-line" aria-hidden="true" width="1440" height="900" viewBox="0 0 1440 900" style="position: absolute; inset: 0; pointer-events: none; --ld: {{lineDur}}ms; --ldelay: {{lineDelay}}ms"><defs><mask id="trail-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1440" height="900"><polyline class="trail-reveal" points="{{linePoints}}" pathLength="1" style="fill: none; stroke: #fff; stroke-width: 16; stroke-linecap: round; stroke-linejoin: round"></polyline></mask></defs><polyline points="{{linePoints}}" mask="url(#trail-mask)" style="fill: none; stroke: {{ink}}; stroke-width: 1.6; stroke-dasharray: 2 9; stroke-linecap: round; stroke-linejoin: round; opacity: .85"></polyline></svg>
+</sc-if>
+<div aria-hidden="true" class="{{layerClass}}" style="position: absolute; inset: 0; pointer-events: none">
+<sc-for list="{{stars}}" as="s" hint-placeholder-count="26">
+<span class="star {{s.ripClass}}" onMouseEnter="{{s.enter}}" style="left: {{s.x}}px; top: {{s.y}}px; translate: {{s.px}}px {{s.py}}px; --d: {{s.d}}ms; --t: {{s.t}}ms; --r: {{s.r}}deg; --rd: {{s.rd}}ms; --fx: {{s.fx}}px; --fy: {{s.fy}}px; --fdur: {{s.fdur}}ms">
+<span class="star-in">
+<sc-if value="{{s.isStar}}" hint-placeholder-val="{{true}}">
+<svg width="{{s.size}}" height="{{s.size}}" viewBox="0 0 24 24"><path class="tint" d="{{s.path}}" style="fill: {{ink}}; fill-opacity: {{tint}}; stroke: none"></path><path d="{{s.path}}" pathLength="1" style="stroke-width: {{strokeW}}"></path></svg>
+</sc-if>
+<sc-if value="{{s.isDot}}" hint-placeholder-val="{{false}}">
+<svg width="{{s.size}}" height="{{s.size}}" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" pathLength="1" style="stroke-width: {{strokeW}}"></circle></svg>
+</sc-if>
+</span>
+</span>
+</sc-for>
+<sc-if value="{{isComet}}" hint-placeholder-val="{{false}}">
+<sc-for list="{{comets}}" as="c" hint-placeholder-count="4">
+<span class="comet" style="offset-path: path('{{pathD}}'); --cd: {{cometDur}}ms; --cdelay: {{c.delay}}ms; --co: {{c.opacity}}; filter: drop-shadow(0 0 {{c.glow}}px rgba(251,253,233,.95))"><svg width="{{c.size}}" height="{{c.size}}" viewBox="0 0 24 24"><path d="M12 2.8 L14.6 8.9 L21.2 9.6 L16.2 13.8 L17.7 20.5 L12.1 16.9 L6.4 20.6 L8 13.8 L2.9 9.7 L9.5 8.8 Z"></path></svg></span>
+</sc-for>
+</sc-if>
+</div>
+</div>
+</sc-if>
+<button type="button" class="replay" onClick="{{replay}}"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round"><path d="M20 11a8 8 0 1 0-2.3 5.7"></path><path d="M20 4v7h-7"></path></svg>replay intro (preview only)</button>
+<nav aria-label="Main" style="position: relative; z-index: 3; display: flex; justify-content: center; flex-wrap: wrap; gap: 16px; padding: 42px 24px 0">
+<a class="pix" href="#home">home</a>
+<a class="pix" href="#about">about</a>
+<a class="pix" href="#experience">experience</a>
+<a class="pix" href="#projects">projects</a>
+<a class="pix" href="#contact">contact</a>
+</nav>
+<div style="position: absolute; z-index: 2; left: 53%; top: 214px; width: 576px">
+<div aria-hidden="true" style="float: right; width: 230px; height: 230px; margin: -24px -46px 12px 20px; border: 2px dashed rgba(38,36,31,.35); border-radius: 50%; display: flex; align-items: center; justify-content: center; font: 12px Georgia, serif; color: rgba(38,36,31,.55)">your mascot</div>
+<h1 style="margin: 0 0 26px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; font-size: 96px; line-height: 1; letter-spacing: -0.065em; white-space: nowrap">hello, I’m Aditi.</h1>
+<p style="margin: 0 0 10px; font-size: 14px; line-height: 1.65">I'm currently an undergraduate student at the University of Wisconsin–Madison, majoring in Computer Science and Statistics. I'm passionate about exploring the overlap between technology and data, with particular interests in machine learning, artificial intelligence, and software development.</p>
+<p style="margin: 0 0 10px; font-size: 14px; line-height: 1.65">This website is a culmination of my academics and professional interests, but also my personality and creative side. I hope you enjoy ;)</p>
+<a href="#contact" style="display: inline-flex; margin-top: 14px; padding: 3px 20px 5px; border: 1px solid #858176; border-radius: 999px; font-size: 13px; color: #393a31; text-underline-offset: 2px">let’s connect</a>
+</div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"curve":{"editor":"enum","default":"swoop","options":["swoop","arc","s-curve","wave"],"section":"Trail"},"loops":{"editor":"range","default":5,"min":0,"max":9,"step":1,"section":"Trail"},"loopSize":{"editor":"range","default":92,"min":20,"max":140,"step":2,"unit":"px","section":"Trail"},"showLine":{"editor":"boolean","default":true,"section":"Trail"},"count":{"editor":"range","default":26,"min":6,"max":40,"step":1,"section":"Trail"},"dots":{"editor":"boolean","default":false,"section":"Trail"},"size":{"editor":"range","default":28,"min":14,"max":48,"step":1,"unit":"px","section":"Stars"},"sizing":{"editor":"enum","default":"varied","options":["varied","swell","grow","shrink","even"],"section":"Stars"},"ink":{"editor":"color","default":"#e7edc6","options":["#e7edc6","#eef2d6","#dbe3a8","#d4d7ab"],"section":"Stars"},"filled":{"editor":"boolean","default":true,"section":"Stars"},"hatchGap":{"editor":"range","default":2.2,"min":1.6,"max":6,"step":0.2,"section":"Stars"},"tint":{"editor":"range","default":0.5,"min":0,"max":1,"step":0.05,"section":"Stars"},"strokeW":{"editor":"range","default":1.6,"min":1,"max":3,"step":0.1,"section":"Stars"},"entrance":{"editor":"enum","default":"comet","options":["doodle in","comet","constellation","sweep loop","none"],"section":"Motion"},"idle":{"editor":"enum","default":"twinkle ripple","options":["twinkle ripple","float","shimmer","none"],"section":"Motion"},"interaction":{"editor":"enum","default":"repel cursor","options":["repel cursor","ripple on hover","spin on hover","none"],"section":"Motion"},"stagger":{"editor":"range","default":90,"min":30,"max":260,"step":10,"unit":"ms","section":"Motion"},"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { mx: -9999, my: -9999, rip: -1, ripKey: 0, alive: true };
+  }
+  replayIntro() {
+    this.setState({ alive: false, rip: -1, mx: -9999, my: -9999 });
+    setTimeout(() => this.setState({ alive: true }), 60);
+  }
+  renderVals() {
+    const CURVES = {
+      "swoop": [[230, 26], [10, 330], [640, 500], [400, 890]],
+      "arc": [[150, 26], [660, 150], [420, 560], [110, 860]],
+      "s-curve": [[230, 26], [670, 270], [20, 560], [570, 870]],
+      "wave": [[110, 26], [470, 300], [30, 560], [660, 860]]
+    };
+    const P = CURVES[this.props.curve] || CURVES.swoop;
+    const count = this.props.count ?? 26;
+    const base = this.props.size ?? 28;
+    const sizing = this.props.sizing || "swell";
+    const stagger = this.props.stagger ?? 90;
+    const dots = this.props.dots ?? false;
+    const ink = this.props.ink || "#e7edc6";
+    const entrance = this.props.entrance || "comet";
+    const idle = this.props.idle || "twinkle ripple";
+    const interaction = this.props.interaction || "repel cursor";
+    const st = this.state;
+
+    const loops = this.props.loops ?? 5;
+    const R = this.props.loopSize ?? 92;
+    const baseCurve = (t) => {
+      const u = 1 - t;
+      const x = u*u*u*P[0][0] + 3*u*u*t*P[1][0] + 3*u*t*t*P[2][0] + t*t*t*P[3][0];
+      const y = u*u*u*P[0][1] + 3*u*u*t*P[1][1] + 3*u*t*t*P[2][1] + t*t*t*P[3][1];
+      return [x, y];
+    };
+    const LOOP_R = [1, 0.72, 1.18, 0.86, 1.08, 0.66, 1.22, 0.9, 1.02];
+    const bez = (t) => {
+      const [x, y] = baseCurve(t);
+      if (!loops) return [x, y];
+      const h = 0.001;
+      const [x1, y1] = baseCurve(Math.max(0, t - h));
+      const [x2, y2] = baseCurve(Math.min(1, t + h));
+      const tl = Math.hypot(x2 - x1, y2 - y1) || 1;
+      const tx = (x2 - x1) / tl, ty = (y2 - y1) / tl;
+      const nx = -ty, ny = tx;
+      const k = Math.min(loops - 1, Math.floor(loops * t));
+      const side = k % 2 === 0 ? 1 : -1;
+      const env = Math.sin(Math.PI * Math.min(1, t * 1.1)) ** 0.5;
+      const r = R * env * LOOP_R[k % LOOP_R.length];
+      const a = 2 * Math.PI * loops * t;
+      const along = -Math.sin(a) * r;
+      const across = (1 - Math.cos(a)) * r * 0.95 * side;
+      return [x + tx * along + nx * across, y + ty * along + ny * across];
+    };
+    const N = 900, pts = [], len = [0];
+    for (let i = 0; i <= N; i++) pts.push(bez(i / N));
+    for (let i = 1; i <= N; i++) len.push(len[i-1] + Math.hypot(pts[i][0]-pts[i-1][0], pts[i][1]-pts[i-1][1]));
+    const total = len[N];
+    const at = (f) => {
+      const target = f * total;
+      let i = 1; while (i < N && len[i] < target) i++;
+      const a = len[i-1], b = len[i], k = b > a ? (target - a) / (b - a) : 0;
+      return [pts[i-1][0] + (pts[i][0]-pts[i-1][0])*k, pts[i-1][1] + (pts[i][1]-pts[i-1][1])*k];
+    };
+
+    const PATHS = [
+      "M12 2.8 C12.6 5 13.4 7.4 14.5 8.8 C16.8 9 19 9.1 21.2 9.6 C19.6 11.1 17.8 12.4 16.2 13.8 C16.8 16 17.4 18.2 17.7 20.5 C15.9 19.3 14 18 12.1 16.9 C10.2 18 8.3 19.3 6.4 20.6 C6.9 18.3 7.5 16 8 13.8 C6.3 12.4 4.6 11 2.9 9.7 C5.1 9.3 7.3 9.1 9.5 8.8 C10.4 6.7 11.2 4.7 12.4 2.3",
+      "M11.6 3.2 L14.3 9.1 L20.8 9.9 L15.9 14.1 L17.4 20.2 L12 17.2 L6.7 20.4 L8.2 14.2 L3.3 9.6 L9.8 9 L12.3 2.7",
+      "M12 3 C12.6 8.6 13.4 10.9 21 12 C13.4 13.1 12.6 15.4 12 21 C11.4 15.4 10.6 13.1 3 12 C10.6 10.9 11.4 8.6 12.3 2.5"
+    ];
+    const pattern = [0, 1, 2, 0, 1, 0, 2];
+    const rots = [-12, 9, -4, 15, -9, 6, -15, 3, 12, -6];
+    const jit = [[0, 0], [6, -5], [-5, 4], [4, 6], [-6, -3], [3, -6], [-4, 5]];
+
+    const raw = [];
+    for (let i = 0; i < count; i++) {
+      const f = count === 1 ? 0.5 : i / (count - 1);
+      const [x, y] = at(f);
+      let m = 1;
+      const VAR = [1, 0.62, 1.28, 0.78, 0.95, 1.4, 0.7, 1.12, 0.58, 1.2, 0.85, 1.33];
+      if (sizing === "varied") m = VAR[i % VAR.length];
+      else if (sizing === "swell") m = 0.62 + 0.55 * Math.sin(Math.PI * f);
+      else if (sizing === "grow") m = 0.55 + 0.7 * f;
+      else if (sizing === "shrink") m = 1.25 - 0.7 * f;
+      const j = jit[i % jit.length];
+      raw.push({ f: f, x: Math.round(x + j[0]), y: Math.round(y + j[1]), size: Math.round(base * m), isStar: true, isDot: false, path: PATHS[pattern[i % pattern.length]], r: rots[i % rots.length] });
+      if (dots && i < count - 1) {
+        const fd = f + 0.5 / (count - 1);
+        const [dx, dy] = at(fd);
+        raw.push({ f: fd, x: Math.round(dx), y: Math.round(dy), size: Math.round(base * 0.5), isStar: false, isDot: true, path: "", r: 0 });
+      }
+    }
+    const span = (count - 1) * stagger;
+    const n = raw.length;
+    const order = raw.map((_, k) => k).sort((p1, p2) => ((p1 * 37 + 11) % 97) - ((p2 * 37 + 11) % 97));
+    const rank = []; order.forEach((k, r) => { rank[k] = r; });
+    const lineDelayConst = Math.round(n * 70 * 0.9) + 300;
+    const RAD = 150;
+    const stars = raw.map((q, k) => {
+      let d = Math.round(q.f * span);
+      if (entrance === "constellation") d = rank[k] * 70;
+      if (entrance === "comet") d = Math.round(q.f * span) + 30;
+      const idleStart = entrance === "constellation" ? lineDelayConst + span + 200 : span + 700;
+      let px = 0, py = 0;
+      if (interaction === "repel cursor") {
+        const ddx = q.x - st.mx, ddy = q.y - st.my, dist = Math.hypot(ddx, ddy);
+        if (dist < RAD && dist > 0.01) { const push = (RAD - dist) * 0.55; px = Math.round(ddx / dist * push); py = Math.round(ddy / dist * push); }
+      }
+      const fl = [[6, -9], [-7, -6], [5, 8], [-6, 7], [8, -4]][k % 5];
+      return {
+        x: q.x, y: q.y, size: q.size, isStar: q.isStar, isDot: q.isDot, path: q.path, r: q.r,
+        d: d, t: idleStart + k * 80,
+        px: px, py: py,
+        fx: fl[0], fy: fl[1], fdur: 3600 + (k % 5) * 650,
+        ripClass: interaction === "ripple on hover" && st.rip >= 0 ? (st.ripKey % 2 ? "rip-a" : "rip-b") : "",
+        rd: st.rip >= 0 ? Math.abs(k - st.rip) * 45 : 0,
+        enter: () => { if ((this.props.interaction || "repel cursor") === "ripple on hover") this.setState({ rip: k, ripKey: this.state.ripKey + 1 }); }
+      };
+    });
+    const linePts = pts.filter((_, k) => k % 3 === 0);
+    const entCls = { "doodle in": "ent-doodle", "comet": "ent-comet", "constellation": "ent-const", "sweep loop": "ent-sweep", "none": "" }[entrance] || "";
+    const idleCls = { "twinkle ripple": "idle-twinkle", "float": "idle-float", "shimmer": "idle-shimmer", "none": "" }[idle] || "";
+    const iaCls = interaction === "spin on hover" ? "ia-spin" : "";
+    let lineDur = 900, lineDelay = 0;
+    if (entrance === "doodle in") { lineDur = span + 300; lineDelay = 0; }
+    else if (entrance === "comet") { lineDur = span; lineDelay = 0; }
+    else if (entrance === "constellation") { lineDur = span + 400; lineDelay = lineDelayConst; }
+    else { lineDur = 1; lineDelay = 0; }
+    return {
+      stars: stars,
+      ink: ink,
+      fill: (this.props.filled ?? true) ? "url(#sketch-hatch)" : "none",
+      hatchGap: this.props.hatchGap ?? 2.2,
+      hatchW: 1.25,
+      tint: (this.props.filled ?? true) ? (this.props.tint ?? 0.5) : 0,
+      showLine: this.props.showLine ?? true,
+      linePoints: linePts.map((q) => q[0].toFixed(1) + "," + q[1].toFixed(1)).join(" "),
+      pathD: "M" + linePts.map((q) => q[0].toFixed(1) + " " + q[1].toFixed(1)).join(" L"),
+      strokeW: this.props.strokeW ?? 1.6,
+      layerClass: [entCls, idleCls, iaCls].join(" "),
+      lineDur: lineDur, lineDelay: lineDelay,
+      isComet: entrance === "comet",
+      cometDur: span,
+      comets: [
+        { delay: 0, size: 30, opacity: 1, glow: 8 },
+        { delay: 70, size: 20, opacity: 0.6, glow: 5 },
+        { delay: 140, size: 14, opacity: 0.38, glow: 3 },
+        { delay: 210, size: 9, opacity: 0.22, glow: 2 }
+      ],
+      alive: st.alive,
+      replay: () => this.replayIntro(),
+      moveMouse: (e) => {
+        if ((this.props.interaction || "repel cursor") !== "repel cursor") return;
+        const rect = e.currentTarget.getBoundingClientRect();
+        const sx = 1440 / (rect.width || 1440), sy = 900 / (rect.height || 900);
+        this.setState({ mx: (e.clientX - rect.left) * sx, my: (e.clientY - rect.top) * sy });
+      },
+      leaveMouse: () => this.setState({ mx: -9999, my: -9999 })
+    };
+  }
+}
+</script>
+</body>
+</html>
