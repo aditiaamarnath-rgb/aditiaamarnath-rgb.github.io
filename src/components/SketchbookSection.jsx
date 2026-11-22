@@ -45,6 +45,11 @@ export default function SketchbookSection() {
 
   return (
     <section className="portfolio-sketchbook" id="sketchbook" aria-labelledby="sketchbook-heading">
+      {/* Same blurred-flower + film-grain backdrop as the home page, in darker greys. */}
+      <div className="hero-backdrop sketchbook-backdrop" aria-hidden="true">
+        <span className="hero-bloom hero-bloom-a" />
+        <span className="hero-bloom hero-bloom-b" />
+      </div>
       <header className="portfolio-sketchbook-heading">
         <h2 id="sketchbook-heading"><span>bonus:</span> sneak peek at my sketchbook</h2>
       </header>

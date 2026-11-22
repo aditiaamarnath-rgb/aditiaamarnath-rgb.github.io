@@ -47,6 +47,47 @@ body {
   background-image: url('./assets/paper-grain.svg');
   color: #26241f;
 }
+/* Home background, after design/inspo/home-background-inspo.png: two big
+   five-petal flowers in pale cream, blurred until they glow, on warm grey,
+   with fine film grain over everything. Pure CSS, behind the hero content. */
+.hero-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hero-bloom {
+  --s: 46vw;
+  --cream: #d4d7ab; /* soft olive; lands near #dcdfbd once the grain is blended in */
+  position: absolute;
+  width: var(--s);
+  height: var(--s);
+  transform: translate(-50%, -50%) rotate(var(--turn, 0deg));
+  /* Five round petals 0.30s out from the middle at 72deg steps, plus a small centre;
+     the gaps between petals survive the blur as the soft notches in the inspo. */
+  --petal: calc(var(--s) * 0.2);
+  background:
+    radial-gradient(circle var(--petal) at 50.0% 20.0%, var(--cream) 97%, transparent 100%),
+    radial-gradient(circle var(--petal) at 78.5% 40.7%, var(--cream) 97%, transparent 100%),
+    radial-gradient(circle var(--petal) at 67.6% 74.3%, var(--cream) 97%, transparent 100%),
+    radial-gradient(circle var(--petal) at 32.4% 74.3%, var(--cream) 97%, transparent 100%),
+    radial-gradient(circle var(--petal) at 21.5% 40.7%, var(--cream) 97%, transparent 100%),
+    radial-gradient(circle calc(var(--s) * 0.16) at 50% 50%, var(--cream) 97%, transparent 100%);
+  filter: blur(calc(var(--s) * 0.04));
+}
+.hero-bloom-a { --s: max(46vw, 62svh); --turn: -8deg; left: 21%; top: 72%; }
+.hero-bloom-b { --s: max(52vw, 68svh); --turn: 14deg; left: 77%; top: 24%; }
+/* Film grain: fractal noise, greyscale, blended over the flowers and grey. */
+.hero-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 220px 220px;
+  mix-blend-mode: overlay;
+  opacity: 1;
+}
 .letter-nav {
   position: relative;
   z-index: 3;
