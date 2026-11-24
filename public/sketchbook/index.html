@@ -172,7 +172,10 @@ button{font:inherit}
 @keyframes sb-cap-out{to{opacity:0}}
 .sb-wrap.intro .sb-caption{animation:none}
 .sb-wrap.intro .sb-caption.cap-out{display:none}
-.sb-wrap.intro .sb-tilt{animation:sb-breeze var(--riffle-duration,2.05s) ease-in-out both}
+/* The breeze lifts the book itself, not .sb-tilt: overriding the tilt's
+   transform made the book snap flat when the riffle began and snap back
+   to the cursor tilt when it ended. The shadow stays on the desk. */
+.sb-wrap.intro .sb-book{animation:sb-breeze var(--riffle-duration,2.05s) ease-in-out both}
 @keyframes sb-breeze{
   0%,100%{transform:rotateX(0deg) rotateY(0deg) translateY(0)}
   35%{transform:rotateX(1.5deg) rotateY(-1deg) translateY(-4px)}
@@ -320,42 +323,66 @@ function imgEl(i,side){
   im.draggable=false;im.alt='';im.src=PAGES[i].url;return im;
 }
 
-function halfEl(pos,i){
+/* The book's DOM is built once and only re-dressed for each turn.
+   Rebuilding the halves and all 36 composited faces for every leaf
+   made each leaf of the riffle hitch and sometimes flash blank. */
+function halfEl(pos){
   const d=el('div','sb-half '+pos);
-  d.appendChild(imgEl(i,pos));
+  const im=new Image();im.className='sb-half-img '+pos;im.draggable=false;im.alt='';
+  d.appendChild(im);
   d.appendChild(el('div','gutter-shade '+pos));
   return d;
 }
-/* build the strip chain once per turn; background offsets are pure
-   geometry, so they never need touching again while it animates */
-function buildCurl(dir,from,to){
-  strips=[];
-  const c=el('div','curl '+dir);
+function showHalf(half,i,alt){
+  const im=half.firstChild, u=PAGES[i].url;
+  if(im.getAttribute('src')!==u)im.src=u;
+  im.alt=alt||'';
+}
+const faces=[];        /* [front, back] per strip */
+function buildCurl(){
+  const c=el('div','curl next');
   c.style.setProperty('--n',N);
   c.style.setProperty('--span',SPAN);
+  c.style.visibility='hidden';
   let host=c;
   for(let i=0;i<N;i++){
     const s=el('div','strip');
     s.style.setProperty('--i',i);
-    const gut='calc(var(--bw) * 0.5)';
-    const sw='calc(var(--bw) * '+SPAN+' / '+N+')';
-    const A='calc(-1 * ('+gut+' + '+i+' * '+sw+'))';         /* faces the from-page  */
-    const B='calc('+(i+1)+' * '+sw+' - '+gut+')';            /* faces the to-page    */
     const f=el('div','face front'), b=el('div','face back');
-    const dress=(e,url,px)=>{
-      e.style.backgroundImage='url('+url+')';
-      e.style.backgroundPositionX=px;
-    };
-    dress(f,PAGES[from].url, dir==='next'?A:B);
-    dress(b,PAGES[to].url,   dir==='next'?B:A);
     f.appendChild(el('div','sh'));f.appendChild(el('div','gl'));
     b.appendChild(el('div','sh'));b.appendChild(el('div','gl'));
     s.appendChild(f);s.appendChild(b);
     if(i===N-1)s.classList.add('edge');
     host.appendChild(s);host=s;
-    strips.push(s);
+    strips.push(s);faces.push([f,b]);
   }
   return c;
+}
+/* background offsets are pure geometry, so they never need touching
+   again while the leaf animates */
+function dressCurl(dir,from,to){
+  curlEl.className='curl '+dir;
+  const gut='calc(var(--bw) * 0.5)';
+  const sw='calc(var(--bw) * '+SPAN+' / '+N+')';
+  const dress=(e,url,px)=>{
+    const bg='url("'+url+'")';
+    if(e.style.backgroundImage!==bg)e.style.backgroundImage=bg;
+    e.style.backgroundPositionX=px;
+  };
+  for(let i=0;i<N;i++){
+    const A='calc(-1 * ('+gut+' + '+i+' * '+sw+'))';         /* faces the from-page  */
+    const B='calc('+(i+1)+' * '+sw+' - '+gut+')';            /* faces the to-page    */
+    const [f,b]=faces[i];
+    dress(f,PAGES[from].url, dir==='next'?A:B);
+    dress(b,PAGES[to].url,   dir==='next'?B:A);
+  }
+}
+const halves={left:halfEl('left'),right:halfEl('right')};
+const curlEl=buildCurl();
+{
+  const a=el('button','sb-zone sb-prev'),b=el('button','sb-zone sb-next');
+  a.setAttribute('aria-label','previous page');b.setAttribute('aria-label','next page');
+  book.append(halves.left,halves.right,curlEl,a,b);
 }
 function curlTarget(t,w){
   const bend=(introOn?INTRO_BETA:BETA)*Math.sin(Math.PI*t);
@@ -383,24 +410,22 @@ function applyTurn(t){
   }
 }
 function paint(){
-  book.textContent='';
+  layout();
   if(!turn){
-    const f=el('div','sb-full');
-    const im=new Image();im.src=PAGES[idx].url;im.alt=[PAGES[idx].title,PAGES[idx].left?.alt,PAGES[idx].right?.alt].filter(Boolean).join('. ');
-    im.draggable=false;
-    f.appendChild(im);book.appendChild(f);
+    /* the resting spread is the same two halves, so landing a leaf only
+       swaps the (already decoded) image under it — nothing is rebuilt */
+    showHalf(halves.left,idx,[PAGES[idx].title,PAGES[idx].left?.alt].filter(Boolean).join('. '));
+    showHalf(halves.right,idx,PAGES[idx].right?.alt);
+    curlEl.style.visibility='hidden';
     sb3d.style.setProperty('--shade','0');
   }else{
     const next=turn.dir==='next';
-    book.appendChild(halfEl('left', next?turn.from:turn.to));
-    book.appendChild(halfEl('right',next?turn.to:turn.from));
-    book.appendChild(buildCurl(turn.dir,turn.from,turn.to));
+    showHalf(halves.left, next?turn.from:turn.to);
+    showHalf(halves.right,next?turn.to:turn.from);
+    dressCurl(turn.dir,turn.from,turn.to);
     applyTurn(turn.t);
+    curlEl.style.visibility='';
   }
-  const a=el('button','sb-zone sb-prev'),b=el('button','sb-zone sb-next');
-  a.setAttribute('aria-label','previous page');b.setAttribute('aria-label','next page');
-  book.appendChild(a);book.appendChild(b);
-  layout();
   caption();
   // Warm adjacent spreads for pointer and keyboard turns, too.
   if(!turn)Promise.all([prepareSpread(idx-1),prepareSpread(idx+1)]).catch(()=>{});

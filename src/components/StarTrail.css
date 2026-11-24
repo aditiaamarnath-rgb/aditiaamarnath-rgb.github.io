@@ -1,10 +1,11 @@
-/* Green doodle star trail (STAR_TRAIL.md). Above the hero backdrop (z -1),
+/* Green doodle stars scattered over the hero (StarTrail.jsx). Above the hero backdrop (z -1),
    below .letter-intro (z 2) and the nav (z 3). Purely decorative, never clickable. */
 .star-trail {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
+  overflow: hidden;
 }
 @media (max-width: 700px) {
   .star-trail { display: none; }
@@ -12,34 +13,6 @@
 
 .star-trail-defs { position: absolute; width: 0; height: 0; }
 
-.star-trail-line {
-  position: absolute;
-  inset: 0;
-  overflow: visible;
-}
-.star-trail-dots {
-  fill: none;
-  stroke: #e7edc6;
-  stroke-width: 1.6;
-  stroke-dasharray: 2 9;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0.85;
-}
-/* Mask stroke: white, wide; fully drawn unless the entrance is playing. */
-.star-trail-reveal {
-  fill: none;
-  stroke: #fff;
-  stroke-width: 16;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 1 1;
-  stroke-dashoffset: 0;
-}
-.star-trail-enter .star-trail-reveal {
-  stroke-dashoffset: 1;
-  animation: draw var(--ld) linear var(--ldelay) forwards;
-}
 
 /* Three layers so entrance (.star-in), idle (svg) and repel (.star translate) never fight. */
 .star-trail .star {
@@ -61,54 +34,26 @@
   stroke-linejoin: round;
 }
 
-/* Entrance: comet. Pop (620ms) and spin (900ms) from the reference, run 1.4x faster to match SPEED in StarTrail.jsx. */
+/* Entrance: each star pops in, rippling outward from the text (delays set in StarTrail.jsx). */
 .star-trail-enter .star-in {
   animation: cometPop 443ms cubic-bezier(.2, 1.6, .4, 1) var(--d) both;
 }
-.star-trail-comet {
-  position: absolute;
-  left: 0;
-  top: 0;
-  offset-anchor: 50% 50%;
-  offset-rotate: 0deg;
-  opacity: 0;
-  animation: cometRun var(--cd) linear var(--cdelay) forwards;
-  pointer-events: none;
-}
-.star-trail-comet svg {
-  display: block;
-  overflow: visible;
-  animation: spin 643ms linear infinite;
-}
-.star-trail-comet path {
-  fill: #fbfde9;
-  stroke: #fbfde9;
-  stroke-width: 1.4;
-  stroke-linejoin: round;
-}
-
 /* Idle: twinkle ripple rolling down the trail. */
 .star-trail-idle .star svg {
   animation: twinkle 3.4s ease-in-out var(--t) infinite;
 }
 
 /* Keyframes copied verbatim from design/home-star-trail.reference.html. */
-@keyframes cometRun{0%{offset-distance:0%;opacity:0}4%{opacity:var(--co)}92%{opacity:var(--co)}100%{offset-distance:100%;opacity:0}}
 @keyframes cometPop{0%{opacity:0;transform:scale(.1) rotate(calc(var(--r) - 90deg));filter:brightness(1.6)}45%{opacity:1;transform:scale(1.45) rotate(calc(var(--r) + 10deg))}100%{opacity:1;transform:scale(1) rotate(var(--r));filter:none}}
 @keyframes twinkle{0%,100%{transform:scale(1) rotate(0deg)}50%{transform:scale(1.16) rotate(14deg)}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes draw{to{stroke-dashoffset:0}}
 
-/* Reduced motion: no comet, entrance, twinkle or repel; everything simply shows. */
+/* Reduced motion: no entrance, twinkle or repel; everything simply shows. */
 @media (prefers-reduced-motion: reduce) {
   .star-trail .star,
   .star-trail .star-in,
-  .star-trail .star svg,
-  .star-trail-reveal {
+  .star-trail .star svg {
     animation: none !important;
     transition: none !important;
   }
-  .star-trail-reveal { stroke-dashoffset: 0 !important; }
   .star-trail .star-in { opacity: 1 !important; }
-  .star-trail-comet { display: none; }
 }

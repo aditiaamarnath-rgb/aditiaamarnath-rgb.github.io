@@ -1,5 +1,7 @@
 # Home page: green doodle star trail
 
+> **Update (Nov 2026):** the trails were replaced by stars scattered across the whole hero, staying off the heading, paragraphs, button, nav and avatar and loosely framing them. There's no comet any more: stars pop in rippling outward from the text. The twinkle and cursor repel below are unchanged. See `src/components/StarTrail.jsx` for the current placement. The sections below describe the original trail.
+
 This adds a looping trail of hand-drawn, pencil-shaded green stars down the empty **left side** of the home hero (`#home`, `HeroSection` in `src/personalwebsite.jsx`). The design was finalised in a Claude Design canvas. Its source is **`design/home-star-trail.reference.html`**, and it's the source of truth for exact values. Copy the star paths, keyframes and the path maths from it.
 
 > The reference is design-tool syntax, not React. `{{hole}}` is a template value, `<sc-for>` is a loop, `<sc-if>` is a conditional, and `renderVals()` computes everything. The background, nav, heading and mascot in that file are mock-ups of the real page. **Port only the star trail.** Don't touch the existing backdrop, FoldText heading, mascot or nav.

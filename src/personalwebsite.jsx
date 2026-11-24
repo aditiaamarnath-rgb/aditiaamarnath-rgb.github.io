@@ -1,4 +1,3 @@
-import { OrbitCardStack } from "./components/ui/orbit-card-stack";
 import { useState, useEffect, useRef } from "react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import { Mascot } from "page-mascot";
@@ -18,7 +17,7 @@ import paperStarSticker from "./assets/handdrawn-stickers/star.png";
 import bobaSticker from "./assets/handdrawn-stickers/food/boba.png";
 import ramenSticker from "./assets/handdrawn-stickers/food/ramen.png";
 import smiskiSticker from "./assets/handdrawn-stickers/food/smiski.png";
-import bluprintProjectPreview from "./assets/bluprint-postit-preview.png";
+import bluprintProjectPreview from "./assets/bluprint-room-sketch.png";
 import databridgePostitPreview from "./assets/databridge-postit-preview.png";
 import interdisciplinaryPostitPreview from "./assets/interdisciplinary-postit-preview.png";
 import wavelengthPostitPreview from "./assets/wavelength-postit-preview.png";
@@ -172,13 +171,14 @@ const STICKERS_ON_HOBBIES_NOTE = true;
 // Stickers left out of this map (bike, paper-star, button) aren't shown on the note;
 // their art and data are kept, so add a line here to bring one back.
 const POSTIT_STICKER_LAYOUT = {
-    camera: { x: 25, y: 41, width: "29%", rotate: "-6deg" },
-    headphones: { x: 61, y: 35, width: "23%", rotate: "7deg" },
-    paint: { x: 85, y: 43, width: "17%", rotate: "5deg" },
-    polish: { x: 80, y: 63, width: "12%", rotate: "10deg" },
-    ramen: { x: 53, y: 77, width: "25%", rotate: "5deg" },
-    boba: { x: 18, y: 83, width: "14%", rotate: "-7deg" },
-    smiski: { x: 82, y: 85, width: "15%", rotate: "9deg" },
+    // Matches design/inspo/hobbies-stickers-inspo.png.
+    camera: { x: 25, y: 40, width: "29%", rotate: "-6deg" },
+    headphones: { x: 78, y: 21, width: "24%", rotate: "8deg" },
+    paint: { x: 59.5, y: 40, width: "16%", rotate: "-2deg" },
+    polish: { x: 85.5, y: 51.5, width: "15%", rotate: "12deg" },
+    ramen: { x: 48, y: 67, width: "25%", rotate: "0deg" },
+    boba: { x: 16, y: 78, width: "15%", rotate: "-7deg" },
+    smiski: { x: 77, y: 81.5, width: "16%", rotate: "6deg" },
 };
 
 function HeroStickers({ placement = "hero" }) {
@@ -755,7 +755,7 @@ function AboutSection() {
                             </div>
                             <div className="about-paper-section" style={{ paddingTop: 0 }}>
                                 <div>
-                                    <p style={{ fontFamily: "var(--font-hand)", fontSize: 17, fontStyle: "italic", opacity: 0.82, margin: 0 }}>&quot;Making cool things with cool people.&quot;</p>
+                                    <p style={{ fontFamily: "var(--font-hand)", fontSize: 17, fontStyle: "italic", opacity: 0.82, margin: 0 }}></p>
                                 </div>
                             </div>
                         </article>
@@ -810,9 +810,11 @@ function FilmStripSection() {
 /* ══════════════════ PROJECTS ══════════════════ */
 const PROJECTS = [
     { front: "#a8ae95", back: "#989f85", tabL: 3, tabW: 36, accent: "#9ea76b", noteColor: "#dfe4b9", noteRot: -5, tilt: 0.8, tab: "Bluprint", badge: "Personalized Interior Decorator", title: "Bluprint", desc: "A room design website that takes user's style preferences and generates furniture recommendations. Includes a customizable diagram of room, visual representation of items recommended, and dashboard to view all decorated rooms.", tags: ["React","Node.js", "Three.js","MongoDB"], year: "2024", emoji: "🐚", image: bluprintProjectPreview, noteCaption: "see it live", projectUrl: "https://bluprint-iroq.onrender.com/", color: C.fresh, ink: C.ink, descColor: C.ink },
-    { front: "#f6d2da", back: "#e9bfc9", tabL: 32, tabW: 36, accent: "#e3a7b4", noteColor: "#efe8ca", noteRot: -6, tilt: -0.6, tab: "Databridge", badge: "Financial Ontology Platform", title: "Databridge", desc: "Detailed a technical specification for HGS internship: Microsoft Fabric-native financial data platform, defining the OneLake medallion architecture, Direct Lake semantic layer, capacity tiering, and security requirements across a 17-item decision register.\n", tags: ["SQL","Microsoft Fabric","Power BI","OneLake"], year: "2026", emoji: "🗺️", image: databridgePostitPreview, noteCaption: "final presentation day!!", color: C.yellow, ink: C.ink, descColor: C.ink },
+    { front: "#f6d2da", back: "#e9bfc9", tabL: 32, tabW: 36, accent: "#e3a7b4", noteColor: "#f3eadf", noteRot: -6, tilt: -0.6, tab: "Databridge", badge: "Financial Ontology Platform", title: "Databridge", desc: "Detailed a technical specification for HGS internship: Microsoft Fabric-native financial data platform, defining the OneLake medallion architecture, Direct Lake semantic layer, capacity tiering, and security requirements across a 17-item decision register.\n", tags: ["SQL","Microsoft Fabric","Power BI","OneLake"], year: "2026", emoji: "🗺️", image: databridgePostitPreview, noteCaption: "final presentation day!!", color: C.yellow, ink: C.ink, descColor: C.ink },
     { front: "#d6b891", back: "#c6a57d", tabL: 61, tabW: 36, accent: "#cfc38d", noteColor: "#f9d1d9", noteRot: 4, tilt: 1, tab: "Tech and Humanity", badge: "Interdisciplinary Project", title: "Technology vs. Human Experiences", desc: "Interactive presentation detailing research study on whether technology/AI is replacing traditionally and evolutionarily human traits and experiences. Throughout this project, I use a psychological study CASA(Computers Are Social Actors), curiosity experiments, and popular media like WALL-E to examine how humans may become emotionally and behaviorally dependent on technology. \n", year: "2024", emoji: "📝", image: interdisciplinaryPostitPreview, noteCaption: "see it live", projectUrl: "https://prezi.com/p/1snxsaer21hu/?present=1", noteImageFit: "contain", color: C.softpink, ink: C.ink, descColor: C.ink },
-    { front: "#abcee3", back: "#98bdd4", tabL: 3, tabW: 36, accent: "#8fb3cf", noteColor: "#dfe4b9", noteRot: -5, tilt: -1.2, tab: "Wavelength", badge: "Personal Symptom Log", title: "Wavelength", desc: "A symptom-tracking website that lets users log physical and mental symptoms by text or voice. Includes graphs of recurring symptoms over time, a calendar of past entries, AI-generated summaries, and a PDF brief to bring to doctor's appointments.", tags: ["Vite","Firebase","Supabase","GroqCloud"], year: "2023", emoji: "🔍", image: wavelengthPostitPreview, noteFitImage: true, noteCaption: "see it live", noteCaptionPosition: "top", projectUrl: "https://wavelength-two-flame.vercel.app/", noteImageFit: "contain", color: C.azeitona, ink: C.ink, descColor: C.ink },
+    { front: "#abcee3", back: "#98bdd4", tabL: 3, tabW: 36, accent: "#8fb3cf", noteColor: "#dfe4b9", noteRot: -5, tilt: -1.2, tab: "Wavelength", badge: "Personal Symptom Log", title: "Wavelength", desc: "A symptom-tracking website that lets users log physical and mental symptoms by text or voice. Includes graphs of recurring symptoms over time, a calendar of past entries, AI-generated summaries, and a PDF brief to bring to doctor's appointments.", tags: ["Vite","Firebase","Supabase","GroqCloud"], year: "2026", emoji: "🔍", image: wavelengthPostitPreview, noteFitImage: true, noteCaption: "see it live", noteCaptionPosition: "top", projectUrl: "https://wavelength-two-flame.vercel.app/", noteImageFit: "contain", color: C.azeitona, ink: C.ink, descColor: C.ink },
+    // Placeholder fifth folder: swap in the real project's text, tags, image and link.
+    { front: "#e6dccb", back: "#d8ccb6", tabL: 32, tabW: 36, accent: "#c6b89e", noteColor: "#c8cf98", noteRot: 4, tilt: 0.9, tab: "Coming Soon", badge: "Work in Progress", title: "Coming Soon", desc: "Something new is in the works. Check back soon to see what I've been building!", year: "2026", emoji: "✨", noteCaption: "stay tuned", color: C.softpink, ink: C.ink, descColor: C.ink },
 ];
 
 function ProjectsSection() {
@@ -824,38 +826,62 @@ function ProjectsSection() {
     );
 }
 
+// Most recent first. `tone` is each entry's paper colour, taken from the about notes and project folders.
 const EXPERIENCES = [
-        { folder: "HGS", year: "Summer 2026", title: "Cloud Analytics Intern", sub: "At Hinduja Group Services, I helped write the technical spec for Databridge, a financial data platform built natively on Microsoft Fabric. That meant working through the OneLake medallion architecture, the Direct Lake semantic layer, capacity tiering, and security, all tracked in a 17-item decision register. I also built a Power BI semantic model by flattening a parent-child employee hierarchy into a dimension table with a 7-relationship star schema, then added an EDA agent on top as an AI proof-of-concept." },
-        { folder: "Undergrad Research", year: "Fall 2026", title: "Research Assistant", sub: "As an Undergraduate Research Assistant in Prof. Andi Wang's lab in the Industrial Engineering department, I'm studying Gaussian processes, optimization, and probabilistic network models and how they apply to real engineering problems. Day to day, that means reading and summarizing research papers, implementing methods in Python and R to run experiments, and presenting my progress to Prof. Wang every week. I'm also part of the Undergraduate Research Scholars program, a year-long mentored research experience with weekly seminars." },
-        { folder: "Instructor", year: "2024 - Now", title: "Music & Dance Suite", sub: "At The Music and Dance Suite, I taught private piano lessons for two years, building customized lesson plans for 20+ students. I adapted my techniques for neurodiverse and nonverbal learners so every student could make progress in a way that worked for them. I also organized and led performance recitals, which boosted student involvement and kept students coming back." },
-        { folder: "Volunteer", year: "2024 - 2025", title: "Main Desk & Central Supply Volunteer", sub: "At Rush Copley Medical Center, I volunteered at the main desk and in central supply for about a year, logging 96 hours. At the desk, I helped 50+ patients and visitors per shift with directions and questions in a fast-paced hospital environment. I also handled the weekly stocking and delivery of medical supplies across multiple departments." },
-        { folder: "VP", year: "Fall 2022 - 2025", title: "Teaching Assistant", sub: "At Youth and Government in Naperville, I served as school-wide Vice President and state-wide Assistant Director of Lobbyists over four years. I drove the passage of bills on recidivism and gambling advertisements, both approved unanimously at the state level. I was also recognized as Most Effective Lobbyist at the 2023 statewide conference." },
-    ];
-
-const EXPERIENCE_CARDS = EXPERIENCES.map((experience) => ({
-    name: experience.title,
-    role: experience.folder,
-    description: experience.sub,
-    stat: experience.year,
-}));
+    { dates: "Fall 2026 – Now", role: "Undergraduate Research Assistant", org: "Prof. Andi Wang’s lab, Industrial Engineering, UW–Madison", tone: "#a3a77a", desc: "As an Undergraduate Research Assistant in Prof. Andi Wang's lab in the Industrial Engineering department, I'm studying Gaussian processes, optimization, and probabilistic network models and how they apply to real engineering problems. Day to day, that means reading and summarizing research papers, implementing methods in Python and R to run experiments, and presenting my progress to Prof. Wang every week. I'm also part of the Undergraduate Research Scholars program, a year-long mentored research experience with weekly seminars." },
+    { dates: "Summer 2026", role: "Cloud Analytics Intern", org: "Hinduja Group Services (HGS)", tone: "#e6b9be", desc: "At Hinduja Group Services, I helped write the technical spec for Databridge, a financial data platform built natively on Microsoft Fabric. That meant working through the OneLake medallion architecture, the Direct Lake semantic layer, capacity tiering, and security, all tracked in a 17-item decision register. I also built a Power BI semantic model by flattening a parent-child employee hierarchy into a dimension table with a 7-relationship star schema, then added an EDA agent on top as an AI proof-of-concept." },
+    { dates: "2024 – Now", role: "Private Piano Instructor", org: "The Music and Dance Suite", tone: "#b4c09a", desc: "At The Music and Dance Suite, I taught private piano lessons for two years, building customized lesson plans for 20+ students. I adapted my techniques for neurodiverse and nonverbal learners so every student could make progress in a way that worked for them. I also organized and led performance recitals, which boosted student involvement and kept students coming back." },
+    { dates: "2024 – 2025", role: "Main Desk & Central Supply Volunteer", org: "Rush Copley Medical Center", tone: "#c4948c", desc: "At Rush Copley Medical Center, I volunteered at the main desk and in central supply for about a year, logging 96 hours. At the desk, I helped 50+ patients and visitors per shift with directions and questions in a fast-paced hospital environment. I also handled the weekly stocking and delivery of medical supplies across multiple departments." },
+    { dates: "Fall 2022 – 2025", role: "Vice President", org: "Youth and Government, Naperville", tone: "#c9a57b", desc: "At Youth and Government in Naperville, I served as school-wide Vice President and state-wide Assistant Director of Lobbyists over four years. I drove the passage of bills on recidivism and gambling advertisements, both approved unanimously at the state level. I was also recognized as Most Effective Lobbyist at the 2023 statewide conference." },
+];
 
 function ExperienceSection() {
+    const listRef = useRef(null);
+
+    // Each entry (and the timeline beside it) eases in the first time it scrolls into view.
+    useEffect(() => {
+        const list = listRef.current;
+        if (!list) return undefined;
+        const items = [...list.children];
+        if (!("IntersectionObserver" in window)) {
+            items.forEach((el) => el.classList.add("is-visible"));
+            return undefined;
+        }
+        list.classList.add("is-armed");
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add("is-visible");
+                observer.unobserve(entry.target);
+            });
+        }, { rootMargin: "0px 0px -12% 0px", threshold: 0.15 });
+        items.forEach((el) => observer.observe(el));
+        return () => observer.disconnect();
+    }, []);
+
     return (
         <section id="experience" className="paper-experiences">
             <SectionHeading marginBottom={10}>experiences</SectionHeading>
             <p className="paper-section-note">A few places I’ve learned, contributed, and grown.</p>
-            <div className="experience-orbit-stage">
-                <OrbitCardStack
-                    items={EXPERIENCE_CARDS}
-                    defaultActiveIndex={0}
-                    spread={140}
-                    lift={34}
-                    showPortrait={false}
-                    label="Experience card stack"
-                    className="experience-orbit"
-                    cardClassName="experience-orbit-card"
-                />
-            </div>
+            {/* Roughens the card outlines (applied to each card's paper layer, not its text). */}
+            <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true" focusable="false">
+                <filter id="experience-paper-edge" x="-3%" y="-3%" width="106%" height="106%">
+                    <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="3" seed="7" result="noise" />
+                    <feDisplacementMap in="SourceGraphic" in2="noise" scale="5" xChannelSelector="R" yChannelSelector="G" />
+                </filter>
+            </svg>
+            <ol ref={listRef} className="experience-list">
+                {EXPERIENCES.map((e, i) => (
+                    <li key={e.role} className="experience-item" style={{ "--tone": e.tone, "--i": i }}>
+                        <p className="experience-dates"><span>{e.dates}</span></p>
+                        <div className="experience-body">
+                            <h3 className="experience-role"><span>{e.role}</span></h3>
+                            <p className="experience-org">{e.org}</p>
+                            <p className="experience-desc">{e.desc}</p>
+                        </div>
+                    </li>
+                ))}
+            </ol>
         </section>
     );
 }

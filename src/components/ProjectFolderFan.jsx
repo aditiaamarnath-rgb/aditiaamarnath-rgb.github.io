@@ -63,7 +63,10 @@ function LogoSticker({ label, rot }) {
 
 function PostIt({ project, title }) {
     const style = { backgroundColor: project.noteColor, "--note-rot": `${project.noteRot}deg` };
-    const image = <img className={`pff-postit-img${project.noteFitImage ? " pff-postit-img-natural" : ""}`} src={project.image} alt={`${title} preview`} style={{ objectFit: project.noteImageFit ?? "cover" }} />;
+    // A project without a preview image still gets its post-it, just with the caption.
+    const image = project.image
+        ? <img className={`pff-postit-img${project.noteFitImage ? " pff-postit-img-natural" : ""}`} src={project.image} alt={`${title} preview`} style={{ objectFit: project.noteImageFit ?? "cover" }} />
+        : null;
     if (project.projectUrl) {
         return (
             <a className="note-link postit pff-postit" href={project.projectUrl} target="_blank" rel="noreferrer" aria-label={`Open ${title} live (opens in new tab)`} style={style}>

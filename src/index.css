@@ -536,47 +536,150 @@ body {
   }
 }
 
-/* Keep the experience notes’ wide proportions in the Orbit stack. */
-/* Bottom room lets the fanned back cards clear the projects gingham. */
-#experience { padding-top: 28px; padding-bottom: 160px; }
-#experience .paper-section-note { margin: 0; }
-.experience-orbit-stage { min-height: 0; margin-top: -24px; }
-.experience-orbit { padding-top: 0; padding-bottom: 0; }
-.experience-orbit > [role="list"] { height: 510px; }
-.experience-orbit-card {
-  width: min(82vw, 32rem);
-  height: 440px;
-  display: flex;
-  flex-direction: column;
-  padding: clamp(24px, 3vw, 38px);
-  border: 1px solid #d9d0bd;
-  border-radius: 24px;
-  --card-ink: #302b23;
-  --card-muted: #51483d;
-  --card-rule: #302b2340;
-  background-color: #ddd3c9;
-  background-image: url('./assets/card-paper-grain.svg'), linear-gradient(135deg, #ffffff12, transparent 45%, #302b2309);
-  background-blend-mode: soft-light, normal;
-  box-shadow: inset 0 1px 1px #ffffff50, inset 0 -1px 2px #302b231c, 2px 4px 3px #574b3112, 5px 12px 22px #574b3120;
+/* Experiences: a timeline of tinted paper cards (dates on washi tape | rule + dot | card).
+   Colours come from the about notes and project folders; motion is small and one-shot. */
+#experience { padding-top: 28px; padding-bottom: 96px; }
+#experience .paper-section-note { margin: 0 0 44px; }
+.experience-list { list-style: none; max-width: 1000px; margin: 0; padding: 0; }
+.experience-item {
+  --paper: color-mix(in srgb, var(--tone) 58%, #f6efdf);
+  --ink-tone: color-mix(in srgb, var(--tone) 35%, #2a251d);
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  column-gap: 48px;
+  padding: 0 0 34px;
+  position: relative;
 }
-.experience-orbit-card:nth-child(1) { background-color: #ddd3c9; }
-.experience-orbit-card:nth-child(2) { background-color: #ecc4c3; }
-.experience-orbit-card:nth-child(3) { background-color: #b97d7b; }
-.experience-orbit-card:nth-child(4) { background-color: #928e5e; }
-.experience-orbit-card:nth-child(5) {
-  background-color: #575527;
-  --card-ink: #fff8e9;
-  --card-muted: #f1e9d5;
-  --card-rule: #fff8e950;
+/* Timeline rule: draws downward when the entry arrives. */
+.experience-item::before {
+  content: '';
+  position: absolute;
+  left: 174px;
+  top: 18px;
+  bottom: -18px;
+  border-left: 2px dotted color-mix(in srgb, var(--tone) 70%, #302b23);
+  transform-origin: top;
 }
-.experience-orbit-card .orbit-card-content { display: flex; flex: 1; flex-direction: column; min-height: 0; padding: 0; }
-.experience-orbit-card h3 { font: 500 36px/1.1 var(--font-display); color: var(--card-ink); margin: 12px 0 18px; }
-.experience-orbit-card .orbit-card-content > p:first-child { font: 23px var(--font-hand); text-transform: none; letter-spacing: 0; color: var(--card-ink); }
-.experience-orbit-card .orbit-card-description { flex: 1; min-height: 0; max-width: none; overflow-y: auto; margin: 0; padding-right: 5px; font: 14px/1.6 var(--font-body); color: var(--card-ink); }
-.experience-orbit-card .orbit-card-footer { font-family: var(--font-ui); flex-shrink: 0; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--card-rule); color: var(--card-muted); }
+.experience-item:last-child::before { display: none; }
+/* Dot: a little paper button in the entry's colour. */
+.experience-item::after {
+  content: '';
+  position: absolute;
+  left: 167px;
+  top: 11px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--tone);
+  border: 2px solid #faf6ec;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--tone) 60%, #302b23), 1px 2px 4px #574b3130;
+}
+/* Dates on a strip of washi tape. */
+.experience-dates { margin: 6px 0 0; text-align: right; }
+.experience-dates span {
+  display: inline-block;
+  padding: 5px 10px 4px;
+  font: 600 11px/1.3 var(--font-ui);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-tone);
+  background: color-mix(in srgb, var(--tone) 55%, transparent);
+  clip-path: polygon(3% 0, 97% 4%, 100% 50%, 97% 100%, 2% 96%, 0 48%);
+  transform: rotate(-2.5deg);
+}
+.experience-item:nth-child(even) .experience-dates span { transform: rotate(2deg); }
+/* The card itself: pigmented paper with a mottled grain, rough edges and a lifted corner,
+   tilted a touch like the post-its above. The paper lives on ::before so the edge filter
+   never touches the text. */
+.experience-body {
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  max-width: 760px;
+  padding: 24px 30px 26px;
+  transform: rotate(-0.4deg);
+  transition: transform 380ms cubic-bezier(.2, 1.3, .4, 1);
+}
+.experience-body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    url('./assets/card-paper-grain.svg'),
+    linear-gradient(160deg, #ffffff40, transparent 45%, #3a2c1a0d),
+    var(--paper);
+  background-blend-mode: soft-light, normal, normal;
+  filter: url(#experience-paper-edge) drop-shadow(1px 2px 2px #4a3c2422) drop-shadow(3px 8px 12px #4a3c2420);
+  transition: filter 380ms ease;
+}
+/* Lifted bottom corner: a soft shadow that only shows past the paper's edge. */
+.experience-body::after {
+  content: '';
+  position: absolute;
+  z-index: -2;
+  right: 10px;
+  bottom: 12px;
+  width: 45%;
+  height: 30px;
+  box-shadow: 8px 14px 14px #4a3c2438;
+  transform: rotate(3deg);
+  transition: box-shadow 380ms ease;
+}
+.experience-item:nth-child(even) .experience-body::after { right: auto; left: 10px; box-shadow: -8px 14px 14px #4a3c2438; transform: rotate(-3deg); }
+.experience-item:nth-child(even) .experience-body { transform: rotate(0.45deg); }
+.experience-item:hover .experience-body { transform: rotate(0deg) translateY(-3px); }
+.experience-item:hover .experience-body::before { filter: url(#experience-paper-edge) drop-shadow(2px 4px 3px #4a3c2426) drop-shadow(6px 14px 20px #4a3c2428); }
+/* Highlighter stroke over each role: thick enough to cover the title, and it sweeps
+   across when the experience is hovered (or focused). */
+.experience-role { margin: 0; font: 500 clamp(24px, 2.4vw, 30px)/1.3 var(--font-display); color: #2a251d; }
+.experience-role span {
+  padding: 0 6px;
+  margin: 0 -6px;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background: linear-gradient(transparent 24%, color-mix(in srgb, var(--tone) 90%, #2a251d) 24% 95%, transparent 95%) no-repeat 0 0 / 100% 100%;
+  border-radius: 3px 8px 4px 10px;
+  background-size: 0% 100%;
+  transition: background-size 520ms cubic-bezier(.3, .8, .3, 1);
+}
+.experience-item:hover .experience-role span,
+.experience-item:focus-within .experience-role span { background-size: 100% 100%; }
+.experience-org { margin: 3px 0 12px; font: 22px/1.2 var(--font-hand); color: var(--ink-tone); }
+.experience-desc { margin: 0; font: 15px/1.65 var(--font-body); color: #302b23; }
+
+/* Scroll-in: only once JS has armed the list, so it never hides content without JS. */
+.experience-list.is-armed .experience-body,
+.experience-list.is-armed .experience-dates {
+  opacity: 0;
+  translate: 0 18px;
+  transition: opacity 600ms ease, translate 700ms cubic-bezier(.2, .9, .3, 1), transform 380ms cubic-bezier(.2, 1.3, .4, 1);
+}
+.experience-list.is-armed .experience-dates { transition-delay: 80ms; }
+.experience-list.is-armed .experience-item::before { transform: scaleY(0); transition: transform 900ms cubic-bezier(.4, 0, .2, 1) 250ms; }
+.experience-list.is-armed .experience-item::after { transform: scale(0); transition: transform 500ms cubic-bezier(.2, 1.8, .4, 1) 120ms; }
+.experience-list.is-armed .is-visible .experience-body,
+.experience-list.is-armed .is-visible .experience-dates { opacity: 1; translate: 0 0; }
+.experience-list.is-armed .is-visible::before { transform: scaleY(1); }
+.experience-list.is-armed .is-visible::after { transform: scale(1); }
+
 @media (max-width: 700px) {
-  .experience-orbit { --orbit-spread-scale: 0.1; padding-left: 0; padding-right: 0; }
-  .experience-orbit-card { width: min(82vw, 32rem); height: 440px; }
+  #experience { padding-bottom: 64px; }
+  .experience-item { grid-template-columns: 1fr; padding: 0 0 28px 30px; }
+  .experience-item::before { left: 7px; }
+  .experience-item::after { left: 0; top: 4px; }
+  .experience-dates { text-align: left; margin: 0 0 10px; }
+  .experience-body { padding: 20px 20px 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .experience-list.is-armed .experience-body,
+  .experience-list.is-armed .experience-dates { opacity: 1; translate: none; }
+  .experience-list.is-armed .experience-item::before { transform: none; }
+  .experience-list.is-armed .experience-item::after { transform: none; }
+  .experience-body,
+  .experience-role span,
+  .experience-list.is-armed .experience-body { transition: none; }
+  .experience-item:hover .experience-body { transform: rotate(0deg); }
 }
 
 #contactme .contact-terminal-form { margin-top: 12px; }
